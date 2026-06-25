@@ -1,0 +1,56 @@
+{
+  "config_name": "config_2_temporal_only__no_evm__no_simam__no_3dcnn__WITH_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": true
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.8154300144300144,
+    "macro_f1": 0.37501888090123386,
+    "confusion_matrix": [
+      [
+        87,
+        3,
+        9
+      ],
+      [
+        14,
+        17,
+        1
+      ],
+      [
+        13,
+        3,
+        9
+      ]
+    ],
+    "per_class_f1": [
+      0.8169014084507042,
+      0.6181818181818182,
+      0.40909090909090906
+    ],
+    "per_class_precision": [
+      0.7631578947368421,
+      0.7391304347826086,
+      0.47368421052631576
+    ],
+    "per_class_recall": [
+      0.8787878787878788,
+      0.53125,
+      0.36
+    ],
+    "num_samples": 156
+  },
+  "extra": {
+    "phase": "I",
+    "protocol": "loso",
+    "label_mode": "grouped"
+  }
+}
