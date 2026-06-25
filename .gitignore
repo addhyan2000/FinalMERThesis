@@ -1,0 +1,124 @@
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+**/venv/
+**/.venv/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+*.whl
+*.manifest
+*.spec
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.nfs*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.gz
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.npy
+
+
+# Data files / outputs
+Processed_Data/tensors
+Processed_Data/tensors_raw
+tmp/
+# Keep dataset definitions and scripts, but ignore generated files if present
+
+# Coverage and profiling
+coverage/
+profile_default/
+ipynb_checkpoints/
+
+# VS Code workspace files
+*.code-workspace
+
+# Runtime generated files
+*.sqlite3
+*.db
+*.db-journal
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Misc
+.DS_Store
+.idea/
+*.iml
+
+# Ignore compiled C extensions
+*.so
+
+# Ignore Python wheel cache
+pip-wheel-metadata/
+**/pip-wheel-metadata/
+
+# Ignore machine-specific configuration
+local_settings.py
+
+# Ignore package lock files if not used
+poetry.lock
+Pipfile.lock
