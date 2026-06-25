@@ -1,0 +1,56 @@
+{
+  "config_name": "config_4_motion_amp_base__WITH_evm__no_simam__no_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": true,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": false
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.7435897435897436,
+    "macro_f1": 0.28431372549019607,
+    "confusion_matrix": [
+      [
+        29,
+        0,
+        0
+      ],
+      [
+        9,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "per_class_f1": [
+      0.8529411764705882,
+      0.0,
+      0.0
+    ],
+    "per_class_precision": [
+      0.7435897435897436,
+      0.0,
+      0.0
+    ],
+    "per_class_recall": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "num_samples": 39
+  },
+  "extra": {
+    "phase": "II",
+    "protocol": "holdout",
+    "label_mode": "grouped"
+  }
+}

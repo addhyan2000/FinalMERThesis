@@ -3,5 +3,5 @@
   "casme2_media_root": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-RAW",
   "casme2_media_mode": "both",
   "ablation_protocol": "holdout",
-  "ablation_all_configs": false
+  "ablation_all_configs": true
 }

@@ -1,0 +1,101 @@
+{
+  "config_name": "config_12_permutation__WITH_evm__no_simam__no_3dcnn__WITH_transformer",
+  "toggles": {
+    "use_evm": true,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": true
+  },
+  "class_names": [
+    "happiness",
+    "disgust",
+    "sadness",
+    "fear",
+    "repression",
+    "surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.41025641025641024,
+    "macro_f1": 0.14965986394557823,
+    "confusion_matrix": [
+      [
+        0,
+        7,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        15,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        8,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "per_class_f1": [
+      0.0,
+      0.6122448979591837,
+      0.0,
+      0.0,
+      0.0,
+      0.2857142857142857
+    ],
+    "per_class_precision": [
+      0.0,
+      0.45454545454545453,
+      0.0,
+      0.0,
+      0.0,
+      0.16666666666666666
+    ],
+    "per_class_recall": [
+      0.0,
+      0.9375,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "num_samples": 39
+  },
+  "extra": {
+    "phase": "Other",
+    "protocol": "holdout",
+    "label_mode": "individual"
+  }
+}
