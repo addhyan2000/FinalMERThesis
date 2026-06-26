@@ -1,7 +1,7 @@
 {
-  "config_name": "config_1_pure_base__no_evm__no_simam__no_3dcnn__no_transformer",
+  "config_name": "config_4_motion_amp_base__WITH_evm__no_simam__no_3dcnn__no_transformer",
   "toggles": {
-    "use_evm": false,
+    "use_evm": true,
     "use_simam": false,
     "use_cnn": false,
     "use_transformer": false
@@ -49,7 +49,7 @@
     "num_samples": 24
   },
   "extra": {
-    "phase": "I",
+    "phase": "II",
     "protocol": "loso",
     "label_mode": "grouped",
     "loso_folds_run": 5,

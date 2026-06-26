@@ -1,9 +1,9 @@
 {
-  "config_name": "config_1_pure_base__no_evm__no_simam__no_3dcnn__no_transformer",
+  "config_name": "config_3_spatial_only__no_evm__no_simam__WITH_3dcnn__no_transformer",
   "toggles": {
     "use_evm": false,
     "use_simam": false,
-    "use_cnn": false,
+    "use_cnn": true,
     "use_transformer": false
   },
   "class_names": [
@@ -12,17 +12,17 @@
     "Surprise"
   ],
   "metrics": {
-    "accuracy": 0.7,
-    "macro_f1": 0.24727272727272726,
+    "accuracy": 0.8866666666666667,
+    "macro_f1": 0.37727272727272726,
     "confusion_matrix": [
       [
-        19,
-        0,
+        17,
+        2,
         0
       ],
       [
-        5,
-        0,
+        2,
+        3,
         0
       ],
       [
@@ -32,18 +32,18 @@
       ]
     ],
     "per_class_f1": [
-      0.8837209302325582,
-      0.0,
+      0.8947368421052632,
+      0.6,
       0.0
     ],
     "per_class_precision": [
-      0.7916666666666666,
-      0.0,
+      0.8947368421052632,
+      0.6,
       0.0
     ],
     "per_class_recall": [
-      1.0,
-      0.0,
+      0.8947368421052632,
+      0.6,
       0.0
     ],
     "num_samples": 24

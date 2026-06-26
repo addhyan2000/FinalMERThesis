@@ -1,10 +1,10 @@
 {
-  "config_name": "config_1_pure_base__no_evm__no_simam__no_3dcnn__no_transformer",
+  "config_name": "config_6_full_stage2_noevm__no_evm__WITH_simam__WITH_3dcnn__WITH_transformer",
   "toggles": {
     "use_evm": false,
-    "use_simam": false,
-    "use_cnn": false,
-    "use_transformer": false
+    "use_simam": true,
+    "use_cnn": true,
+    "use_transformer": true
   },
   "class_names": [
     "Negative",
@@ -12,17 +12,17 @@
     "Surprise"
   ],
   "metrics": {
-    "accuracy": 0.7,
-    "macro_f1": 0.24727272727272726,
+    "accuracy": 0.9833333333333334,
+    "macro_f1": 0.44982456140350874,
     "confusion_matrix": [
       [
-        19,
-        0,
+        18,
+        1,
         0
       ],
       [
-        5,
         0,
+        5,
         0
       ],
       [
@@ -32,24 +32,24 @@
       ]
     ],
     "per_class_f1": [
-      0.8837209302325582,
-      0.0,
+      0.972972972972973,
+      0.9090909090909091,
       0.0
     ],
     "per_class_precision": [
-      0.7916666666666666,
-      0.0,
+      1.0,
+      0.8333333333333334,
       0.0
     ],
     "per_class_recall": [
+      0.9473684210526315,
       1.0,
-      0.0,
       0.0
     ],
     "num_samples": 24
   },
   "extra": {
-    "phase": "I",
+    "phase": "III",
     "protocol": "loso",
     "label_mode": "grouped",
     "loso_folds_run": 5,

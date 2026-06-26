@@ -5,5 +5,5 @@
   "ablation_protocol": "loso",
   "ablation_all_configs": true,
   "ablation_full_loso": false,
-  "ablation_loso_folds": "10"
+  "ablation_loso_folds": "5"
 }
