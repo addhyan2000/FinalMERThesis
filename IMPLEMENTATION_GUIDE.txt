@@ -1,0 +1,218 @@
+
+I put this together so you can see how the MER project is actually built and how the pieces connect. I know the repo can look like a lot of folders at first glance, so hopefully this makes it easier to follow what happens from your CASME-II files through to the final accuracy numbers.
+
+If you have already pushed results to FinalMERThesis on GitHub, this matches the code you are running there.
+
+
+THE BIG PICTURE
+---------------
+
+At a high level, everything goes through three main steps:
+
+  1. You give the system the CASME-II Excel file plus your video or image folders.
+  2. The pipeline turns each clip into a numeric tensor file (optical flow + strain).
+  3. The ablation study trains different model versions and writes accuracy, F1, and confusion matrices.
+
+In plain terms:
+
+  Raw data (Excel + Cropped images / Video .avi)
+       |
+       v
+  Step 1  ->  master_thesis_labels.csv
+       |
+       v
+  Step 2  ->  tensors/ and tensors_raw/  (the .npy files)
+       |
+       v
+  Training  ->  Ablation_Study/results/
+
+Each tensor file has shape (3, 32, 224, 224):
+  - 3 channels = optical flow u, flow v, and optical strain
+  - 32 frames = your onset-to-offset clip stretched to a fixed length
+  - 224 x 224 = image size the model expects
+
+
+WHAT EACH MAIN FOLDER DOES
+--------------------------
+
+  Stage1_DataPipeline/
+    Reads Excel, builds the CSV, extracts tensors.
+
+  Stage2_Architecture/
+    The neural network building blocks (3D-CNN, SimAM attention, transformer).
+
+  Ablation_Study/
+    Where training and evaluation actually happen. The 12 config toggles live here.
+
+  tools/
+    The GUI, smoke tests, GPU runner, and plotting scripts.
+
+  Processed_Data/
+    Everything generated on your machine (CSV + tensors). You create this when you preprocess.
+
+The things you will use most often:
+  - tools/run_gui.py          (the test panel — easiest way to run everything)
+  - tools/run_ablation_gpu.py (GPU training from command line)
+  - main_step1.py / main_step2.py (preprocessing from command line)
+
+
+STEP 1 — METADATA (EXCEL TO CSV)
+---------------------------------
+
+This reads CASME2-coding-20140508.xlsx and builds master_thesis_labels.csv.
+
+For each row it:
+  - Maps emotions into Positive, Negative, Surprise, or Others
+  - Calculates how many frames are in the clip (offset minus onset)
+  - Finds where the video or images live on disk
+
+Media modes (you pick this in the GUI):
+
+  avi     -> looks for subXX/clip_name.avi
+  images  -> looks for subXX/clip_name/*.jpg
+  both    -> tries Cropped/subXX/clip_name/ first, then falls back to Video/subXX/clip_name.avi
+
+I recommend "both" on your setup since you have cropped folders for some clips and video for others.
+
+The output is Processed_Data/master_thesis_labels.csv with 15 columns (subject, video id, emotion, frame paths, etc.).
+
+
+STEP 2 — TENSOR EXTRACTION
+---------------------------
+
+For every valid row in the CSV, Step 2:
+
+  1. Loads frames from the clip folder or .avi file
+  2. Cuts to onset–offset and interpolates to 32 frames
+  3. Computes optical flow and strain (with and without EVM magnification)
+  4. Saves a file like Processed_Data/tensors/CASME_II_EP02_01f.npy
+
+It runs in parallel (workers setting in the GUI) and can resume if interrupted thanks to checkpoint files.
+
+You need both tensor folders:
+  - tensors/      (EVM path — used by configs that turn EVM on)
+  - tensors_raw/  (non-EVM path — used by configs that turn EVM off)
+
+
+THE MODEL AND THE 12 CONFIGS
+----------------------------
+
+The proposed model you care about most is config_8_proposed_unified. It turns on all four parts:
+
+  - EVM motion magnification
+  - 3D-CNN spatial backbone
+  - SimAM attention
+  - SLSTT transformer over time
+
+The other 11 configs switch different combinations on or off so you can show in the thesis which parts actually help. There are 12 valid combinations in total; one invalid combo (SimAM without CNN) is skipped automatically.
+
+Training uses focal loss with class weights because CASME-II is imbalanced — there are more Negative clips than Positive or Surprise. That is normal for this dataset.
+
+On GPU we use mixed precision for speed. If you see "NaN gradient" in the log, it usually means the run is too short (5 epochs) or the batch is very small. More epochs (50–60) generally stabilises this.
+
+
+HOW VALIDATION WORKS
+--------------------
+
+There are two main ways we evaluate:
+
+HOLDOUT (default, faster)
+  About 20% of subjects are held out for validation. No clip from a test subject appears in training. Good for comparing all 12 configs in one night.
+
+LOSO — Leave One Subject Out
+  Each fold trains on everyone except one subject, then tests on that subject. On full CASME-II that is roughly 26 folds. This is what papers often report, but it is slow if you run every config for many epochs.
+
+PILOT LOSO (new — see LOSO_PILOT_GUIDE.txt)
+  Instead of all 26 subjects, we only hold out 5 subjects spread across the dataset (e.g. subjects 1, 7, 13, 19, 26). You still get a proper subject-disjoint LOSO-style evaluation, but in hours instead of days. Use this while tuning; save full LOSO for the final thesis number.
+
+Grouped vs individual labels:
+  - grouped    = Negative / Positive / Surprise (Others clips are skipped)
+  - individual = raw CASME-II emotion names (harder, needs more data)
+
+
+THE GUI
+-------
+
+tools/run_gui.py is the main control panel.
+
+  Excel + media paths  ->  where your data lives
+  Media type "both"    ->  images first, video fallback
+  Protocol             ->  holdout or loso
+  LOSO pilot folds     ->  how many subjects for pilot LOSO (default 5)
+  Full LOSO checkbox   ->  all subjects (slow)
+  All 12 configs       ->  off by default; normally just config_8 runs
+  Epochs               ->  use 50–60 for real work; 5 is only for quick tests
+
+Before each GPU run, old results in that folder are cleared automatically so your plots and summary.csv always match the current run, not a previous one.
+
+
+WHERE YOUR RESULTS GO
+---------------------
+
+After training, look in Ablation_Study/results/:
+
+  summary.csv
+    One row per config with accuracy and macro F1.
+
+  config_8_proposed_unified.../final_results.json
+    Full numbers plus LOSO info if you used LOSO.
+
+  config_8.../confusion_matrix.npy
+    Raw confusion matrix.
+
+  config_8.../checkpoints/best_model.pth
+    Saved weights from the best epoch.
+
+  plots/
+    Bar charts and confusion matrix images from the Plots button.
+
+
+READING YOUR NUMBERS VS THE PAPERS
+-----------------------------------
+
+I left reference numbers in Ablation_Study/literature_baselines.csv. The dissertation target is roughly 70% accuracy and 68% macro F1 on grouped labels.
+
+A few things to keep in mind when you compare:
+
+  - Accuracy alone can look good if the model mostly predicts Negative (the biggest class).
+  - Macro F1 is usually fairer for imbalanced MER data — I would report both.
+  - Compare the same setup: holdout vs holdout, pilot LOSO vs pilot LOSO.
+  - 5 epochs is only to check the wiring works. Real runs need 50–60 epochs.
+
+From your holdout-all branch on GitHub, config_8 was around 74% accuracy which is already close to the target on holdout. Macro F1 was lower (~50%), which is expected with imbalance. LOSO numbers will look different — that is normal.
+
+
+TYPICAL WORKFLOW
+----------------
+
+Quick test (no dataset needed):
+  Run the three smoke scripts or click "Smoke (no data)" in the GUI.
+
+Real experiment:
+  1. Set Excel and media paths, media = both
+  2. Click Preprocess (always rebuilds with --force)
+  3. Holdout + config_8 + 50 epochs first
+  4. Then pilot LOSO (5 folds) + config_8 + 50 epochs
+  5. When happy, either all 12 configs on holdout or full LOSO for the final number
+
+
+COMMON ISSUES
+-------------
+
+  Wrong number of rows in CSV
+    Check the Excel path in the GUI and run Preprocess again.
+
+  matched=0 during training
+    Tensors are missing — rerun Step 2.
+
+  unknown_emotion=4 in the log
+    Four "Others" clips are excluded in grouped mode. That is expected.
+
+  Plots show old configs you did not run
+    Pull the latest code — results are cleared before each GPU run now.
+
+  LOSO takes forever
+    Use pilot LOSO (5 folds), not full LOSO, until you are ready for the final run.
+
+
+If anything in the log looks wrong, send me the summary.csv, the ablation log, and a screenshot of the GUI settings you used. That is usually enough to spot the issue quickly.
