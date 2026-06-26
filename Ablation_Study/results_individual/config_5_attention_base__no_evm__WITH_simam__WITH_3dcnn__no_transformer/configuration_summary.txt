@@ -8,7 +8,7 @@ Toggles:
   use_transformer: False
 
 Hardware Metrics:
-  Total Train Time: 949.66 seconds
+  Total Train Time: 948.23 seconds
   Peak VRAM: 10025.3 MB
 
 Data Flow:
