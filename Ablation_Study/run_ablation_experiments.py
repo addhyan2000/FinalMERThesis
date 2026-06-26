@@ -276,12 +276,36 @@ class AblationOrchestrator:
             fold_results: List[EvalResult] = []
             train_state_final = None
             data_flow_final = ""
-            for sid, train_idx, val_idx in dataset.loso_folds():
-                self._log.info("  LOSO fold — held-out subject %s", sid)
-                fold_res, train_state_final, data_flow_final = self._train_eval_split(ablation, dataset, train_idx, val_idx)
+            folds, total_subjects = dataset.select_loso_folds(
+                max_folds=self.exp.loso_max_folds,
+                subjects=self.exp.loso_subjects,
+            )
+            if not folds:
+                self._log.warning("  Skipping — no LOSO folds selected.")
+                return None
+            self._log.info(
+                "  LOSO plan: %d/%d subject folds (pilot=%s)",
+                len(folds),
+                total_subjects,
+                self.exp.loso_max_folds is not None and len(folds) < total_subjects,
+            )
+            loso_held_out = []
+            for sid, train_idx, val_idx in folds:
+                self._log.info("  LOSO fold — held-out subject %s (%d val clips)", sid, len(val_idx))
+                loso_held_out.append(sid)
+                fold_res, train_state_final, data_flow_final = self._train_eval_split(
+                    ablation, dataset, train_idx, val_idx,
+                )
                 fold_results.append(fold_res)
             result = MetricsComputer.average_results(fold_results, self.exp.num_classes)
+            loso_extra = {
+                "loso_folds_run": len(folds),
+                "loso_folds_total": total_subjects,
+                "loso_held_out_subjects": loso_held_out,
+                "loso_pilot": len(folds) < total_subjects,
+            }
         else:  # holdout
+            loso_extra = {}
             train_idx, val_idx = dataset.subject_disjoint_split(
                 self.exp.val_fraction, self.exp.seed,
             )
@@ -301,7 +325,12 @@ class AblationOrchestrator:
             result=result,
             train_state=train_state_final,
             data_flow=data_flow_final,
-            extra={"phase": ablation.phase, "protocol": self.exp.validation_protocol, "label_mode": self.exp.label_mode},
+            extra={
+                "phase": ablation.phase,
+                "protocol": self.exp.validation_protocol,
+                "label_mode": self.exp.label_mode,
+                **loso_extra,
+            },
         )
         return result
 
@@ -374,6 +403,24 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--lr", type=float, default=None)
     p.add_argument("--loss_type", choices=["focal", "cross_entropy"], default=None)
     p.add_argument("--protocol", choices=["holdout", "loso"], default=None)
+    p.add_argument(
+        "--loso_max_folds",
+        type=int,
+        default=None,
+        help="Pilot LOSO: number of subject folds (evenly spaced). Omit with --full_loso for all subjects.",
+    )
+    p.add_argument(
+        "--full_loso",
+        action="store_true",
+        help="Run LOSO on every subject (slow; full paper-style evaluation).",
+    )
+    p.add_argument(
+        "--loso_subjects",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Explicit subject ids to hold out (overrides --loso_max_folds).",
+    )
     p.add_argument("--val_fraction", type=float, default=None)
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--only", type=str, default=None, help="Run only this config name.")
@@ -417,6 +464,12 @@ def build_experiment_config(args: argparse.Namespace) -> ExperimentConfig:
         exp.loss_type = args.loss_type
     if args.protocol is not None:
         exp.validation_protocol = args.protocol
+    if args.full_loso:
+        exp.loso_max_folds = None
+    elif args.loso_max_folds is not None:
+        exp.loso_max_folds = None if args.loso_max_folds <= 0 else args.loso_max_folds
+    if args.loso_subjects is not None:
+        exp.loso_subjects = list(args.loso_subjects)
     if args.val_fraction is not None:
         exp.val_fraction = args.val_fraction
     if args.seed is not None:

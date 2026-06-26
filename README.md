@@ -124,11 +124,19 @@ python tools/run_ablation_gpu.py --configs config_1_pure_base config_2_temporal_
 
 Or use the GUI: tick **All 12 ablation configs**.
 
-LOSO (slow):
+LOSO pilot (5 subjects, ~hours):
 
 ```powershell
-python tools/run_ablation_gpu.py --protocol loso --epochs 50 --configs config_8_proposed_unified
+python tools/run_ablation_gpu.py --protocol loso --loso_max_folds 5 --epochs 50 --configs config_8_proposed_unified
 ```
+
+Full LOSO (all subjects, slow):
+
+```powershell
+python tools/run_ablation_gpu.py --protocol loso --full_loso --epochs 60 --configs config_8_proposed_unified
+```
+
+See `LOSO_PILOT_GUIDE.md` for details.
 
 ---
 
@@ -160,6 +168,8 @@ After your first real-data run, please share:
 | `GPU_MODE.md` | Full GPU install, commands, troubleshooting |
 | `INITIAL_VERSION.md` | Complete runbook |
 | `CLIENT_INITIAL_VERSION.md` | Scope and delivery summary |
+| `IMPLEMENTATION_GUIDE.md` | How the project is built (architecture + data flow) |
+| `LOSO_PILOT_GUIDE.md` | Fast pilot LOSO vs full LOSO |
 | `JUNE19_GUI.md` | GUI usage (LOSO, both media, config options) |
 | `BUILD_CLIENT_GPU.ps1` | Package clean zip for client |
 

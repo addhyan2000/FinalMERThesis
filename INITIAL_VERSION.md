@@ -65,10 +65,16 @@ All 12 valid configs:
 python tools/run_ablation_gpu.py --label_mode grouped --epochs 30
 ```
 
-LOSO:
+LOSO pilot (5 subjects):
 
 ```powershell
-python tools/run_ablation_gpu.py --protocol loso --epochs 50 --configs config_8_proposed_unified
+python tools/run_ablation_gpu.py --protocol loso --loso_max_folds 5 --epochs 50 --configs config_8_proposed_unified
+```
+
+Full LOSO (all subjects):
+
+```powershell
+python tools/run_ablation_gpu.py --protocol loso --full_loso --epochs 60 --configs config_8_proposed_unified
 ```
 
 Individual labels:

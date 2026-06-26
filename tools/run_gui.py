@@ -64,6 +64,8 @@ class MerTestGuiApp(tk.Tk):
         self.media_mode_var = tk.StringVar(value="avi")
         self.protocol_var = tk.StringVar(value=DEFAULT_PROTOCOL)
         self.all_configs_var = tk.BooleanVar(value=False)
+        self.full_loso_var = tk.BooleanVar(value=False)
+        self.loso_folds_var = tk.StringVar(value="5")
         self.epochs_var = tk.StringVar(value="5")
         self.workers_var = tk.StringVar(value="8")
         self.skip_preprocess_var = tk.BooleanVar(value=False)
@@ -103,6 +105,8 @@ class MerTestGuiApp(tk.Tk):
         media_mode = "avi"
         protocol = DEFAULT_PROTOCOL
         all_configs = False
+        full_loso = False
+        loso_folds = "5"
         if SETTINGS_PATH.exists():
             try:
                 data = json.loads(SETTINGS_PATH.read_text(encoding="utf-8"))
@@ -114,6 +118,8 @@ class MerTestGuiApp(tk.Tk):
                 media_mode = data.get("casme2_media_mode", media_mode)
                 protocol = data.get("ablation_protocol", protocol)
                 all_configs = bool(data.get("ablation_all_configs", all_configs))
+                full_loso = bool(data.get("ablation_full_loso", full_loso))
+                loso_folds = str(data.get("ablation_loso_folds", loso_folds))
             except (json.JSONDecodeError, OSError):
                 pass
         self.excel_var.set(excel)
@@ -121,6 +127,8 @@ class MerTestGuiApp(tk.Tk):
         self.media_mode_var.set(media_mode)
         self.protocol_var.set(protocol if protocol in ("holdout", "loso") else DEFAULT_PROTOCOL)
         self.all_configs_var.set(all_configs)
+        self.full_loso_var.set(full_loso)
+        self.loso_folds_var.set(loso_folds)
 
     def _save_settings(self) -> None:
         try:
@@ -132,6 +140,8 @@ class MerTestGuiApp(tk.Tk):
                         "casme2_media_mode": self.media_mode_var.get().strip(),
                         "ablation_protocol": self.protocol_var.get().strip(),
                         "ablation_all_configs": self.all_configs_var.get(),
+                        "ablation_full_loso": self.full_loso_var.get(),
+                        "ablation_loso_folds": self.loso_folds_var.get().strip(),
                     },
                     indent=2,
                 ),
@@ -238,6 +248,20 @@ class MerTestGuiApp(tk.Tk):
             text="All 12 ablation configs (default: config_8 only)",
             variable=self.all_configs_var,
         ).pack(side="left")
+        row2 = ttk.Frame(opts)
+        row2.pack(fill="x", padx=8, pady=2)
+        ttk.Label(row2, text="LOSO pilot folds:").pack(side="left")
+        ttk.Entry(row2, textvariable=self.loso_folds_var, width=4).pack(side="left", padx=(4, 8))
+        ttk.Checkbutton(
+            row2,
+            text="Full LOSO (all subjects — slow)",
+            variable=self.full_loso_var,
+        ).pack(side="left", padx=(0, 8))
+        ttk.Label(
+            row2,
+            text="Default 5 folds ≈ research pilot; use 50–60 epochs for real training",
+            foreground="#555",
+        ).pack(side="left")
 
         btns = ttk.LabelFrame(controls, text="Run tests")
         btns.pack(fill="x", **pad)
@@ -342,6 +366,12 @@ class MerTestGuiApp(tk.Tk):
         ]
         if output_root:
             argv.extend(["--output_root", output_root])
+        if protocol == "loso":
+            if self.full_loso_var.get():
+                argv.append("--full_loso")
+            else:
+                folds = self.loso_folds_var.get().strip() or "5"
+                argv.extend(["--loso_max_folds", folds])
         argv.append("--fresh")
         return argv
 

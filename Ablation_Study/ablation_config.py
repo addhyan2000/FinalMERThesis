@@ -236,8 +236,11 @@ class ExperimentConfig:
 
     # ── Validation protocol (strict subject-disjoint) ─────────────────────────
     # "holdout"  → single subject-disjoint train/val split (fast; default)
-    # "loso"     → full leave-one-subject-out cross-validation (slow; thorough)
+    # "loso"     → leave-one-subject-out cross-validation
     validation_protocol: Literal["holdout", "loso"] = "holdout"
+    # Pilot LOSO: hold out only N subjects (evenly spaced). None = all subjects.
+    loso_max_folds: Optional[int] = 5
+    loso_subjects: Optional[List[int]] = None
     val_fraction: float = 0.2
     seed: int = 42
 

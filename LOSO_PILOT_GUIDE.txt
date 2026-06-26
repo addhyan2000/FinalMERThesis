@@ -1,0 +1,97 @@
+Following up on your message about LOSO taking too long — I changed how that works so you can still do proper subject-disjoint evaluation without waiting days for every run.
+
+This short note explains the difference between pilot LOSO and full LOSO, and what I suggest you try tomorrow.
+
+
+WHY FULL LOSO IS SO SLOW
+-------------------------
+
+On the full CASME-II dataset there are about 26 subjects. True LOSO means:
+
+  - Hold out subject 1, train on everyone else, test
+  - Then hold out subject 2, train again, test
+  - ... and so on for all 26
+
+If you multiply that by 12 configs and 60 epochs, you are looking at several days on the GPU. That is why your loso-handle branch runs were taking so long even when the code was working correctly.
+
+Research papers often report full LOSO in the end, but during development most people do not run all folds every time. They use a smaller subject subset or holdout first, then run the full evaluation once the model and settings are settled.
+
+
+WHAT I ADDED — PILOT LOSO
+--------------------------
+
+Pilot LOSO keeps the same idea (whole subjects held out, never mixed between train and test) but only uses a few subjects per run — default is 5, picked evenly across the cohort.
+
+Example on 26 subjects: it might hold out subjects 1, 7, 13, 19, and 26. You still train and test properly on each fold, but you only do 5 folds instead of 26.
+
+In the log you should see something like:
+
+  Pilot LOSO: 5/26 folds | held-out subjects=[1, 7, 13, 19, 26]
+  LOSO plan: 5/26 subject folds (pilot=True)
+
+The final accuracy and macro F1 in summary.csv are averaged over those folds only. They are a good indication of how the model is doing, but they are not the final thesis number — run full LOSO once when you are happy with epochs and config_8.
+
+
+HOW TO RUN IT IN THE GUI (EASIEST)
+-----------------------------------
+
+  1. Run Preprocess first (real data, media type = both).
+  2. Set Validation protocol to "loso".
+  3. Leave LOSO pilot folds at 5 (you can try 3 for a very quick check).
+  4. Make sure "Full LOSO (all subjects)" is NOT ticked.
+  5. Set epochs to 50 or 60 — not 5.
+  6. Leave "All 12 configs" unticked (config_8 only is fine to start).
+  7. Click GPU grouped.
+
+That should finish in a few hours instead of days.
+
+
+COMMAND LINE (IF YOU PREFER)
+-----------------------------
+
+Pilot LOSO with 5 subjects:
+
+  python tools/run_ablation_gpu.py --protocol loso --loso_max_folds 5 --epochs 50 --configs config_8_proposed_unified
+
+Pick specific subjects yourself:
+
+  python tools/run_ablation_gpu.py --protocol loso --loso_subjects 1 7 13 19 25 --epochs 50 --configs config_8_proposed_unified
+
+Full LOSO when you are ready for the final paper-style number:
+
+  python tools/run_ablation_gpu.py --protocol loso --full_loso --epochs 60 --configs config_8_proposed_unified
+
+
+HOW TO CHECK THE RESULTS
+-------------------------
+
+Open the config folder under Ablation_Study/results/ and look at final_results.json. Near the bottom you will see something like:
+
+  "loso_folds_run": 5
+  "loso_folds_total": 26
+  "loso_pilot": true
+  "loso_held_out_subjects": [1, 7, 13, 19, 26]
+
+summary.csv will show one row for config_8 with accuracy, macro F1, and num_samples (total test clips pooled across the folds you ran).
+
+Pilot results are for development and comparison. When you need the number for the dissertation table, run full LOSO once with 60 epochs on config_8.
+
+
+WHAT I SUGGEST 
+--------------
+
+Day 1 style plan:
+
+  - Morning:  Preprocess if not done already
+  - First:    Holdout, config_8, 50 epochs (baseline you can compare against)
+  - Then:     Pilot LOSO, 5 folds, config_8, 50 epochs
+  - Share:    summary.csv and final_results.json from config_8
+
+Once config_8 looks stable on holdout and pilot LOSO:
+
+  - Either run all 12 configs on holdout (overnight)
+  - Or run full LOSO on config_8 only when you want the final LOSO score for the thesis
+
+Do not worry if pilot LOSO macro F1 is still modest — CASME-II is heavily imbalanced and 50 epochs on 5 folds is still a limited run. The important thing tomorrow is confirming the new pilot mode finishes in reasonable time and the numbers move in the right direction compared to holdout.
+
+Your holdout-all results on GitHub already showed config_8 around 74% accuracy, which is encouraging. Pilot LOSO will give a different number but it should be in a similar ballpark if training is stable.
