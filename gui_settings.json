@@ -1,7 +1,9 @@
 {
   "casme2_excel": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-coding-20140508.xlsx",
   "casme2_media_root": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-RAW",
-  "casme2_media_mode": "both",
+  "casme2_media_mode": "images",
   "ablation_protocol": "loso",
-  "ablation_all_configs": true
+  "ablation_all_configs": true,
+  "ablation_full_loso": false,
+  "ablation_loso_folds": "10"
 }
