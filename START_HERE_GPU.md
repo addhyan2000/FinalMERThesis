@@ -147,9 +147,10 @@ After your first real-data run, please share:
 
 | File | Purpose |
 |---|---|
-| `GPU_MODE.md` | Full GPU install, commands, troubleshooting |
+| `IMPLEMENTATION_GUIDE.md` | Architecture and how each stage works |
+| `LOSO_PILOT_GUIDE.md` | Fast pilot LOSO (5 subjects) vs full LOSO |
+| `GPU_MODE.md` | Install, troubleshooting |
 | `INITIAL_VERSION.md` | Complete runbook |
-| `CLIENT_INITIAL_VERSION.md` | Scope and delivery summary |
 
 ---
 

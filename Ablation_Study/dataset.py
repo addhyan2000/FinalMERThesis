@@ -303,6 +303,59 @@ class MERAblationDataset(Dataset):
             folds.append((sid, train_idx, val_idx))
         return folds
 
+    def select_loso_folds(
+        self,
+        *,
+        max_folds: int | None = None,
+        subjects: List[int] | None = None,
+    ) -> Tuple[List[Tuple[int, List[int], List[int]]], int]:
+        """
+        Return LOSO folds for a full or pilot run.
+
+        Parameters
+        ----------
+        max_folds
+            Cap the number of folds. Subjects are chosen evenly across the
+            sorted subject list so pilot runs cover the dataset breadth.
+        subjects
+            If set, only these subject ids are held out (ignores max_folds).
+
+        Returns
+        -------
+        (folds, total_subject_count)
+        """
+        all_folds = self.loso_folds()
+        total = len(all_folds)
+
+        if subjects:
+            wanted = {int(s) for s in subjects}
+            selected = [fold for fold in all_folds if fold[0] in wanted]
+            if not selected:
+                self._log.warning(
+                    "LOSO subject filter %s matched no folds; using first pilot fold.",
+                    sorted(wanted),
+                )
+                selected = all_folds[:1]
+            return selected, total
+
+        if max_folds is None or max_folds >= total:
+            return all_folds, total
+
+        if max_folds <= 0:
+            return [], total
+
+        # Evenly spaced indices across subjects (e.g. 5 of 26 → spread across cohort).
+        positions = np.linspace(0, total - 1, max_folds, dtype=int)
+        picked = sorted({int(i) for i in positions})
+        selected = [all_folds[i] for i in picked]
+        self._log.info(
+            "Pilot LOSO: %d/%d folds | held-out subjects=%s",
+            len(selected),
+            total,
+            [fold[0] for fold in selected],
+        )
+        return selected, total
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Standalone verification
