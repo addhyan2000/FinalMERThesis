@@ -12,45 +12,55 @@
     "Surprise"
   ],
   "metrics": {
-    "accuracy": 0.02564102564102564,
-    "macro_f1": 0.016666666666666666,
+    "accuracy": 0.9833333333333334,
+    "macro_f1": 0.44982456140350874,
     "confusion_matrix": [
       [
+        18,
+        1,
+        0
+      ],
+      [
         0,
-        0,
-        29
+        5,
+        0
       ],
       [
         0,
         0,
-        9
-      ],
-      [
-        0,
-        0,
-        1
+        0
       ]
     ],
     "per_class_f1": [
-      0.0,
-      0.0,
-      0.05
+      0.972972972972973,
+      0.9090909090909091,
+      0.0
     ],
     "per_class_precision": [
-      0.0,
-      0.0,
-      0.02564102564102564
+      1.0,
+      0.8333333333333334,
+      0.0
     ],
     "per_class_recall": [
-      0.0,
-      0.0,
-      1.0
+      0.9473684210526315,
+      1.0,
+      0.0
     ],
-    "num_samples": 39
+    "num_samples": 24
   },
   "extra": {
     "phase": "IV",
-    "protocol": "holdout",
-    "label_mode": "grouped"
+    "protocol": "loso",
+    "label_mode": "grouped",
+    "loso_folds_run": 5,
+    "loso_folds_total": 25,
+    "loso_held_out_subjects": [
+      1,
+      7,
+      13,
+      20,
+      26
+    ],
+    "loso_pilot": true
   }
 }

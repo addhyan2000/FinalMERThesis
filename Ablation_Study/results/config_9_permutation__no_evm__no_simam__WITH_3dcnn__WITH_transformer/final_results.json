@@ -1,0 +1,56 @@
+{
+  "config_name": "config_9_permutation__no_evm__no_simam__WITH_3dcnn__WITH_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": false,
+    "use_cnn": true,
+    "use_transformer": true
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.7435897435897436,
+    "macro_f1": 0.5050505050505051,
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        1
+      ],
+      [
+        9,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "per_class_f1": [
+      0.8484848484848485,
+      0.0,
+      0.6666666666666666
+    ],
+    "per_class_precision": [
+      0.7567567567567568,
+      0.0,
+      0.5
+    ],
+    "per_class_recall": [
+      0.9655172413793104,
+      0.0,
+      1.0
+    ],
+    "num_samples": 39
+  },
+  "extra": {
+    "phase": "Other",
+    "protocol": "holdout",
+    "label_mode": "grouped"
+  }
+}
