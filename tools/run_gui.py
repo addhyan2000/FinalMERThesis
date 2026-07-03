@@ -730,6 +730,7 @@ class MerTestGuiApp(tk.Tk):
                 if status_key:
                     checklist_keys.append(status_key)
                 self._log_queue.put(("log", f"\n>>> {header}\n"))
+                self._log_queue.put(("log", "CMD: " + " ".join(argv) + "\n"))
                 if status_key:
                     self._log_queue.put(("status", f"{status_key}:run"))
                 code = self._run_process(argv)

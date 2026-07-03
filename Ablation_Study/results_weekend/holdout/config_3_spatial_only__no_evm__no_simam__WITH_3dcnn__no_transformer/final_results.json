@@ -1,0 +1,56 @@
+{
+  "config_name": "config_3_spatial_only__no_evm__no_simam__WITH_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": false,
+    "use_cnn": true,
+    "use_transformer": false
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.40384615384615385,
+    "macro_f1": 0.34814814814814815,
+    "confusion_matrix": [
+      [
+        12,
+        22,
+        5
+      ],
+      [
+        1,
+        8,
+        1
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ],
+    "per_class_f1": [
+      0.4444444444444444,
+      0.4,
+      0.2
+    ],
+    "per_class_precision": [
+      0.8,
+      0.26666666666666666,
+      0.14285714285714285
+    ],
+    "per_class_recall": [
+      0.3076923076923077,
+      0.8,
+      0.3333333333333333
+    ],
+    "num_samples": 52
+  },
+  "extra": {
+    "phase": "I",
+    "protocol": "holdout",
+    "label_mode": "grouped"
+  }
+}

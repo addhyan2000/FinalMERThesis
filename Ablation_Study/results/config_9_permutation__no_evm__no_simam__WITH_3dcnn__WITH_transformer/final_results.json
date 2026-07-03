@@ -1,0 +1,120 @@
+{
+  "config_name": "config_9_permutation__no_evm__no_simam__WITH_3dcnn__WITH_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": false,
+    "use_cnn": true,
+    "use_transformer": true
+  },
+  "class_names": [
+    "disgust",
+    "fear",
+    "happiness",
+    "others",
+    "repression",
+    "sadness",
+    "surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.02727272727272727,
+    "macro_f1": 0.014285714285714287,
+    "confusion_matrix": [
+      [
+        0,
+        9,
+        0,
+        0,
+        0,
+        21,
+        5
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        7,
+        0,
+        0,
+        0,
+        2,
+        3
+      ],
+      [
+        0,
+        15,
+        0,
+        0,
+        0,
+        24,
+        8
+      ],
+      [
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    ],
+    "per_class_f1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.1,
+      0.0
+    ],
+    "per_class_precision": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.05263157894736842,
+      0.0
+    ],
+    "per_class_recall": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "num_samples": 110
+  },
+  "extra": {
+    "phase": "Other",
+    "protocol": "holdout",
+    "label_mode": "raw"
+  }
+}

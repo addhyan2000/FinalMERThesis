@@ -1,0 +1,56 @@
+{
+  "config_name": "config_5_attention_base__no_evm__WITH_simam__WITH_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": true,
+    "use_cnn": true,
+    "use_transformer": false
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.4423076923076923,
+    "macro_f1": 0.3833333333333333,
+    "confusion_matrix": [
+      [
+        14,
+        22,
+        3
+      ],
+      [
+        1,
+        8,
+        1
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ],
+    "per_class_f1": [
+      0.5,
+      0.4,
+      0.25
+    ],
+    "per_class_precision": [
+      0.8235294117647058,
+      0.26666666666666666,
+      0.2
+    ],
+    "per_class_recall": [
+      0.358974358974359,
+      0.8,
+      0.3333333333333333
+    ],
+    "num_samples": 52
+  },
+  "extra": {
+    "phase": "II",
+    "protocol": "holdout",
+    "label_mode": "grouped"
+  }
+}
