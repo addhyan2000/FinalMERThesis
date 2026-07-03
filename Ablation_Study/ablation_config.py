@@ -226,6 +226,8 @@ class ExperimentConfig:
     label_mode: LabelMode = "grouped"
     include_others_in_grouped: bool = False
     emotion_map: Dict[str, int] = field(default_factory=lambda: dict(GROUPED_EMOTION_MAP))
+    # Oversample minority classes in train loader (helps per-class metrics).
+    use_balanced_sampler: bool = True
 
     # ── Spatiotemporal tensor geometry (kept fixed per the thesis brief) ──────
     in_channels: int = 3            # u-flow, v-flow, optical strain

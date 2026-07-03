@@ -79,8 +79,6 @@ class MerTestGuiApp(tk.Tk):
         self._start_maximized()
         self.after(100, self._poll_log_queue)
         self.after_idle(self._prefer_log_space)
-        # Log CUDA/Torch readiness to the GUI log (safe if torch missing)
-        self.after_idle(self._log_cuda_status)
         self.after_idle(self._warn_if_outdated_gui)
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
@@ -192,40 +190,6 @@ class MerTestGuiApp(tk.Tk):
             "Copy the latest tools/run_gui.py from MER_Client_GPU,\n"
             "restart the GUI, then run Preprocess again.",
         )
-
-    def _log_cuda_status(self) -> None:
-        """Append a short CUDA/Torch readiness line to the GUI log.
-
-        This is intentionally defensive: importing torch may fail in simple
-        environments so we catch ImportError and other exceptions.
-        """
-        try:
-            import os
-            import torch
-
-            cuda_ok = torch.cuda.is_available() if hasattr(torch, "cuda") else False
-            if cuda_ok:
-                try:
-                    idx = torch.cuda.current_device()
-                    name = torch.cuda.get_device_name(idx)
-                    props = torch.cuda.get_device_properties(idx)
-                    total_gb = props.total_memory / 1e9
-                    self._append_log(f"\nGPU detected: {name} (device {idx}, {total_gb:.1f} GB)\n")
-                except Exception:
-                    self._append_log("\nGPU detected (cuda available).\n")
-            else:
-                # If torch is installed but no GPU available, be explicit.
-                self._append_log("\nCUDA available: False (torch present)\n")
-            # Also log CUDA_VISIBLE_DEVICES for quick debugging.
-            try:
-                vis = os.environ.get("CUDA_VISIBLE_DEVICES", "")
-                if vis:
-                    self._append_log(f"CUDA_VISIBLE_DEVICES={vis}\n")
-            except Exception:
-                pass
-        except Exception:
-            # torch not installed or other import error — note in log but continue.
-            self._append_log("\nTorch not available in GUI Python environment.\n")
 
     def _on_close(self) -> None:
         self._save_settings()
@@ -353,6 +317,7 @@ class MerTestGuiApp(tk.Tk):
             ("Preprocess", self.run_preprocess),
             ("GPU grouped", self.run_gpu_grouped),
             ("GPU individual", self.run_gpu_individual),
+            ("Weekend holdout→loso (12)", self.run_weekend_combo),
             ("Plots", self.run_plots),
             ("Literature", self.run_literature),
             ("▶ RUN ALL", self.run_all_tests),
@@ -427,9 +392,10 @@ class MerTestGuiApp(tk.Tk):
         *,
         output_root: str | None = None,
         configs: list[str] | None = None,
+        protocol_override: str | None = None,
     ) -> list[str]:
         epochs = self.epochs_var.get().strip() or "5"
-        protocol = self.protocol_var.get().strip() or DEFAULT_PROTOCOL
+        protocol = protocol_override or (self.protocol_var.get().strip() or DEFAULT_PROTOCOL)
         label_mode = self.label_mode_var.get().strip() or "grouped"
         selected = configs if configs is not None else self._selected_ablation_configs()
         argv = [
@@ -872,6 +838,51 @@ class MerTestGuiApp(tk.Tk):
                 ),
                 "gpu_individual",
             )],
+        )
+
+    def run_weekend_combo(self) -> None:
+        """Run holdout then LOSO sequentially across all 12 configs."""
+        if self._guard_busy():
+            return
+        configs = list(ALL_GPU_CONFIGS)
+        weekend_root = PROJECT_ROOT / "Ablation_Study" / "results_weekend"
+        holdout_root = weekend_root / "holdout"
+        loso_root = weekend_root / "loso"
+        self._clear_ablation_results(holdout_root)
+        self._clear_ablation_results(loso_root)
+
+        holdout_argv = self._ablation_argv(
+            output_root=str(holdout_root),
+            configs=configs,
+            protocol_override="holdout",
+        )
+        loso_argv = self._ablation_argv(
+            output_root=str(loso_root),
+            configs=configs,
+            protocol_override="loso",
+        )
+        self._append_log(
+            "\nWeekend sweep outputs:\n"
+            f"  holdout -> {holdout_root}\n"
+            f"  loso    -> {loso_root}\n"
+        )
+        title = "Weekend sweep — holdout then LOSO (12 configs)"
+        self._run_script_async(
+            title,
+            [
+                ("GPU holdout ablation (12 configs)", holdout_argv, "gpu_grouped"),
+                ("GPU LOSO ablation (12 configs)", loso_argv, "gpu_individual"),
+                (
+                    "plot_ablation_results.py (holdout)",
+                    [PYTHON, self._tool("plot_ablation_results.py"), "--results_root", str(holdout_root)],
+                    "plots",
+                ),
+                (
+                    "plot_ablation_results.py (loso)",
+                    [PYTHON, self._tool("plot_ablation_results.py"), "--results_root", str(loso_root)],
+                    "plots",
+                ),
+            ],
         )
 
     def run_plots(self) -> None:

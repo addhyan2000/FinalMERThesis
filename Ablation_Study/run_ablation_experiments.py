@@ -52,7 +52,7 @@ from typing import List, Optional
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader, Subset, WeightedRandomSampler
 
 # ── Local imports (run as a script from anywhere) ──
 _THIS_DIR = Path(__file__).resolve().parent
@@ -116,6 +116,7 @@ class AblationOrchestrator:
                        self.device, exp.label_mode, exp.class_names, exp.dataset_filter, exp.expression_filter)
         self._log.info("  protocol=%s | epochs=%d | batch=%d | loss=%s",
                        exp.validation_protocol, exp.epochs, exp.batch_size, exp.loss_type)
+        self._log.info("  balanced_sampler=%s", exp.use_balanced_sampler)
         self._log.info("=" * 78)
 
     @staticmethod
@@ -204,9 +205,30 @@ class AblationOrchestrator:
             "Augmented train view and eval view disagree on sample count "
             f"({len(train_ds)} vs {len(dataset)}); index alignment would break."
         )
+        train_subset = Subset(train_ds, train_idx)
+        train_sampler = None
+        if self.exp.use_balanced_sampler and train_idx:
+            class_counts: dict[int, int] = {}
+            for idx in train_idx:
+                label = int(train_ds.samples[idx]["label"])
+                class_counts[label] = class_counts.get(label, 0) + 1
+            sample_weights = [
+                1.0 / class_counts[int(train_ds.samples[idx]["label"])]
+                for idx in train_idx
+            ]
+            train_sampler = WeightedRandomSampler(
+                weights=torch.tensor(sample_weights, dtype=torch.double),
+                num_samples=len(sample_weights),
+                replacement=True,
+            )
+            self._log.info("  Balanced sampler active: class_counts=%s", class_counts)
         train_loader = DataLoader(
-            Subset(train_ds, train_idx), batch_size=self.exp.batch_size,
-            shuffle=True, num_workers=0, drop_last=False,
+            train_subset,
+            batch_size=self.exp.batch_size,
+            shuffle=(train_sampler is None),
+            sampler=train_sampler,
+            num_workers=0,
+            drop_last=False,
         )
         val_loader = DataLoader(
             Subset(dataset, val_idx), batch_size=self.exp.batch_size,
@@ -439,6 +461,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Grouped mode: include 'Others' as a 4th class (uses more clips).",
     )
+    p.add_argument(
+        "--balanced_sampling",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Enable/disable balanced train sampling (default: enabled).",
+    )
     p.add_argument("--val_fraction", type=float, default=None,
                    help="Holdout fraction of subjects for validation (default 0.2).")
     p.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
@@ -490,6 +518,8 @@ def build_experiment_config(args: argparse.Namespace) -> ExperimentConfig:
         exp.label_mode = args.label_mode
     if args.include_others:
         exp.include_others_in_grouped = True
+    if args.balanced_sampling is not None:
+        exp.use_balanced_sampler = bool(args.balanced_sampling)
     exp.emotion_map = build_emotion_map(
         exp.label_mode,
         csv_path=exp.csv_path,
