@@ -3,5 +3,11 @@
   "casme2_media_root": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-RAW",
   "casme2_media_mode": "both",
   "ablation_protocol": "holdout",
-  "ablation_all_configs": false
+  "ablation_all_configs": true,
+  "ablation_full_loso": false,
+  "ablation_loso_folds": "25",
+  "ablation_label_mode": "raw",
+  "ablation_include_others": false,
+  "ablation_val_fraction": "0.3",
+  "ablation_batch_size": "4"
 }

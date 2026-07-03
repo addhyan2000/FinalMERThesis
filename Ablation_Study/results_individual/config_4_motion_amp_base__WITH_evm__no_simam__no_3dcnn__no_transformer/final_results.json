@@ -1,0 +1,120 @@
+{
+  "config_name": "config_4_motion_amp_base__WITH_evm__no_simam__no_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": true,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": false
+  },
+  "class_names": [
+    "disgust",
+    "fear",
+    "happiness",
+    "others",
+    "repression",
+    "sadness",
+    "surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.39090909090909093,
+    "macro_f1": 0.08414872798434443,
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        30,
+        0,
+        0,
+        5
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        10,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        43,
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        0,
+        9,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0
+      ]
+    ],
+    "per_class_f1": [
+      0.0,
+      0.0,
+      0.0,
+      0.589041095890411,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "per_class_precision": [
+      0.0,
+      0.0,
+      0.0,
+      0.43434343434343436,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "per_class_recall": [
+      0.0,
+      0.0,
+      0.0,
+      0.9148936170212766,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "num_samples": 110
+  },
+  "extra": {
+    "phase": "II",
+    "protocol": "holdout",
+    "label_mode": "raw"
+  }
+}
