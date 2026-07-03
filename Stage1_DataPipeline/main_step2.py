@@ -68,6 +68,17 @@ def _parse_args() -> argparse.Namespace:
         help="Expression filter from master CSV. Use 'all' to disable.",
     )
     parser.add_argument(
+        "--use_evm",
+        action="store_true",
+        help="Apply Eulerian Video Magnification before optical flow (for tensors/ EVM path).",
+    )
+    parser.add_argument(
+        "--evm_fps",
+        type=int,
+        default=200,
+        help="FPS passed to EVM temporal filter (CASME-II = 200).",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="Delete Step 2 checkpoint and existing tensors in output_subdir before running.",
@@ -92,6 +103,8 @@ if __name__ == "__main__":
             output_subdir=args.output_subdir,
             dataset_filter=None if args.dataset_filter.lower() == "all" else args.dataset_filter,
             expression_filter=None if args.expression_filter.lower() == "all" else args.expression_filter,
+            use_evm=bool(args.use_evm),
+            evm_fps=int(args.evm_fps),
         )
         code = pipeline_mgr.run()
         if code == 0:

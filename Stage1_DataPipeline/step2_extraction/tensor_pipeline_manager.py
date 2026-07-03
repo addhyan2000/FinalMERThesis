@@ -36,7 +36,12 @@ from utils.logger import get_logger
 _log = get_logger(__name__)
 
 
-def process_video_worker(row: Dict[str, Any], tensors_dir_str: str) -> Dict[str, Any]:
+def process_video_worker(
+    row: Dict[str, Any],
+    tensors_dir_str: str,
+    use_evm: bool = False,
+    evm_fps: int = 200,
+) -> Dict[str, Any]:
     """
     Worker function executed in isolated child processes.
 
@@ -74,6 +79,15 @@ def process_video_worker(row: Dict[str, Any], tensors_dir_str: str) -> Dict[str,
         if frames is None:
             return {"status": "error", "dataset": dataset, "video_id": video_id, 
                     "error": f"Failed to load frames spanning {onset} -> {offset} from {frames_dir}"}
+
+        if use_evm:
+            from evm_magnifier import EulerianMagnifier
+
+            fps = int(row.get("FPS", evm_fps) or evm_fps)
+            video_rgb = np.stack([frames, frames, frames], axis=-1)
+            magnifier = EulerianMagnifier(fps=fps)
+            magnified = magnifier.magnify(video_rgb)
+            frames = magnified.mean(axis=-1).astype(np.float32)
 
         # 2. Extract modalities
         tensor = fse.extract(frames)
@@ -122,11 +136,15 @@ class TensorPipelineManager:
         output_subdir: str = "tensors",
         dataset_filter: str | None = "CASME_II",
         expression_filter: str | None = "micro-expression",
+        use_evm: bool = False,
+        evm_fps: int = 200,
     ) -> None:
         self.max_workers = max_workers
         self.log = get_logger(self.__class__.__name__)
         self.dataset_filter = dataset_filter
         self.expression_filter = expression_filter
+        self.use_evm = use_evm
+        self.evm_fps = evm_fps
 
         self.master_csv_path = OUTPUT_CFG.master_csv_path
 
@@ -168,6 +186,10 @@ class TensorPipelineManager:
     def run(self) -> int:
         """Main entry point. Returns process exit code (0 = success)."""
         self.log.info("Starting Temporal Interpolation & Optimal Flow Extraction.")
+        if self.use_evm:
+            self.log.info("EVM magnification ENABLED for this tensor set (Eulerian bandpass).")
+        else:
+            self.log.info("EVM magnification disabled (raw-frame optical flow).")
         
         if not self.master_csv_path.exists():
             self.log.error("Master CSV not found at %s. Please run Step 1 metadata unification.", 
@@ -241,7 +263,13 @@ class TensorPipelineManager:
                 video_id = row[SCHEMA.video_id]
                 block_key = f"{dataset}_{video_id}"
 
-                _fut = executor.submit(process_video_worker, row, str(self.tensors_dir))
+                _fut = executor.submit(
+                    process_video_worker,
+                    row,
+                    str(self.tensors_dir),
+                    self.use_evm,
+                    self.evm_fps,
+                )
                 future_to_key[_fut] = block_key
 
             # Track progress synchronously inside the master event loop handling exceptions

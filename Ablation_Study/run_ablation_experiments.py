@@ -309,6 +309,12 @@ class AblationOrchestrator:
             train_idx, val_idx = dataset.subject_disjoint_split(
                 self.exp.val_fraction, self.exp.seed,
             )
+            self._log.info(
+                "  Holdout split: train=%d clips | val=%d clips (%.0f%% of subjects held out)",
+                len(train_idx),
+                len(val_idx),
+                self.exp.val_fraction * 100,
+            )
             result, train_state_final, data_flow_final = self._train_eval_split(ablation, dataset, train_idx, val_idx)
 
         self._log.info("  RESULT %s -> acc=%.4f | macroF1=%.4f",
@@ -421,14 +427,20 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Explicit subject ids to hold out (overrides --loso_max_folds).",
     )
-    p.add_argument("--val_fraction", type=float, default=None)
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--only", type=str, default=None, help="Run only this config name.")
     p.add_argument("--phase", type=str, default=None, help="Run only this phase (I/II/III/IV).")
     p.add_argument("--max_samples", type=int, default=None, help="Cap samples for a smoke test.")
     p.add_argument("--output_root", type=Path, default=None)
-    p.add_argument("--label_mode", choices=["grouped", "individual"], default=None,
-                   help="grouped=Positive/Negative/Surprise; individual=raw CASME-II emotions.")
+    p.add_argument("--label_mode", choices=["grouped", "individual", "raw"], default=None,
+                   help="grouped=3-class | raw=Excel Raw_Emotion (no grouping) | individual=fixed 6-class map.")
+    p.add_argument(
+        "--include_others",
+        action="store_true",
+        help="Grouped mode: include 'Others' as a 4th class (uses more clips).",
+    )
+    p.add_argument("--val_fraction", type=float, default=None,
+                   help="Holdout fraction of subjects for validation (default 0.2).")
     p.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     p.add_argument("--configs", nargs="+", default=None,
                    help="Run only these config names (space-separated).")
@@ -476,7 +488,13 @@ def build_experiment_config(args: argparse.Namespace) -> ExperimentConfig:
         exp.seed = args.seed
     if args.label_mode is not None:
         exp.label_mode = args.label_mode
-        exp.emotion_map = build_emotion_map(args.label_mode)
+    if args.include_others:
+        exp.include_others_in_grouped = True
+    exp.emotion_map = build_emotion_map(
+        exp.label_mode,
+        csv_path=exp.csv_path,
+        include_others=exp.include_others_in_grouped,
+    )
     if args.output_root is not None:
         exp.output_root = args.output_root
     if args.device == "cpu":

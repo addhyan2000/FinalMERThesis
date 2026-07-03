@@ -42,15 +42,20 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Literal
+from typing import Dict, List, Literal, Optional
 
 
-LabelMode = Literal["grouped", "individual"]
+LabelMode = Literal["grouped", "individual", "raw"]
 
 GROUPED_EMOTION_MAP: Dict[str, int] = {
     "Negative": 0,
     "Positive": 1,
     "Surprise": 2,
+}
+
+GROUPED_EMOTION_MAP_WITH_OTHERS: Dict[str, int] = {
+    **GROUPED_EMOTION_MAP,
+    "Others": 3,
 }
 
 INDIVIDUAL_EMOTION_MAP: Dict[str, int] = {
@@ -63,11 +68,36 @@ INDIVIDUAL_EMOTION_MAP: Dict[str, int] = {
 }
 
 
-def build_emotion_map(label_mode: LabelMode) -> Dict[str, int]:
-    """Return the class map for grouped (3-class) or individual emotion labels."""
+def build_emotion_map(
+    label_mode: LabelMode,
+    csv_path: Path | None = None,
+    include_others: bool = False,
+) -> Dict[str, int]:
+    """Return the class map for grouped, raw (Excel labels), or individual emotions."""
     if label_mode == "individual":
         return dict(INDIVIDUAL_EMOTION_MAP)
+    if label_mode == "raw":
+        if csv_path is None or not Path(csv_path).is_file():
+            return dict(INDIVIDUAL_EMOTION_MAP)
+        import pandas as pd
+
+        df = pd.read_csv(csv_path, encoding="utf-8-sig")
+        col = "Raw_Emotion"
+        if col not in df.columns:
+            return dict(INDIVIDUAL_EMOTION_MAP)
+        emotions = sorted(
+            {str(x).strip().lower() for x in df[col].dropna() if str(x).strip()}
+        )
+        return {name: idx for idx, name in enumerate(emotions)}
+    if include_others:
+        return dict(GROUPED_EMOTION_MAP_WITH_OTHERS)
     return dict(GROUPED_EMOTION_MAP)
+
+
+# config_1 = minimal flow baseline (no EVM tensors, no deep modules).
+# config_4 = EVM paper-style baseline (magnified motion tensors, simple head).
+EVM_BASELINE_CONFIG = "config_4_motion_amp_base"
+MINIMAL_BASELINE_CONFIG = "config_1_pure_base"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -194,6 +224,7 @@ class ExperimentConfig:
     # listing it here, so num_classes is derived from this map's size.
     # Switch with --label_mode grouped|individual on the CLI.
     label_mode: LabelMode = "grouped"
+    include_others_in_grouped: bool = False
     emotion_map: Dict[str, int] = field(default_factory=lambda: dict(GROUPED_EMOTION_MAP))
 
     # ── Spatiotemporal tensor geometry (kept fixed per the thesis brief) ──────
@@ -228,6 +259,7 @@ class ExperimentConfig:
 
     # ── Optimisation ──────────────────────────────────────────────────────────
     epochs: int = 60
+    # Small default: micro-expression tensors are [3,32,224,224]; transformer configs use ~10GB VRAM at batch 4.
     batch_size: int = 2
     lr: float = 1e-4
     weight_decay: float = 1e-4

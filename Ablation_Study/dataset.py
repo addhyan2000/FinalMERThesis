@@ -160,7 +160,7 @@ class MERAblationDataset(Dataset):
         for _, row in df.iterrows():
             dataset_tag = str(row[COL_DATASET])
             video_id = str(row[COL_VIDEO])
-            if self._label_mode == "individual":
+            if self._label_mode in ("individual", "raw"):
                 if COL_RAW_EMOTION not in row.index:
                     unknown += 1
                     continue
