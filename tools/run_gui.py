@@ -79,6 +79,8 @@ class MerTestGuiApp(tk.Tk):
         self._start_maximized()
         self.after(100, self._poll_log_queue)
         self.after_idle(self._prefer_log_space)
+        # Log CUDA/Torch readiness to the GUI log (safe if torch missing)
+        self.after_idle(self._log_cuda_status)
         self.after_idle(self._warn_if_outdated_gui)
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
@@ -190,6 +192,40 @@ class MerTestGuiApp(tk.Tk):
             "Copy the latest tools/run_gui.py from MER_Client_GPU,\n"
             "restart the GUI, then run Preprocess again.",
         )
+
+    def _log_cuda_status(self) -> None:
+        """Append a short CUDA/Torch readiness line to the GUI log.
+
+        This is intentionally defensive: importing torch may fail in simple
+        environments so we catch ImportError and other exceptions.
+        """
+        try:
+            import os
+            import torch
+
+            cuda_ok = torch.cuda.is_available() if hasattr(torch, "cuda") else False
+            if cuda_ok:
+                try:
+                    idx = torch.cuda.current_device()
+                    name = torch.cuda.get_device_name(idx)
+                    props = torch.cuda.get_device_properties(idx)
+                    total_gb = props.total_memory / 1e9
+                    self._append_log(f"\nGPU detected: {name} (device {idx}, {total_gb:.1f} GB)\n")
+                except Exception:
+                    self._append_log("\nGPU detected (cuda available).\n")
+            else:
+                # If torch is installed but no GPU available, be explicit.
+                self._append_log("\nCUDA available: False (torch present)\n")
+            # Also log CUDA_VISIBLE_DEVICES for quick debugging.
+            try:
+                vis = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+                if vis:
+                    self._append_log(f"CUDA_VISIBLE_DEVICES={vis}\n")
+            except Exception:
+                pass
+        except Exception:
+            # torch not installed or other import error — note in log but continue.
+            self._append_log("\nTorch not available in GUI Python environment.\n")
 
     def _on_close(self) -> None:
         self._save_settings()
