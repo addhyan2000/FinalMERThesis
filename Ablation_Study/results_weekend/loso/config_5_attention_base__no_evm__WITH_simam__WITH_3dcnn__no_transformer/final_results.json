@@ -1,0 +1,81 @@
+{
+  "config_name": "config_5_attention_base__no_evm__WITH_simam__WITH_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": false,
+    "use_simam": true,
+    "use_cnn": true,
+    "use_transformer": false
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.642979797979798,
+    "macro_f1": 0.3792372661451608,
+    "confusion_matrix": [
+      [
+        50,
+        11,
+        31
+      ],
+      [
+        6,
+        15,
+        9
+      ],
+      [
+        2,
+        1,
+        14
+      ]
+    ],
+    "per_class_f1": [
+      0.6666666666666666,
+      0.5263157894736842,
+      0.39436619718309857
+    ],
+    "per_class_precision": [
+      0.8620689655172413,
+      0.5555555555555556,
+      0.25925925925925924
+    ],
+    "per_class_recall": [
+      0.5434782608695652,
+      0.5,
+      0.8235294117647058
+    ],
+    "num_samples": 139
+  },
+  "extra": {
+    "phase": "II",
+    "protocol": "loso",
+    "label_mode": "grouped",
+    "loso_folds_run": 20,
+    "loso_folds_total": 25,
+    "loso_held_out_subjects": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      20,
+      22,
+      23,
+      24,
+      26
+    ],
+    "loso_pilot": true
+  }
+}

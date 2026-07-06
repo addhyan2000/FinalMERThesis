@@ -1,0 +1,81 @@
+{
+  "config_name": "config_4_motion_amp_base__WITH_evm__no_simam__no_3dcnn__no_transformer",
+  "toggles": {
+    "use_evm": true,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": false
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.3048863636363636,
+    "macro_f1": 0.16592157842157843,
+    "confusion_matrix": [
+      [
+        1,
+        55,
+        36
+      ],
+      [
+        0,
+        27,
+        3
+      ],
+      [
+        0,
+        5,
+        12
+      ]
+    ],
+    "per_class_f1": [
+      0.02150537634408602,
+      0.4615384615384615,
+      0.35294117647058826
+    ],
+    "per_class_precision": [
+      1.0,
+      0.3103448275862069,
+      0.23529411764705882
+    ],
+    "per_class_recall": [
+      0.010869565217391304,
+      0.9,
+      0.7058823529411765
+    ],
+    "num_samples": 139
+  },
+  "extra": {
+    "phase": "II",
+    "protocol": "loso",
+    "label_mode": "grouped",
+    "loso_folds_run": 20,
+    "loso_folds_total": 25,
+    "loso_held_out_subjects": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      19,
+      20,
+      22,
+      23,
+      24,
+      26
+    ],
+    "loso_pilot": true
+  }
+}
