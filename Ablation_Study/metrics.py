@@ -55,7 +55,8 @@ class EvalResult:
 
     accuracy: float
     macro_f1: float
-    confusion_matrix: List[List[int]]
+    micro_f1: float = 0.0
+    confusion_matrix: List[List[int]] = field(default_factory=list)
     per_class_f1: List[float] = field(default_factory=list)
     per_class_precision: List[float] = field(default_factory=list)
     per_class_recall: List[float] = field(default_factory=list)
@@ -93,7 +94,7 @@ class MetricsComputer:
         labels = list(range(num_classes))
 
         if len(y_true) == 0:
-            return EvalResult(0.0, 0.0, [[0] * num_classes for _ in range(num_classes)],
+            return EvalResult(0.0, 0.0, 0.0, [[0] * num_classes for _ in range(num_classes)],
                               [0.0] * num_classes, [0.0] * num_classes,
                               [0.0] * num_classes, 0)
 
@@ -101,6 +102,8 @@ class MetricsComputer:
             acc = float(accuracy_score(y_true, y_pred))
             macro_f1 = float(f1_score(y_true, y_pred, labels=labels,
                                       average="macro", zero_division=0))
+            micro_f1 = float(f1_score(y_true, y_pred, labels=labels,
+                                      average="micro", zero_division=0))
             cm = _sk_confusion_matrix(y_true, y_pred, labels=labels)
             prec, rec, f1, _ = precision_recall_fscore_support(
                 y_true, y_pred, labels=labels, average=None, zero_division=0
@@ -111,10 +114,12 @@ class MetricsComputer:
             cm = MetricsComputer._numpy_confusion(y_true, y_pred, num_classes)
             per_p, per_r, per_f = MetricsComputer._numpy_prf(cm)
             macro_f1 = float(np.mean(per_f)) if per_f else 0.0
+            micro_f1 = acc  # single-label multiclass: micro-F1 == accuracy
 
         return EvalResult(
             accuracy=acc,
             macro_f1=macro_f1,
+            micro_f1=micro_f1,
             confusion_matrix=np.asarray(cm, dtype=int).tolist(),
             per_class_f1=[float(v) for v in per_f],
             per_class_precision=[float(v) for v in per_p],
@@ -150,15 +155,17 @@ class MetricsComputer:
         confusion matrices are summed.
         """
         if not results:
-            return EvalResult(0.0, 0.0, [[0] * num_classes for _ in range(num_classes)])
+            return EvalResult(0.0, 0.0, 0.0, [[0] * num_classes for _ in range(num_classes)])
         acc = float(np.mean([r.accuracy for r in results]))
         macro_f1 = float(np.mean([r.macro_f1 for r in results]))
         cm = np.zeros((num_classes, num_classes), dtype=int)
         for r in results:
             cm += np.asarray(r.confusion_matrix, dtype=int)
         per_p, per_r, per_f = MetricsComputer._numpy_prf(cm)
+        total = int(cm.sum())
+        micro_f1 = float(np.trace(cm) / total) if total > 0 else 0.0
         return EvalResult(
-            accuracy=acc, macro_f1=macro_f1,
+            accuracy=acc, macro_f1=macro_f1, micro_f1=micro_f1,
             confusion_matrix=cm.tolist(),
             per_class_f1=[float(v) for v in per_f],
             per_class_precision=[float(v) for v in per_p],
@@ -220,7 +227,7 @@ class ResultWriter:
         self._maybe_save_cm_png(cm, cfg_dir / "confusion_matrix.png", config_name)
 
         # ── 3. Append to master summary ──
-        self._append_summary(config_name, toggles, result)
+        self._append_summary(config_name, toggles, result, extra=extra)
 
         if train_state is not None:
             # ── 4. Training Metrics CSV ──
@@ -260,17 +267,24 @@ class ResultWriter:
 
         return cfg_dir
 
-    def _append_summary(self, config_name: str, toggles: Dict[str, bool], result: EvalResult) -> None:
+    def _append_summary(self, config_name: str, toggles: Dict[str, bool], result: EvalResult,
+                        extra: Optional[Dict] = None) -> None:
         header = ["config_name", "use_evm", "use_simam", "use_cnn", "use_transformer",
-                  "accuracy", "macro_f1", "num_samples"]
+                  "label_mode", "protocol", "epochs",
+                  "accuracy", "macro_f1", "micro_f1", "num_samples"]
+        extra = extra or {}
         row = {
             "config_name": config_name,
             "use_evm": toggles.get("use_evm", ""),
             "use_simam": toggles.get("use_simam", ""),
             "use_cnn": toggles.get("use_cnn", ""),
             "use_transformer": toggles.get("use_transformer", ""),
+            "label_mode": extra.get("label_mode", ""),
+            "protocol": extra.get("protocol", ""),
+            "epochs": extra.get("epochs", ""),
             "accuracy": f"{result.accuracy:.4f}",
             "macro_f1": f"{result.macro_f1:.4f}",
+            "micro_f1": f"{result.micro_f1:.4f}",
             "num_samples": result.num_samples,
         }
         existing_rows: List[dict] = []
@@ -326,5 +340,5 @@ if __name__ == "__main__":
     y_true = [0, 1, 2, 0, 1, 2, 0, 0]
     y_pred = [0, 1, 1, 0, 1, 2, 0, 2]
     res = MetricsComputer.compute(y_true, y_pred, num_classes=3)
-    print(f"acc={res.accuracy:.3f} macro_f1={res.macro_f1:.3f}")
+    print(f"acc={res.accuracy:.3f} macro_f1={res.macro_f1:.3f} micro_f1={res.micro_f1:.3f}")
     print(f"cm={res.confusion_matrix}")

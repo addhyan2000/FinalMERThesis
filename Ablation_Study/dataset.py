@@ -95,6 +95,7 @@ class MERAblationDataset(Dataset):
         label_mode: str = "grouped",
         sequence_length: int = 32,
         augment: bool = False,
+        normalize: bool = True,
         logger: Optional[logging.Logger] = None,
     ) -> None:
         super().__init__()
@@ -108,6 +109,7 @@ class MERAblationDataset(Dataset):
         self._expression_filter = expression_filter
         self._sequence_length = sequence_length
         self._augment = augment
+        self._normalize = normalize
 
         self.samples: List[dict] = []
         self.subject_map: Dict[int, int] = {}
@@ -224,15 +226,25 @@ class MERAblationDataset(Dataset):
             tensor = torch.flip(tensor, dims=[3])   # horizontal flip
             tensor[0] *= -1                         # negate u-flow direction
 
+        if self._normalize:
+            # Per-channel standardisation across T×H×W (common in MER papers).
+            for c in range(tensor.size(0)):
+                ch = tensor[c]
+                tensor[c] = (ch - ch.mean()) / (ch.std() + 1e-6)
+
         return tensor, sample["label"]
 
     # ────────────────────────────────────────────────────────────────────────
     #  Class-imbalance helper
     # ────────────────────────────────────────────────────────────────────────
-    def get_class_weights(self) -> torch.Tensor:
+    def get_class_weights(self, indices: Optional[List[int]] = None) -> torch.Tensor:
         """Inverse-frequency class weights of shape ``[num_classes]``."""
         counts = torch.zeros(self.num_classes, dtype=torch.float32)
-        for s in self.samples:
+        if indices is None:
+            samples = self.samples
+        else:
+            samples = [self.samples[i] for i in indices]
+        for s in samples:
             counts[s["label"]] += 1.0
         total = counts.sum()
         return total / (self.num_classes * counts.clamp(min=1.0))
