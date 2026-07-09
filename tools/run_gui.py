@@ -70,7 +70,7 @@ class MerTestGuiApp(tk.Tk):
         self.include_others_var = tk.BooleanVar(value=False)
         self.val_fraction_var = tk.StringVar(value="0.2")
         self.batch_size_var = tk.StringVar(value="4")
-        self.epochs_var = tk.StringVar(value="5")
+        self.epochs_var = tk.StringVar(value="50")
         self.workers_var = tk.StringVar(value="8")
         self.skip_preprocess_var = tk.BooleanVar(value=False)
 
@@ -115,6 +115,7 @@ class MerTestGuiApp(tk.Tk):
         include_others = False
         val_fraction = "0.2"
         batch_size = "4"
+        epochs = "50"
         if SETTINGS_PATH.exists():
             try:
                 data = json.loads(SETTINGS_PATH.read_text(encoding="utf-8"))
@@ -132,6 +133,7 @@ class MerTestGuiApp(tk.Tk):
                 include_others = bool(data.get("ablation_include_others", include_others))
                 val_fraction = str(data.get("ablation_val_fraction", val_fraction))
                 batch_size = str(data.get("ablation_batch_size", batch_size))
+                epochs = str(data.get("ablation_epochs", epochs))
             except (json.JSONDecodeError, OSError):
                 pass
         self.excel_var.set(excel)
@@ -145,6 +147,7 @@ class MerTestGuiApp(tk.Tk):
         self.include_others_var.set(include_others)
         self.val_fraction_var.set(val_fraction)
         self.batch_size_var.set(batch_size)
+        self.epochs_var.set(epochs)
 
     def _save_settings(self) -> None:
         try:
@@ -162,6 +165,7 @@ class MerTestGuiApp(tk.Tk):
                         "ablation_include_others": self.include_others_var.get(),
                         "ablation_val_fraction": self.val_fraction_var.get().strip(),
                         "ablation_batch_size": self.batch_size_var.get().strip(),
+                        "ablation_epochs": self.epochs_var.get().strip(),
                     },
                     indent=2,
                 ),
