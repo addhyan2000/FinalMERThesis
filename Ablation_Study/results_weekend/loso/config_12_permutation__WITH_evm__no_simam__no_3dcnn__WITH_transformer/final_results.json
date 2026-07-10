@@ -1,0 +1,67 @@
+{
+  "config_name": "config_12_permutation__WITH_evm__no_simam__no_3dcnn__WITH_transformer",
+  "toggles": {
+    "use_evm": true,
+    "use_simam": false,
+    "use_cnn": false,
+    "use_transformer": true
+  },
+  "class_names": [
+    "Negative",
+    "Positive",
+    "Surprise"
+  ],
+  "metrics": {
+    "accuracy": 0.7133333333333334,
+    "macro_f1": 0.32846560846560846,
+    "micro_f1": 0.7083333333333334,
+    "confusion_matrix": [
+      [
+        12,
+        4,
+        3
+      ],
+      [
+        0,
+        5,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "per_class_f1": [
+      0.7741935483870968,
+      0.7142857142857143,
+      0.0
+    ],
+    "per_class_precision": [
+      1.0,
+      0.5555555555555556,
+      0.0
+    ],
+    "per_class_recall": [
+      0.631578947368421,
+      1.0,
+      0.0
+    ],
+    "num_samples": 24
+  },
+  "extra": {
+    "phase": "Other",
+    "protocol": "loso",
+    "label_mode": "grouped",
+    "loso_folds_run": 5,
+    "loso_folds_total": 25,
+    "loso_held_out_subjects": [
+      1,
+      7,
+      13,
+      20,
+      26
+    ],
+    "loso_pilot": true
+  }
+}
