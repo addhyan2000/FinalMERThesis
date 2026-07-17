@@ -1,0 +1,80 @@
+I reviewed your new_gui_loso_holdout branch results carefully. Here is what I found and what I fixed.
+
+WHAT I SAW IN YOUR RESULTS (summary.csv on GitHub)
+-------------------------------------------------
+1) Mixed runs in one summary.csv
+   - config_1 / config_2: grouped 3-class, LOSO pilot (20 folds)
+   - config_8: raw 7-class, holdout, only 5 epochs
+   These are different experiments merged into one file. Compare runs only when
+   label_mode, protocol, and epochs match.
+
+2) Model collapse (main reason F1 is ~0.05–0.25)
+   - config_1 confusion matrix: ALL predictions = Surprise (single-class collapse)
+   - config_2: mostly predicts Positive only
+   - config_8 (5 epochs): predicts fear/sadness only
+   Root cause: balanced train sampler AND class weights in focal loss were both
+   active — double imbalance correction pushes the model to one class.
+
+3) Too few epochs for meaningful training
+   - config_8 training_metrics.csv shows only 5 epochs; val loss still high.
+   - Thesis papers use ~50–60 epochs with LOSO on grouped 3-class labels.
+
+4) EVM tensor gap
+   - Raw tensors: 139 clips | EVM tensors: 110 clips (29 missing)
+   - Re-run Preprocess so EVM and raw sets match.
+
+5) Batch size 2 in gui_settings.json
+   - Very small for 3D-CNN + BatchNorm. Use batch 4 on RTX A2000 12GB.
+
+WHAT I FIXED IN CODE
+--------------------
+1) Stop double imbalance correction
+   - When balanced sampler is ON, class weights in loss are OFF automatically.
+   - Class weights (when used) are computed from the train split only.
+
+2) Training stability (paper-style)
+   - Per-clip channel z-score normalisation at load time (default ON).
+   - 5-epoch linear LR warmup, then cosine decay.
+   - Default epochs raised to 50 (GUI + ExperimentConfig).
+
+3) Clearer metrics in summary.csv
+   - Added micro_f1 column (equals accuracy for single-label multiclass).
+   - Added label_mode, protocol, epochs columns so mixed runs are obvious.
+
+4) Better logging
+   - Label distribution per config.
+   - Warning when EVM vs raw tensor counts differ.
+   - GUI still logs full CLI (verify --label_mode grouped).
+
+WHAT TO RUN (matches thesis / literature_baselines.csv)
+-------------------------------------------------------
+Target: grouped 3-class (Positive / Negative / Surprise), LOSO, config_8, 50+ epochs.
+
+1. Pull latest code.
+2. Preprocess again (Step 1 + Step 2 EVM + Step 2 raw) — required for EVM fix.
+3. Optional: python tools/verify_evm_tensors.py
+4. GUI settings:
+   - Label mode = grouped
+   - Protocol = loso (or weekend holdout→loso button)
+   - Epochs = 50 (or 60)
+   - Batch size = 4
+   - LOSO pilot folds = 5 (quick) or Full LOSO (final thesis number)
+5. Weekend unattended run:
+   python tools/run_holdout_then_loso_gpu.py --epochs 50 --batch_size 4 --label_mode grouped
+
+6. Share:
+   - results_weekend/holdout/summary.csv
+   - results_weekend/loso/summary.csv
+   - Ablation_Study/logs/ablation.log
+
+EXPECTED IMPROVEMENT
+--------------------
+With collapse fixed + 50 epochs + grouped labels, macro F1 should move well above
+0.25. Literature target on grouped LOSO is ~0.65–0.70 accuracy / ~0.68 macro F1.
+Pilot LOSO (5 folds) is for fast iteration; full LOSO is the thesis number.
+
+NOTE ON "MICRO F1"
+------------------
+For single-label classification, micro-F1 equals accuracy. Your ~0.25 figure is
+likely macro-F1 (per-class average), which is the right metric for imbalanced MER.
+Both are now in summary.csv.

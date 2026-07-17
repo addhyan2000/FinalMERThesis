@@ -227,7 +227,11 @@ class ExperimentConfig:
     include_others_in_grouped: bool = False
     emotion_map: Dict[str, int] = field(default_factory=lambda: dict(GROUPED_EMOTION_MAP))
     # Oversample minority classes in train loader (helps per-class metrics).
+    # When enabled, class weights in the loss are disabled automatically to avoid
+    # double-correction (a common cause of single-class prediction collapse).
     use_balanced_sampler: bool = True
+    # Per-channel z-score on each clip at load time (stabilises training).
+    normalize_inputs: bool = True
 
     # ── Spatiotemporal tensor geometry (kept fixed per the thesis brief) ──────
     in_channels: int = 3            # u-flow, v-flow, optical strain
@@ -260,7 +264,8 @@ class ExperimentConfig:
     use_class_weights: bool = True
 
     # ── Optimisation ──────────────────────────────────────────────────────────
-    epochs: int = 60
+    epochs: int = 50
+    warmup_epochs: int = 5
     # Small default: micro-expression tensors are [3,32,224,224]; transformer configs use ~10GB VRAM at batch 4.
     batch_size: int = 2
     lr: float = 1e-4

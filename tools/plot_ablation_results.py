@@ -46,6 +46,8 @@ def load_summary(results_root: Path) -> pd.DataFrame:
     df = pd.read_csv(summary_path)
     df["accuracy"] = pd.to_numeric(df["accuracy"], errors="coerce")
     df["macro_f1"] = pd.to_numeric(df["macro_f1"], errors="coerce")
+    if "micro_f1" in df.columns:
+        df["micro_f1"] = pd.to_numeric(df["micro_f1"], errors="coerce")
     df["short_name"] = df["config_name"].map(_short_name)
     return df
 

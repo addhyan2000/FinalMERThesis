@@ -116,7 +116,8 @@ class AblationOrchestrator:
                        self.device, exp.label_mode, exp.class_names, exp.dataset_filter, exp.expression_filter)
         self._log.info("  protocol=%s | epochs=%d | batch=%d | loss=%s",
                        exp.validation_protocol, exp.epochs, exp.batch_size, exp.loss_type)
-        self._log.info("  balanced_sampler=%s", exp.use_balanced_sampler)
+        self._log.info("  balanced_sampler=%s | normalize_inputs=%s",
+                       exp.use_balanced_sampler, exp.normalize_inputs)
         self._log.info("=" * 78)
 
     @staticmethod
@@ -168,7 +169,8 @@ class AblationOrchestrator:
             expression_filter=self.exp.expression_filter,
             label_mode=self.exp.label_mode,
             sequence_length=self.exp.sequence_length,
-            augment=False,  # base dataset; augmentation toggled per-split below
+            augment=False,
+            normalize=self.exp.normalize_inputs,
             logger=self._log,
         )
         self._dataset_cache[tensor_dir] = ds
@@ -199,6 +201,7 @@ class AblationOrchestrator:
             label_mode=self.exp.label_mode,
             sequence_length=self.exp.sequence_length,
             augment=True,
+            normalize=self.exp.normalize_inputs,
             logger=self._log,
         )
         assert len(train_ds) == len(dataset), (
@@ -251,15 +254,37 @@ class AblationOrchestrator:
         self._log.info("  components=%s | trainable_params=%d",
                        model.active_components(), model.count_parameters()["trainable"])
 
-        class_weights = dataset.get_class_weights().to(self.device)
+        use_loss_weights = self.exp.use_class_weights and not self.exp.use_balanced_sampler
+        if self.exp.use_class_weights and self.exp.use_balanced_sampler:
+            self._log.info(
+                "  Class weights in loss disabled (balanced sampler already active)."
+            )
+        class_weights = (
+            train_ds.get_class_weights(train_idx).to(self.device)
+            if use_loss_weights else None
+        )
         criterion = build_loss(self.exp, class_weights=class_weights)
 
         optimizer = torch.optim.AdamW(
             model.parameters(), lr=self.exp.lr, weight_decay=self.exp.weight_decay,
         )
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, T_max=self.exp.epochs, eta_min=1e-7,
-        )
+        warmup = max(0, min(self.exp.warmup_epochs, self.exp.epochs - 1))
+        if warmup > 0:
+            warmup_sched = torch.optim.lr_scheduler.LinearLR(
+                optimizer, start_factor=0.1, total_iters=warmup,
+            )
+            cosine_sched = torch.optim.lr_scheduler.CosineAnnealingLR(
+                optimizer, T_max=max(1, self.exp.epochs - warmup), eta_min=1e-7,
+            )
+            scheduler = torch.optim.lr_scheduler.SequentialLR(
+                optimizer,
+                schedulers=[warmup_sched, cosine_sched],
+                milestones=[warmup],
+            )
+        else:
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+                optimizer, T_max=self.exp.epochs, eta_min=1e-7,
+            )
 
         trainer = AblationTrainer(
             model=model,
@@ -293,6 +318,9 @@ class AblationOrchestrator:
         if dataset is None or len(dataset) == 0:
             self._log.warning("  Skipping — dataset unavailable/empty for use_evm=%s.", ablation.use_evm)
             return None
+
+        dist = dataset.get_label_distribution()
+        self._log.info("  Label distribution: %s", dist)
 
         if self.exp.validation_protocol == "loso":
             fold_results: List[EvalResult] = []
@@ -339,8 +367,8 @@ class AblationOrchestrator:
             )
             result, train_state_final, data_flow_final = self._train_eval_split(ablation, dataset, train_idx, val_idx)
 
-        self._log.info("  RESULT %s -> acc=%.4f | macroF1=%.4f",
-                       ablation.name, result.accuracy, result.macro_f1)
+        self._log.info("  RESULT %s -> acc=%.4f | macroF1=%.4f | microF1=%.4f",
+                       ablation.name, result.accuracy, result.macro_f1, result.micro_f1)
 
         self.writer.save_config_result(
             config_name=ablation.folder_name,
@@ -357,6 +385,7 @@ class AblationOrchestrator:
                 "phase": ablation.phase,
                 "protocol": self.exp.validation_protocol,
                 "label_mode": self.exp.label_mode,
+                "epochs": self.exp.epochs,
                 **loso_extra,
             },
         )
@@ -381,6 +410,17 @@ class AblationOrchestrator:
         if not matrix:
             self._log.error("No configurations matched the filter (only=%s phase=%s).", only, phase)
             return 1
+
+        evm_ds = self._get_dataset(use_evm=True)
+        raw_ds = self._get_dataset(use_evm=False)
+        if evm_ds is not None and raw_ds is not None:
+            evm_n, raw_n = len(evm_ds), len(raw_ds)
+            if evm_n != raw_n:
+                self._log.warning(
+                    "Tensor count mismatch: EVM=%d clips vs raw=%d clips. "
+                    "Re-run Preprocess (Step 2 EVM + raw) so both sets cover the same clips.",
+                    evm_n, raw_n,
+                )
 
         completed = 0
         for ablation in matrix:
@@ -467,6 +507,14 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Enable/disable balanced train sampling (default: enabled).",
     )
+    p.add_argument(
+        "--normalize_inputs",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="Per-clip channel z-score normalisation at load time (default: enabled).",
+    )
+    p.add_argument("--warmup_epochs", type=int, default=None,
+                   help="Linear LR warmup epochs before cosine decay (default 5).")
     p.add_argument("--val_fraction", type=float, default=None,
                    help="Holdout fraction of subjects for validation (default 0.2).")
     p.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
@@ -520,6 +568,10 @@ def build_experiment_config(args: argparse.Namespace) -> ExperimentConfig:
         exp.include_others_in_grouped = True
     if args.balanced_sampling is not None:
         exp.use_balanced_sampler = bool(args.balanced_sampling)
+    if args.normalize_inputs is not None:
+        exp.normalize_inputs = bool(args.normalize_inputs)
+    if args.warmup_epochs is not None:
+        exp.warmup_epochs = max(0, args.warmup_epochs)
     exp.emotion_map = build_emotion_map(
         exp.label_mode,
         csv_path=exp.csv_path,
