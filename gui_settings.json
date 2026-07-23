@@ -2,12 +2,13 @@
   "casme2_excel": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-coding-20140508.xlsx",
   "casme2_media_root": "/home/pantaddh/Desktop/Addy thesis/DATASETS/CASME_\u2161/CASME2-RAW",
   "casme2_media_mode": "both",
-  "ablation_protocol": "holdout",
+  "ablation_protocol": "loso",
   "ablation_all_configs": true,
-  "ablation_full_loso": false,
-  "ablation_loso_folds": "20",
+  "ablation_full_loso": true,
+  "ablation_loso_folds": "5",
   "ablation_label_mode": "grouped",
   "ablation_include_others": false,
   "ablation_val_fraction": "0.3",
-  "ablation_batch_size": "8"
+  "ablation_batch_size": "8",
+  "ablation_epochs": "50"
 }
