@@ -71,23 +71,38 @@ Bottom line of the diagram: twelve configurations, twenty-five folds each, three
 
 ---
 
-# Slide 3 — The matrix, and the baseline with nothing switched on
+# Slide 3 — The baseline, and the ablation ladder
 
 ![Technology matrix and outcome](report_figures_all_results/figM1_technology_matrix.png)
 
-### config_1 `pure_base` — all four switches OFF
+### config_4 `motion_amp_base` — the baseline: EVM on, no network components
 
 ```
-[B, 3, 32, 224, 224]
+[B, 3, 32, 224, 224]   EVM-magnified motion tensor
   → AdaptiveAvgPool3d → 4×4 grid → 48-d per frame → Linear(48 → 96)
   → mean over the 32 frames          # no parameters, no frame ORDER
   → LayerNorm → Dropout → Linear(96 → 3)
 ```
 
-| ≈ 5.3 k params | 0.39 GPU-h | **acc 0.4615** | **macro F1 0.4337** | 72/156 |
-|---|---|---|---|---|
+| | **config_4** *(baseline)* | config_1 *(EVM off — the control)* |
+|---|:--:|:--:|
+| params · cost | ≈ 5.3 k · 0.40 GPU-h | ≈ 5.3 k · 0.39 GPU-h |
+| accuracy | **0.4808** | 0.4615 |
+| macro F1 | **0.4386** | 0.4337 |
+| correct | **75 / 156** | 72 / 156 |
 
-![config_1 result card](report_figures_all_results/figM_card_C1.png)
+### Every table below is ordered as an ablation ladder, not by config number
+
+| | Group A — from the EVM baseline | | Group B — same ladder, EVM off |
+|---|---|---|---|
+| 1 | `config_4` — **EVM** *(baseline)* | 7 | `config_1` — *(none)* |
+| 2 | `config_13` — + 3D-CNN | 8 | `config_3` — 3D-CNN |
+| 3 | `config_7` — + Transformer | 9 | `config_9` — + Transformer |
+| 4 | **`config_8`** — + SimAM *(proposed)* | 10 | `config_6` — + SimAM |
+| 5 | `config_16` — EVM + 3D-CNN + SimAM | 11 | `config_5` — 3D-CNN + SimAM |
+| 6 | `config_12` — EVM + Transformer | 12 | `config_2` — Transformer |
+
+*Row n of Group A and row n of Group B are a matched pair — identical except EVM.*
 
 ---
 
@@ -95,15 +110,17 @@ Bottom line of the diagram: twelve configurations, twenty-five folds each, three
 
 Four binary switches would give sixteen cells, but SimAM needs a CNN feature map to attend over — with the CNN off there's nothing to rescale. The validity check prunes those four degenerate cells, leaving twelve. All twelve were run.
 
-Now the configuration I want to be precise about, because everything else is measured against it — config_1, all four switches off.
+Now the framing that matters. My baseline is config_4 — EVM on, no network components. EVM isn't one of the things being ablated away; it's part of my Stage 1 data pipeline, so it's the starting point. Everything else in this study is that baseline plus network components.
 
-It is not a null model. It's a deliberately weak but fair floor. The clip still arrives as a motion tensor, from the non-magnified directory. Then spatial detail is thrown away: each frame is average-pooled down to a four-by-four grid, forty-eight numbers, linearly projected to ninety-six dimensions. That linear projection is the only spatial learning in the whole model. Then the 32 frames are simply averaged, which destroys all temporal order completely — the model literally cannot tell you whether the expression was rising or falling. Then a layer-norm, a dropout, and a linear classifier to three outputs.
+The baseline itself is a deliberately weak but fair floor. The clip arrives as a magnified motion tensor, then spatial detail is thrown away: each frame is average-pooled to a four-by-four grid, forty-eight numbers, projected to ninety-six dimensions. That projection is the only spatial learning in the model. Then the 32 frames are averaged, which destroys temporal order completely — it literally cannot tell you whether the expression was rising or falling. About five thousand three hundred parameters. Effectively a linear model over average motion energy.
 
-About five thousand three hundred learnable parameters. Effectively a linear model over average motion energy in a coarse grid.
+config_1 is the same model with EVM switched off. It's not a second baseline — it's the control that isolates EVM, and the half-point gap between them is the cleanest EVM measurement in the study.
 
-Critically, everything else is identical to every other configuration: same fifty epochs, same focal loss, same balanced sampler, same seed 42, same twenty-five LOSO folds, same held-out subjects. So any difference between config_1 and any other cell is caused by the switches and nothing else. That's the entire reason it exists.
+Everything else is held identical: same fifty epochs, same focal loss, same balanced sampler, same seed 42, same folds. So any difference from the baseline is caused by the switches and nothing else.
 
-Two results from it. First, it reaches 0.43 macro F1 where always-guessing-Negative reaches 0.26 — so the motion representation on its own is already doing real work, before any architecture is added. Second, and this is the uncomfortable one: five of the eleven more complex configurations do not beat it, and three of those five cost fifteen times more GPU time to train.
+And the ordering, which governs every table from here: baseline, add the CNN, add the transformer, add SimAM. Group A with EVM, group B without, lined up row for row.
+
+Two results. The baseline reaches 0.44 macro F1 where always-guessing-Negative reaches 0.26 — the magnified motion representation is already doing real work. And the uncomfortable one: four of the eleven other configurations score below it, three of them while costing fifteen times more GPU time.
 
 ---
 
@@ -182,24 +199,26 @@ And the floor to hold in your head for the rest of the talk: always answering "N
 
 ---
 
-# Slide 6 — Master results: all 12 configurations
+# Slide 6 — Master results: the ablation ladder
 
-| Config | EVM | SimAM | 3D-CNN | Transf. | **Acc.** | **Macro F1** | Correct |
-|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| config_1 `pure_base` | – | – | – | – | 0.4615 | **0.4337** | 72 |
-| **config_2** `temporal_only` | – | – | – | ✓ | **0.7436 ✅** | **0.7122 ✅** | 116 |
-| config_3 `spatial_only` | – | – | ✓ | – | 0.4167 | **0.4252** | 65 |
-| config_4 `motion_amp_base` | ✓ | – | – | – | 0.4808 | **0.4386** | 75 |
-| config_5 `attention_base` | – | ✓ | ✓ | – | 0.4231 | **0.4302** | 66 |
-| config_6 `full_stage2_noevm` | – | ✓ | ✓ | ✓ | 0.7308 ✅ | **0.6171** | 114 |
-| config_7 `full_no_attention` | ✓ | – | ✓ | ✓ | 0.7051 ✅ | **0.6625** | 110 |
-| **config_8** `proposed_unified` | ✓ | ✓ | ✓ | ✓ | **0.7500 ✅** | **0.6659** | **117** |
-| config_9 `permutation` | – | – | ✓ | ✓ | 0.7308 ✅ | **0.5830** | 114 |
-| config_12 `permutation` | ✓ | – | – | ✓ | 0.6795 | **0.6581** | 106 |
-| config_13 `permutation` | ✓ | – | ✓ | – | 0.4359 | **0.4480** | 68 |
-| config_16 `permutation` | ✓ | ✓ | ✓ | – | 0.4038 | **0.4192** | 63 |
-| *always-Negative* | | | | | 0.6346 | 0.2588 | 99 |
-| *target* | | | | | **0.70** | **0.68** | — |
+| Configuration | Components | **Acc.** | **Macro F1** | Correct | Δ |
+|---|---|:--:|:--:|:--:|:--:|
+| **GROUP A — from the EVM baseline** | | | | | |
+| `config_4` *(baseline)* | **EVM** | 0.4808 | **0.4386** | 75 | — |
+| `config_13` | + 3D-CNN | 0.4359 | **0.4480** | 68 | +0.009 |
+| `config_7` | + Transformer | 0.7051 ✅ | **0.6625** | 110 | **+0.224** |
+| **`config_8`** *(proposed)* | + SimAM | **0.7500 ✅** | **0.6659** | **117** | **+0.227** |
+| `config_16` | EVM + 3D-CNN + SimAM | 0.4038 | **0.4192** | 63 | −0.019 |
+| `config_12` | EVM + Transformer | 0.6795 | **0.6581** | 106 | **+0.220** |
+| **GROUP B — same ladder, EVM removed** | | | | | |
+| `config_1` | *(none)* | 0.4615 | **0.4337** | 72 | — |
+| `config_3` | 3D-CNN | 0.4167 | **0.4252** | 65 | −0.009 |
+| `config_9` | + Transformer | 0.7308 ✅ | **0.5830** | 114 | **+0.149** |
+| `config_6` | + SimAM | 0.7308 ✅ | **0.6171** | 114 | **+0.183** |
+| `config_5` | 3D-CNN + SimAM | 0.4231 | **0.4302** | 66 | −0.004 |
+| **`config_2`** | Transformer | **0.7436 ✅** | **0.7122 ✅** | 116 | **+0.279** |
+| *always-Negative* | | 0.6346 | 0.2588 | 99 | |
+| *target* | | **0.70** | **0.68** | — | |
 
 ![All confusion matrices](report_figures_all_results/figM3_all_confusion_matrices.png)
 
@@ -207,9 +226,11 @@ And the floor to hold in your head for the rest of the talk: always answering "N
 
 **SPEECH NOTES**
 
-Twelve configurations, all twenty-five folds, all 156 clips, sorted by config number rather than by score so nothing is cherry-picked.
+Twelve configurations, ordered the way the experiment was designed — start at the baseline and add one thing at a time. Group A is the ladder with EVM, group B the same ladder without it, lined up row for row.
 
-Please don't read this table top to bottom. Read one column — the transformer column.
+Watch the climb: add the CNN, nothing — under a hundredth. Add the transformer, plus 0.22. Add SimAM, three thousandths.
+
+Then read one column — the transformer column.
 
 Every single configuration with the transformer switched on lands between 0.58 and 0.71 macro F1. Every single one without it lands between 0.42 and 0.45. There is no overlap and no exception, twelve out of twelve. The gap between the two groups is 0.135 and it is completely empty.
 
@@ -293,22 +314,25 @@ Last point, and it's a correction to my own earlier work. In every previous run,
 
 ![Correct per class](report_figures_all_results/figM6_correct_per_class.png)
 
-| Config | F1 Neg | F1 Pos | F1 Sur | **Macro F1** |
-|---|:--:|:--:|:--:|:--:|
-| config_1 | 0.560 | 0.371 | 0.370 | **0.4337** |
-| **config_2** | 0.807 | **0.651** | **0.679** | **0.7122** |
-| config_3 | 0.361 | 0.523 | 0.392 | **0.4252** |
-| config_4 | 0.564 | 0.505 | **0.246** | **0.4386** |
-| config_5 | 0.384 | 0.523 | 0.384 | **0.4302** |
-| config_6 | 0.833 | 0.429 | 0.590 | **0.6171** |
-| config_7 | 0.785 | 0.548 | 0.655 | **0.6625** |
-| **config_8** | **0.846** | 0.556 | 0.596 | **0.6659** |
-| config_9 | **0.849** | 0.600 | 0.300 | **0.5830** |
-| config_12 | 0.749 | 0.559 | 0.667 | **0.6581** |
-| config_13 | 0.413 | 0.528 | 0.404 | **0.4480** |
-| config_16 | 0.350 | 0.514 | 0.393 | **0.4192** |
+| Configuration | Components | F1 Neg | F1 Pos | F1 Sur | **Macro F1** |
+|---|---|:--:|:--:|:--:|:--:|
+| **GROUP A — from the EVM baseline** | | | | | |
+| `config_4` *(baseline)* | EVM | 0.564 | 0.505 | **0.246** | **0.4386** |
+| `config_13` | + 3D-CNN | 0.413 | 0.528 | 0.404 | **0.4480** |
+| `config_7` | + Transformer | 0.785 | 0.548 | 0.655 | **0.6625** |
+| **`config_8`** *(proposed)* | + SimAM | **0.846** | 0.556 | 0.596 | **0.6659** |
+| `config_16` | EVM + 3D-CNN + SimAM | 0.350 | 0.514 | 0.393 | **0.4192** |
+| `config_12` | EVM + Transformer | 0.749 | 0.559 | 0.667 | **0.6581** |
+| **GROUP B — same ladder, EVM removed** | | | | | |
+| `config_1` | *(none)* | 0.560 | 0.371 | 0.370 | **0.4337** |
+| `config_3` | 3D-CNN | 0.361 | 0.523 | 0.392 | **0.4252** |
+| `config_9` | + Transformer | **0.849** | 0.600 | **0.300** | **0.5830** |
+| `config_6` | + SimAM | 0.833 | 0.429 | 0.590 | **0.6171** |
+| `config_5` | 3D-CNN + SimAM | 0.384 | 0.523 | 0.384 | **0.4302** |
+| **`config_2`** | Transformer | 0.807 | **0.651** | **0.679** | **0.7122** |
 
 > **No configuration abandons a class.** Lowest per-class F1 anywhere: **0.246**.
+> **The Surprise column is where SimAM and EVM show up:** config_9 → 0.300, +SimAM → 0.590, +EVM → 0.655.
 
 ---
 
@@ -328,22 +352,25 @@ A caution about reading precision on its own, which you'll see if you look at th
 
 ![Cost vs performance](report_figures_loso/figL11_cost_vs_performance.png)
 
-| Config | **25-fold sweep** | Peak VRAM | ≈ params | Macro F1 | **F1 / GPU-h** |
-|---|:--:|:--:|:--:|:--:|:--:|
-| config_1 | 0.39 h | 0.16 GB | 5.8 k | 0.4337 | 1.11 |
-| **config_2** | **0.48 h** | **0.17 GB** | 371 k | **0.7122** | **1.48** |
-| config_3 | 5.77 h | 14.40 GB | 18 k | 0.4252 | 0.074 |
-| config_4 | 0.40 h | 0.16 GB | 5.8 k | 0.4386 | 1.10 |
-| config_5 | 6.42 h | 19.56 GB | 18 k | 0.4302 | 0.067 |
-| config_6 | 6.44 h | 19.57 GB | 384 k | 0.6171 | 0.096 |
-| config_7 | 5.78 h | 14.40 GB | 384 k | 0.6625 | 0.115 |
-| **config_8** | **6.46 h** | **19.57 GB** | 384 k | 0.6659 | 0.103 |
-| config_9 | 5.78 h | 14.40 GB | 384 k | 0.5830 | 0.101 |
-| config_12 | 0.47 h | 0.17 GB | 371 k | 0.6581 | 1.40 |
-| config_13 | 5.78 h | 14.40 GB | 18 k | 0.4480 | 0.078 |
-| config_16 | 6.43 h | 19.56 GB | 18 k | 0.4192 | 0.065 |
-| | **≈ 50.6 GPU-h** | | | | |
+| Configuration | Components | **25-fold sweep** | Peak VRAM | ≈ params | Macro F1 | **F1 / GPU-h** |
+|---|---|:--:|:--:|:--:|:--:|:--:|
+| **GROUP A — from the EVM baseline** | | | | | | |
+| `config_4` *(baseline)* | EVM | **0.40 h** | 0.16 GB | 5.8 k | 0.4386 | 1.10 |
+| `config_13` | + 3D-CNN | 5.78 h | 14.40 GB | 18 k | 0.4480 | 0.078 |
+| `config_7` | + Transformer | 5.78 h | 14.40 GB | 384 k | 0.6625 | 0.115 |
+| **`config_8`** *(proposed)* | + SimAM | **6.46 h** | **19.57 GB** | 384 k | 0.6659 | 0.103 |
+| `config_16` | EVM + 3D-CNN + SimAM | 6.43 h | 19.56 GB | 18 k | 0.4192 | 0.065 |
+| `config_12` | EVM + Transformer | 0.47 h | 0.17 GB | 371 k | 0.6581 | 1.40 |
+| **GROUP B — same ladder, EVM removed** | | | | | | |
+| `config_1` | *(none)* | 0.39 h | 0.16 GB | 5.8 k | 0.4337 | 1.11 |
+| `config_3` | 3D-CNN | 5.77 h | 14.40 GB | 18 k | 0.4252 | 0.074 |
+| `config_9` | + Transformer | 5.78 h | 14.40 GB | 384 k | 0.5830 | 0.101 |
+| `config_6` | + SimAM | 6.44 h | 19.57 GB | 384 k | 0.6171 | 0.096 |
+| `config_5` | 3D-CNN + SimAM | 6.42 h | 19.56 GB | 18 k | 0.4302 | 0.067 |
+| **`config_2`** | Transformer | **0.48 h** | **0.17 GB** | 371 k | **0.7122** | **1.48** |
+| | | **≈ 50.6 GPU-h** | | | | |
 
+> **The cost of the ladder is entirely one rung:** baseline → + 3D-CNN costs **14× the time, 90× the memory** for +0.009. + Transformer on top is free by comparison and buys **+0.21**.
 > **8 3D-CNN configs = 48.9 of 50.6 GPU-hours. Mean effect: −0.031.**
 
 ---
@@ -376,9 +403,9 @@ So the bottom line: the eight configurations containing a 3D-CNN burned forty-ni
 | Config | Holdout N=52 | Holdout N=39 | Pilot 5f | Pilot 20f | **Full LOSO 25f** |
 |---|:--:|:--:|:--:|:--:|:--:|
 | **config_8** | 0.1667 | 0.5051 | — | 0.3901 | **0.6659** |
-| **config_2** | 0.1075 | 0.6044 | 0.5487 | 0.4347 | **0.7122** |
-| config_5 | 0.3833 | **0.7427** | 0.5667 | 0.5291 | 0.4302 |
 | config_16 | 0.4563 | **0.7427** | — | 0.5473 | 0.4192 |
+| config_5 | 0.3833 | **0.7427** | 0.5667 | 0.5291 | 0.4302 |
+| **config_2** | 0.1075 | 0.6044 | 0.5487 | 0.4347 | **0.7122** |
 | *winner* | config_16 | **config_5/16** | config_6 | config_16 | **config_2** |
 
 ---

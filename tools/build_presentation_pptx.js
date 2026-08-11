@@ -78,6 +78,32 @@ function hcell(t, o) {
   return Object.assign({ text: t, options: Object.assign({ bold: true, color: WHITE, fill: { color: BERRY }, fontSize: 10, align: "center" }, o || {}) });
 }
 
+// group-separator row spanning the whole table
+function grow(t, span, size) {
+  return [{ text: t, options: { colspan: span, bold: true, color: BERRY, fill: { color: TINT }, fontSize: size || 9.5, align: "left" } }];
+}
+
+// The canonical ablation-ladder order used by every configuration table.
+// Group A row i and Group B row i are a matched pair, identical except EVM.
+const LADDER_A = [
+  ["config_4", "EVM   (baseline)", true],
+  ["config_13", "+ 3D-CNN", false],
+  ["config_7", "+ Transformer", false],
+  ["config_8", "+ SimAM   (proposed)", true],
+  ["config_16", "EVM + 3D-CNN + SimAM", false],
+  ["config_12", "EVM + Transformer", false],
+];
+const LADDER_B = [
+  ["config_1", "(none)", false],
+  ["config_3", "3D-CNN", false],
+  ["config_9", "+ Transformer", false],
+  ["config_6", "+ SimAM", false],
+  ["config_5", "3D-CNN + SimAM", false],
+  ["config_2", "Transformer", true],
+];
+const GA = "GROUP A — built up from the EVM baseline";
+const GB = "GROUP B — the same ladder, EVM removed";
+
 // ═════════════════════════════════════════════════════════════════════════════
 // TITLE
 // ═════════════════════════════════════════════════════════════════════════════
@@ -237,71 +263,91 @@ function hcell(t, o) {
 // 3 — config_1
 // ═════════════════════════════════════════════════════════════════════════════
 {
-  const s = base("The 12 configurations — and the baseline with nothing switched on", "Method");
+  const s = base("The baseline, and how the ablation is built on top of it", "Method");
 
   s.addText(
     [
-      { text: "Four on/off switches would give 2⁴ = 16 combinations. But SimAM works by re-weighting the 3D-CNN's output — with the CNN off there is nothing to re-weight. Those 4 combinations are meaningless, so the code prunes them, leaving ", options: {} },
+      { text: "Four switches give 2⁴ = 16 combinations. But SimAM re-weights the 3D-CNN's output — with the CNN off there is nothing to re-weight, so the code prunes those 4 cells, leaving ", options: {} },
       { text: "12 valid configurations. All 12 were run.", options: { bold: true, color: BERRY } },
     ],
-    { x: M, y: 1.32, w: 12.23, h: 0.62, fontFace: BF, fontSize: 13, color: INK, lineSpacing: 18, margin: 0, valign: "top" }
+    { x: M, y: 1.3, w: 12.23, h: 0.5, fontFace: BF, fontSize: 12, color: INK, lineSpacing: 16, margin: 0, valign: "top" }
   );
 
-  s.addText("config_1  ·  pure_base  ·  all four switches OFF", {
-    x: M, y: 2.05, w: 12.23, h: 0.34, fontFace: HF, fontSize: 17, bold: true, color: BERRY, margin: 0,
+  s.addText("The baseline is config_4 — EVM on, no network components", {
+    x: M, y: 1.84, w: 6.35, h: 0.32, fontFace: HF, fontSize: 15.5, bold: true, color: BERRY, margin: 0,
   });
-
-  card(s, M, 2.5, 6.9, 2.15, "F3F0F1");
   s.addText(
-    "[B, 3, 32, 224, 224]   motion tensor (non-magnified)\n" +
-    "  → each frame averaged to a 4×4 grid  = 48 numbers/frame\n" +
-    "  → Linear(48 → 96)        the ONLY spatial learning\n" +
-    "  → average across the 32 frames   destroys frame ORDER\n" +
+    [
+      { text: "EVM is not one of the things being ablated away — it is the starting point. ", options: { bold: true } },
+      { text: "The baseline is my magnified-motion pipeline feeding the simplest possible classifier. Every other configuration is this baseline plus network components.", options: {} },
+    ],
+    { x: M, y: 2.2, w: 6.35, h: 0.78, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+  );
+
+  card(s, M, 3.0, 6.35, 1.5, "F3F0F1");
+  s.addText(
+    "[B, 3, 32, 224, 224]  EVM-magnified motion tensor\n" +
+    "  → each frame averaged to 4×4 grid = 48 numbers/frame\n" +
+    "  → Linear(48 → 96)      the ONLY spatial learning\n" +
+    "  → average over 32 frames    destroys frame ORDER\n" +
     "  → LayerNorm → Dropout → Linear(96 → 3)",
-    { x: M + 0.22, y: 2.62, w: 6.5, h: 1.9, fontFace: MF, fontSize: 11, color: INK, lineSpacing: 19, margin: 0, valign: "top" }
-  );
-
-  s.addText(
-    [
-      { text: "In plain words: ", options: { bold: true, color: BERRY } },
-      { text: "squash each frame to a blurry 4×4 thumbnail, average all 32 frames into one, and run a linear classifier. It cannot tell whether the expression was rising or falling.", options: {} },
-    ],
-    { x: M, y: 4.75, w: 6.9, h: 0.85, fontFace: BF, fontSize: 13, color: INK, lineSpacing: 18, margin: 0, valign: "top" }
-  );
-
-  s.addText(
-    [
-      { text: "It is not an empty model. ", options: { bold: true, color: BERRY } },
-      { text: "Everything else about it is identical to the other 11 — same 50 epochs, same loss, same balanced sampler, same seed 42, same folds. So any difference between config_1 and any other configuration is caused by the switches and nothing else. That is the entire reason it exists.", options: {} },
-    ],
-    { x: M, y: 5.6, w: 6.9, h: 1.25, fontFace: BF, fontSize: 12.5, color: INK, lineSpacing: 17, margin: 0, valign: "top" }
+    { x: M + 0.2, y: 3.09, w: 5.95, h: 1.32, fontFace: MF, fontSize: 9.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
   );
 
   tbl(s, [
-    [hcell("config_1 measured", { align: "left" }), hcell("", { align: "right" })],
-    [{ text: "Learnable parameters" }, { text: "≈ 5 300   (vs 384 000)", options: { align: "right" } }],
-    [{ text: "Cost, all 25 folds" }, { text: "0.39 GPU-h — cheapest", options: { align: "right" } }],
-    [{ text: "Pooled accuracy" }, { text: "0.4615", options: { align: "right", bold: true } }],
-    [{ text: "Pooled macro F1" }, { text: "0.4337", options: { align: "right", bold: true, color: BERRY } }],
-    [{ text: "Correct" }, { text: "72 / 156", options: { align: "right" } }],
-  ], { x: 7.75, y: 2.5, w: 5.03, colW: [2.63, 2.4], fontSize: 12, rowH: 0.345 });
+    [hcell("", { align: "left" }), hcell("config_4  (baseline)"), hcell("config_1  (EVM off)")],
+    [{ text: "Pooled accuracy" }, { text: "0.4808", options: { align: "center", bold: true } }, { text: "0.4615", options: { align: "center" } }],
+    [{ text: "Pooled macro F1" }, { text: "0.4386", options: { align: "center", bold: true, color: BERRY } }, { text: "0.4337", options: { align: "center" } }],
+    [{ text: "Correct  ·  cost" }, { text: "75 / 156  ·  0.40 h", options: { align: "center" } }, { text: "72 / 156  ·  0.39 h", options: { align: "center" } }],
+  ], { x: M, y: 4.6, w: 6.35, colW: [1.95, 2.2, 2.2], fontSize: 10.5, rowH: 0.32 });
 
-  card(s, 7.75, 4.75, 5.03, 2.1, TINT_T);
   s.addText(
     [
-      { text: "Two things it proves", options: { bold: true, color: TEAL, breakLine: true } },
-      { text: "1.  It scores 0.4337 macro F1 where always guessing “Negative” scores 0.2588 — the motion representation alone already carries real signal, before any architecture is added.", options: { breakLine: true } },
-      { text: "2.  It is the floor — and 5 of the other 11 configurations fail to clear it, three of them while costing 15× more to train.", options: {} },
+      { text: "config_1 is not a second baseline — it is the control that isolates EVM. ", options: { bold: true, color: BERRY } },
+      { text: "The two are architecturally identical; only the tensor folder differs. The gap between them, +0.0049, is the purest EVM measurement in the study. And 4 of the other 11 configurations score below the baseline — three of them while costing 15× more to train.", options: {} },
     ],
-    { x: 8.0, y: 4.88, w: 4.53, h: 1.85, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 16, margin: 0, valign: "top" }
+    { x: M, y: 5.98, w: 6.35, h: 0.9, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 14.5, margin: 0, valign: "top" }
+  );
+
+  s.addText("How every results table in this deck is ordered — not by config number", {
+    x: 7.3, y: 1.84, w: 5.48, h: 0.3, fontFace: HF, fontSize: 13.5, bold: true, color: BERRY, margin: 0,
+  });
+
+  const ladderRows = [[hcell("#", { align: "center" }), hcell("Config", { align: "left" }), hcell("Components", { align: "left" })]];
+  ladderRows.push(grow(GA, 3, 9));
+  LADDER_A.forEach((r, i) => {
+    ladderRows.push([
+      { text: String(i + 1), options: { align: "center", color: MUTED } },
+      { text: r[0], options: { bold: r[2], color: r[2] ? BERRY : INK } },
+      { text: r[1], options: { bold: r[2] } },
+    ]);
+  });
+  ladderRows.push(grow(GB, 3, 9));
+  LADDER_B.forEach((r, i) => {
+    ladderRows.push([
+      { text: String(i + 7), options: { align: "center", color: MUTED } },
+      { text: r[0], options: { bold: r[2], color: r[2] ? BERRY : INK } },
+      { text: r[1], options: { bold: r[2] } },
+    ]);
+  });
+  tbl(s, ladderRows, { x: 7.3, y: 2.2, w: 5.48, colW: [0.45, 1.33, 3.7], fontSize: 9.5, rowH: 0.275 });
+
+  card(s, 7.3, 6.16, 5.48, 0.72, TINT_T);
+  s.addText(
+    [
+      { text: "Row n of Group A and row n of Group B are a matched pair", options: { bold: true, color: TEAL } },
+      { text: " — identical in everything except EVM. That alignment is what makes the EVM effect readable at a glance.", options: {} },
+    ],
+    { x: 7.52, y: 6.24, w: 5.04, h: 0.56, fontFace: BF, fontSize: 10.5, color: INK, lineSpacing: 14, margin: 0, valign: "top" }
   );
 
   s.addNotes(
     "Sixteen combinations on paper, but four of them are nonsense — SimAM needs the CNN to exist. So: twelve configurations, all twelve run.\n\n" +
-    "Now the one I want you to really understand: config_1, everything switched off.\n\n" +
-    "It's not nothing. It shrinks each frame to a blurry four-by-four thumbnail, averages all 32 frames together, and runs a simple linear classifier. About five thousand numbers to learn, versus nearly four hundred thousand for the full model. Because it averages the frames, it literally cannot tell whether a smile was starting or ending.\n\n" +
-    "Why does it matter? Everything else is trained identically. So if a fancy configuration beats config_1, that improvement came from the switches and nothing else.\n\n" +
-    "And here's the punchline: five of my eleven fancier configurations don't beat it. Three of those cost fifteen times more to train."
+    "Now the important framing. My baseline is config_4 — EVM switched on, and nothing else. EVM isn't one of the things I'm testing away; it's part of my data pipeline, so it's the starting point. Everything else in this study is that baseline plus network components.\n\n" +
+    "The baseline model itself is deliberately simple: it shrinks each frame to a blurry four-by-four thumbnail, averages all 32 frames together, and runs a linear classifier. About five thousand numbers to learn, versus nearly four hundred thousand for the full model. Because it averages the frames, it literally cannot tell whether a smile was starting or ending.\n\n" +
+    "config_1 is the same model with EVM switched off. It's not a second baseline — it's the control that isolates EVM, and the gap between the two, about half a point, is the cleanest EVM measurement I have.\n\n" +
+    "Last thing, and it applies to every table from here on: I order them as a ladder — baseline, then add the CNN, then add the transformer, then add SimAM. Not by config number. Group A is the ladder with EVM, group B is the same ladder without it, lined up row for row.\n\n" +
+    "And the punchline: four of my eleven other configurations score below the baseline. Three of those cost fifteen times more to train."
   );
 }
 
@@ -427,86 +473,91 @@ function hcell(t, o) {
 // 6 — All 12 results
 // ═════════════════════════════════════════════════════════════════════════════
 {
-  const s = base("All 12 results", "Results");
-  s.addText("25/25 folds · N = 156 · 50 epochs · seed 42 · sorted by config number, not by score", {
+  const s = base("All 12 results — the ablation ladder", "Results");
+  s.addText("25/25 folds · N = 156 · 50 epochs · seed 42 · ordered as an ablation ladder from the EVM baseline, not by config number", {
     x: M, y: 1.28, w: 12.23, h: 0.28, fontFace: BF, fontSize: 12, italic: true, color: MUTED, margin: 0,
   });
 
-  const R = [
-    ["config_1  pure_base", "–", "–", "–", "–", "0.4615", "0.4337", "72"],
-    ["config_2  temporal_only", "–", "–", "–", "✓", "0.7436 ✓", "0.7122 ✓", "116"],
-    ["config_3  spatial_only", "–", "–", "✓", "–", "0.4167", "0.4252", "65"],
-    ["config_4  motion_amp_base", "✓", "–", "–", "–", "0.4808", "0.4386", "75"],
-    ["config_5  attention_base", "–", "✓", "✓", "–", "0.4231", "0.4302", "66"],
-    ["config_6  full_stage2_noevm", "–", "✓", "✓", "✓", "0.7308 ✓", "0.6171", "114"],
-    ["config_7  full_no_attention", "✓", "–", "✓", "✓", "0.7051 ✓", "0.6625", "110"],
-    ["config_8  proposed_unified", "✓", "✓", "✓", "✓", "0.7500 ✓", "0.6659", "117"],
-    ["config_9  permutation", "–", "–", "✓", "✓", "0.7308 ✓", "0.5830", "114"],
-    ["config_12  permutation", "✓", "–", "–", "✓", "0.6795", "0.6581", "106"],
-    ["config_13  permutation", "✓", "–", "✓", "–", "0.4359", "0.4480", "68"],
-    ["config_16  permutation", "✓", "✓", "✓", "–", "0.4038", "0.4192", "63"],
+  const A_RES = [
+    ["0.4808", "0.4386", "75", "—"],
+    ["0.4359", "0.4480", "68", "+0.009"],
+    ["0.7051 ✓", "0.6625", "110", "+0.224"],
+    ["0.7500 ✓", "0.6659", "117", "+0.227"],
+    ["0.4038", "0.4192", "63", "−0.019"],
+    ["0.6795", "0.6581", "106", "+0.220"],
   ];
+  const B_RES = [
+    ["0.4615", "0.4337", "72", "—"],
+    ["0.4167", "0.4252", "65", "−0.009"],
+    ["0.7308 ✓", "0.5830", "114", "+0.149"],
+    ["0.7308 ✓", "0.6171", "114", "+0.183"],
+    ["0.4231", "0.4302", "66", "−0.004"],
+    ["0.7436 ✓", "0.7122 ✓", "116", "+0.279"],
+  ];
+  const bigJump = (d) => d.startsWith("+0.1") || d.startsWith("+0.2");
+
   const rows = [[
-    hcell("Configuration", { align: "left" }), hcell("EVM"), hcell("SimAM"), hcell("3D-CNN"),
-    hcell("Transf."), hcell("Accuracy"), hcell("Macro F1"), hcell("Correct"),
+    hcell("Configuration", { align: "left" }), hcell("Components", { align: "left" }),
+    hcell("Accuracy"), hcell("Macro F1"), hcell("Correct"), hcell("Δ vs. baseline"),
   ]];
-  R.forEach((r) => {
-    const star = r[0].includes("config_2 ") || r[0].includes("config_8 ");
-    const hasT = r[4] === "✓";
-    rows.push([
-      { text: r[0], options: { bold: star, color: star ? BERRY : INK } },
-      { text: r[1], options: { align: "center" } },
-      { text: r[2], options: { align: "center" } },
-      { text: r[3], options: { align: "center" } },
-      { text: r[4], options: { align: "center", bold: hasT, color: hasT ? TEAL : MUTED } },
-      { text: r[5], options: { align: "center", bold: star } },
-      { text: r[6], options: { align: "center", bold: true, color: hasT ? TEAL : MUTED } },
-      { text: r[7], options: { align: "center" } },
-    ]);
-  });
+  const addLadder = (label, ladder, res) => {
+    rows.push(grow(label, 6, 9.5));
+    ladder.forEach((r, i) => {
+      const v = res[i];
+      rows.push([
+        { text: r[0], options: { bold: r[2], color: r[2] ? BERRY : INK } },
+        { text: r[1], options: { bold: r[2] } },
+        { text: v[0], options: { align: "center", bold: r[2] } },
+        { text: v[1], options: { align: "center", bold: true, color: bigJump(v[3]) ? TEAL : INK } },
+        { text: v[2], options: { align: "center" } },
+        { text: v[3], options: { align: "center", bold: bigJump(v[3]), color: bigJump(v[3]) ? TEAL : MUTED } },
+      ]);
+    });
+  };
+  addLadder(GA, LADDER_A, A_RES);
+  addLadder(GB, LADDER_B, B_RES);
   rows.push([
-    { text: "always-Negative reference", options: { italic: true, color: MUTED } },
-    { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} },
+    { text: "always-Negative reference", options: { italic: true, color: MUTED } }, { text: "", options: {} },
     { text: "0.6346", options: { align: "center", italic: true, color: MUTED } },
     { text: "0.2588", options: { align: "center", italic: true, color: MUTED } },
-    { text: "99", options: { align: "center", italic: true, color: MUTED } },
+    { text: "99", options: { align: "center", italic: true, color: MUTED } }, { text: "", options: {} },
   ]);
   rows.push([
-    { text: "dissertation target", options: { italic: true, bold: true, color: BERRY } },
-    { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} },
+    { text: "dissertation target", options: { italic: true, bold: true, color: BERRY } }, { text: "", options: {} },
     { text: "0.70", options: { align: "center", bold: true, color: BERRY } },
     { text: "0.68", options: { align: "center", bold: true, color: BERRY } },
-    { text: "—", options: { align: "center", color: MUTED } },
+    { text: "—", options: { align: "center", color: MUTED } }, { text: "", options: {} },
   ]);
 
-  tbl(s, rows, { x: M, y: 1.62, w: 8.85, colW: [2.55, 0.72, 0.82, 0.9, 0.86, 1.1, 1.1, 0.8], fontSize: 10, rowH: 0.315 });
+  tbl(s, rows, { x: M, y: 1.62, w: 8.85, colW: [1.6, 3.1, 1.15, 1.15, 0.8, 1.05], fontSize: 9.5, rowH: 0.29 });
 
-  card(s, 9.62, 1.62, 3.16, 2.65, TINT_T);
+  card(s, 9.62, 1.62, 3.16, 2.6, TINT_T);
   s.addText(
     [
-      { text: "Read the Transformer column, not the rows.", options: { bold: true, color: TEAL, breakLine: true } },
-      { text: "\nEvery configuration with the Transformer: 0.583 – 0.712.\n\nEvery one without it: 0.419 – 0.448.\n\nThe two groups do not overlap. The gap is 0.135 and completely empty — 12 of 12, no exceptions.", options: {} },
+      { text: "Read the ladder, not the rows.", options: { bold: true, color: TEAL, breakLine: true } },
+      { text: "\nAdding the 3D-CNN to either baseline moves macro F1 by less than 0.01.\n\nAdding the Transformer on top of it moves it by +0.21 to +0.22.\n\nAdding SimAM last moves it by +0.003 and +0.034.", options: {} },
     ],
-    { x: 9.87, y: 1.75, w: 2.66, h: 2.4, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+    { x: 9.87, y: 1.74, w: 2.66, h: 2.36, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
-  card(s, 9.62, 4.42, 3.16, 1.15, TINT);
+  card(s, 9.62, 4.37, 3.16, 1.2, TINT);
   s.addText(
-    [{ text: "config_8", options: { bold: true, color: BERRY } }, { text: " — all four components — takes the highest accuracy in the study: ", options: {} }, { text: "0.7500", options: { bold: true } }],
-    { x: 9.87, y: 4.53, w: 2.66, h: 0.95, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+    [{ text: "Every configuration with the Transformer scores 0.583 – 0.712. Every one without it scores 0.419 – 0.448. ", options: {} }, { text: "No overlap, 12 of 12.", options: { bold: true, color: BERRY } }],
+    { x: 9.87, y: 4.47, w: 2.66, h: 1.0, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
-  card(s, 9.62, 5.72, 3.16, 1.15, TINT);
+  card(s, 9.62, 5.67, 3.16, 1.2, TINT);
   s.addText(
-    [{ text: "config_2", options: { bold: true, color: BERRY } }, { text: " — Transformer only — takes the highest macro F1 and is the ", options: {} }, { text: "only configuration to clear both targets.", options: { bold: true } }],
-    { x: 9.87, y: 5.83, w: 2.66, h: 0.95, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+    [{ text: "config_8", options: { bold: true, color: BERRY } }, { text: " tops accuracy at 0.7500. ", options: {} }, { text: "config_2", options: { bold: true, color: BERRY } }, { text: " tops macro F1 and is the only configuration to clear both targets.", options: {} }],
+    { x: 9.87, y: 5.77, w: 2.66, h: 1.0, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
   s.addNotes(
-    "Twelve configurations, sorted by number so nothing's cherry-picked.\n\n" +
-    "Don't read this row by row. Read one column — the transformer column.\n\n" +
-    "Every configuration with the transformer on scores between 0.58 and 0.71. Every one without it scores between 0.42 and 0.45. There's no overlap at all, twelve out of twelve. That's the single clearest signal in my entire thesis.\n\n" +
-    "Two rows to notice. My proposed model with all four components gets the best accuracy — 75 %, 117 clips right. But the transformer on its own, with the other three switched off, gets the best macro F1 and is the only configuration to hit both of my targets.\n\n" +
-    "That's awkward for a thesis that proposes four components. So I'm going to deal with it on the very next slide rather than hide it."
+    "This table is ordered the way the experiment was designed — start at the baseline and add one thing at a time.\n\n" +
+    "Group A is the ladder with EVM. Baseline, then add the CNN, then add the transformer, then add SimAM — that top-to-bottom walk is my proposed model being assembled. The last two rows are the side branches: leave the transformer out, or leave the CNN out.\n\n" +
+    "Group B is the exact same ladder with EVM switched off, lined up row for row, so any pair of rows tells you what EVM did.\n\n" +
+    "Now watch what happens as you climb. Add the CNN — nothing, less than a hundredth. Add the transformer — plus 0.22. Add SimAM — three thousandths.\n\n" +
+    "And across both groups: everything with a transformer scores between 0.58 and 0.71. Everything without one scores between 0.42 and 0.45. No overlap, twelve out of twelve.\n\n" +
+    "Two rows to notice. My full model gets the best accuracy — 75 %, 117 clips. But the transformer on its own, at the bottom, gets the best macro F1 and is the only configuration to hit both targets. I'll deal with that head-on next."
   );
 }
 
@@ -617,53 +668,68 @@ function hcell(t, o) {
 {
   const s = base("Per-class behaviour: nobody abandons a class", "Results");
 
-  const P = [
-    ["config_1", "0.560", "0.371", "0.370", "0.4337", false],
-    ["config_2", "0.807", "0.651", "0.679", "0.7122", true],
-    ["config_3", "0.361", "0.523", "0.392", "0.4252", false],
-    ["config_4", "0.564", "0.505", "0.246", "0.4386", false],
-    ["config_5", "0.384", "0.523", "0.384", "0.4302", false],
-    ["config_6", "0.833", "0.429", "0.590", "0.6171", false],
-    ["config_7", "0.785", "0.548", "0.655", "0.6625", false],
-    ["config_8", "0.846", "0.556", "0.596", "0.6659", true],
-    ["config_9", "0.849", "0.600", "0.300", "0.5830", false],
-    ["config_12", "0.749", "0.559", "0.667", "0.6581", false],
-    ["config_13", "0.413", "0.528", "0.404", "0.4480", false],
-    ["config_16", "0.350", "0.514", "0.393", "0.4192", false],
+  const A_PC = [
+    ["0.564", "0.505", "0.246", "0.4386"],
+    ["0.413", "0.528", "0.404", "0.4480"],
+    ["0.785", "0.548", "0.655", "0.6625"],
+    ["0.846", "0.556", "0.596", "0.6659"],
+    ["0.350", "0.514", "0.393", "0.4192"],
+    ["0.749", "0.559", "0.667", "0.6581"],
   ];
-  const rows = [[hcell("Config", { align: "left" }), hcell("F1 Negative"), hcell("F1 Positive"), hcell("F1 Surprise"), hcell("Macro F1")]];
-  P.forEach((r) => {
-    rows.push([
-      { text: r[0], options: { bold: r[5], color: r[5] ? BERRY : INK } },
-      { text: r[1], options: { align: "center" } },
-      { text: r[2], options: { align: "center" } },
-      { text: r[3], options: { align: "center", bold: r[3] === "0.246" || r[3] === "0.300", color: (r[3] === "0.246" || r[3] === "0.300") ? "B3261E" : INK } },
-      { text: r[4], options: { align: "center", bold: true, color: r[5] ? BERRY : INK } },
-    ]);
-  });
-  tbl(s, rows, { x: M, y: 1.4, w: 7.5, colW: [1.9, 1.4, 1.4, 1.4, 1.4], fontSize: 10.5, rowH: 0.335 });
+  const B_PC = [
+    ["0.560", "0.371", "0.370", "0.4337"],
+    ["0.361", "0.523", "0.392", "0.4252"],
+    ["0.849", "0.600", "0.300", "0.5830"],
+    ["0.833", "0.429", "0.590", "0.6171"],
+    ["0.384", "0.523", "0.384", "0.4302"],
+    ["0.807", "0.651", "0.679", "0.7122"],
+  ];
+  const rows = [[hcell("Config", { align: "left" }), hcell("Components", { align: "left" }), hcell("F1 Neg"), hcell("F1 Pos"), hcell("F1 Sur"), hcell("Macro F1")]];
+  const addPC = (label, ladder, res) => {
+    rows.push(grow(label, 6, 9));
+    ladder.forEach((r, i) => {
+      const v = res[i];
+      const low = v[2] === "0.246" || v[2] === "0.300";
+      rows.push([
+        { text: r[0], options: { bold: r[2], color: r[2] ? BERRY : INK } },
+        { text: r[1], options: { bold: r[2] } },
+        { text: v[0], options: { align: "center" } },
+        { text: v[1], options: { align: "center" } },
+        { text: v[2], options: { align: "center", bold: low, color: low ? "B3261E" : INK } },
+        { text: v[3], options: { align: "center", bold: true, color: r[2] ? BERRY : INK } },
+      ]);
+    });
+  };
+  addPC(GA, LADDER_A, A_PC);
+  addPC(GB, LADDER_B, B_PC);
+  tbl(s, rows, { x: M, y: 1.4, w: 8.3, colW: [1.35, 2.35, 1.15, 1.15, 1.15, 1.15], fontSize: 9.5, rowH: 0.3 });
 
-  card(s, 8.35, 1.4, 4.43, 2.0, TINT_T);
+  card(s, 9.15, 1.4, 3.63, 1.85, TINT_T);
   s.addText(
     [
       { text: "No configuration abandons a class.", options: { bold: true, color: TEAL, breakLine: true } },
-      { text: "\nThe lowest per-class F1 anywhere in the whole matrix is 0.246.\n\nIn my earlier holdout runs the proposed model scored 0.000 on Positive — it never predicted the class once. That failure mode is completely gone.", options: {} },
+      { text: "\nThe lowest per-class F1 anywhere is 0.246. In my earlier holdout runs the proposed model scored 0.000 on Positive — it never predicted the class once. That failure mode is gone.", options: {} },
     ],
-    { x: 8.6, y: 1.55, w: 3.93, h: 1.75, fontFace: BF, fontSize: 12, color: INK, lineSpacing: 16, margin: 0, valign: "top" }
+    { x: 9.4, y: 1.52, w: 3.13, h: 1.6, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
-  card(s, 8.35, 3.55, 4.43, 1.9, TINT);
+  card(s, 9.15, 3.4, 3.63, 2.0, TINT);
   s.addText(
     [
-      { text: "A warning about reading precision alone.", options: { bold: true, color: BERRY, breakLine: true } },
-      { text: "\nconfig_16 achieves perfect Negative precision — 1.000. It manages that by only ever risking the Negative label 21 times out of 156. Its recall is 0.212.", options: {} },
+      { text: "The Surprise column is where the two “useless” components show up.", options: { bold: true, color: BERRY, breakLine: true } },
+      { text: "\nconfig_9 catches only 6 of 25 Surprise clips (F1 0.300). Add SimAM → 0.590. Add EVM instead → 0.655. Both fix the same specific failure.", options: {} },
     ],
-    { x: 8.6, y: 3.7, w: 3.93, h: 1.65, fontFace: BF, fontSize: 12, color: INK, lineSpacing: 16, margin: 0, valign: "top" }
+    { x: 9.4, y: 3.52, w: 3.13, h: 1.76, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
-  s.addText("Precision without recall is not a triumph — it is a model refusing to answer, and that is exactly what macro F1 exists to punish.", {
-    x: 8.35, y: 5.6, w: 4.43, h: 0.9, fontFace: BF, fontSize: 12, italic: true, color: BERRY, lineSpacing: 16, margin: 0, valign: "top",
-  });
+  card(s, 9.15, 5.55, 3.63, 1.32, "F3F0F1");
+  s.addText(
+    [
+      { text: "Careful with precision alone. ", options: { bold: true, color: BERRY } },
+      { text: "config_16 has perfect Negative precision (1.000) only because it risks that label 21 times out of 156. Recall 0.212.", options: {} },
+    ],
+    { x: 9.4, y: 5.66, w: 3.13, h: 1.1, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
+  );
 
   s.addNotes(
     "This table shows how each model handles each emotion separately.\n\n" +
@@ -679,55 +745,62 @@ function hcell(t, o) {
 {
   const s = base("What it all cost", "Results");
 
-  const C = [
-    ["config_1", "0.39 h", "0.16 GB", "5.8 k", "0.4337", "1.11"],
-    ["config_2", "0.48 h", "0.17 GB", "371 k", "0.7122", "1.48"],
-    ["config_3", "5.77 h", "14.40 GB", "18 k", "0.4252", "0.074"],
-    ["config_4", "0.40 h", "0.16 GB", "5.8 k", "0.4386", "1.10"],
-    ["config_5", "6.42 h", "19.56 GB", "18 k", "0.4302", "0.067"],
-    ["config_6", "6.44 h", "19.57 GB", "384 k", "0.6171", "0.096"],
-    ["config_7", "5.78 h", "14.40 GB", "384 k", "0.6625", "0.115"],
-    ["config_8", "6.46 h", "19.57 GB", "384 k", "0.6659", "0.103"],
-    ["config_9", "5.78 h", "14.40 GB", "384 k", "0.5830", "0.101"],
-    ["config_12", "0.47 h", "0.17 GB", "371 k", "0.6581", "1.40"],
-    ["config_13", "5.78 h", "14.40 GB", "18 k", "0.4480", "0.078"],
-    ["config_16", "6.43 h", "19.56 GB", "18 k", "0.4192", "0.065"],
+  const A_C = [
+    ["0.40 h", "0.16 GB", "5.8 k", "0.4386", "1.10"],
+    ["5.78 h", "14.40 GB", "18 k", "0.4480", "0.078"],
+    ["5.78 h", "14.40 GB", "384 k", "0.6625", "0.115"],
+    ["6.46 h", "19.57 GB", "384 k", "0.6659", "0.103"],
+    ["6.43 h", "19.56 GB", "18 k", "0.4192", "0.065"],
+    ["0.47 h", "0.17 GB", "371 k", "0.6581", "1.40"],
   ];
-  const rows = [[hcell("Config", { align: "left" }), hcell("25-fold sweep"), hcell("Peak VRAM"), hcell("≈ params"), hcell("Macro F1"), hcell("Macro F1 / GPU-h")]];
-  C.forEach((r) => {
-    const star = r[0] === "config_2" || r[0] === "config_8";
-    rows.push([
-      { text: r[0], options: { bold: star, color: star ? BERRY : INK } },
-      { text: r[1], options: { align: "center", bold: star } },
-      { text: r[2], options: { align: "center", bold: star } },
-      { text: r[3], options: { align: "center" } },
-      { text: r[4], options: { align: "center", bold: true } },
-      { text: r[5], options: { align: "center", bold: star, color: star ? TEAL : INK } },
-    ]);
-  });
+  const B_C = [
+    ["0.39 h", "0.16 GB", "5.8 k", "0.4337", "1.11"],
+    ["5.77 h", "14.40 GB", "18 k", "0.4252", "0.074"],
+    ["5.78 h", "14.40 GB", "384 k", "0.5830", "0.101"],
+    ["6.44 h", "19.57 GB", "384 k", "0.6171", "0.096"],
+    ["6.42 h", "19.56 GB", "18 k", "0.4302", "0.067"],
+    ["0.48 h", "0.17 GB", "371 k", "0.7122", "1.48"],
+  ];
+  const rows = [[hcell("Config", { align: "left" }), hcell("Components", { align: "left" }), hcell("Sweep"), hcell("Peak VRAM"), hcell("≈ params"), hcell("Macro F1"), hcell("F1 / GPU-h")]];
+  const addC = (label, ladder, res) => {
+    rows.push(grow(label, 7, 9));
+    ladder.forEach((r, i) => {
+      const v = res[i];
+      rows.push([
+        { text: r[0], options: { bold: r[2], color: r[2] ? BERRY : INK } },
+        { text: r[1], options: { bold: r[2] } },
+        { text: v[0], options: { align: "center", bold: r[2] } },
+        { text: v[1], options: { align: "center", bold: r[2] } },
+        { text: v[2], options: { align: "center" } },
+        { text: v[3], options: { align: "center", bold: true } },
+        { text: v[4], options: { align: "center", bold: r[2], color: r[2] ? TEAL : INK } },
+      ]);
+    });
+  };
+  addC(GA, LADDER_A, A_C);
+  addC(GB, LADDER_B, B_C);
   rows.push([
-    { text: "total", options: { italic: true, bold: true, color: MUTED } },
-    { text: "≈ 50.6 GPU-h", options: { align: "center", italic: true, bold: true, color: MUTED } },
-    { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} }, { text: "", options: {} },
+    { text: "total", options: { italic: true, bold: true, color: MUTED } }, { text: "", options: {} },
+    { text: "≈ 50.6 GPU-h", options: { colspan: 5, align: "left", italic: true, bold: true, color: MUTED } },
   ]);
-  tbl(s, rows, { x: M, y: 1.4, w: 8.3, colW: [1.5, 1.5, 1.4, 1.2, 1.3, 1.4], fontSize: 10.5, rowH: 0.325 });
+  tbl(s, rows, { x: M, y: 1.4, w: 8.3, colW: [1.25, 2.1, 1.0, 1.15, 0.9, 0.95, 0.95], fontSize: 9.5, rowH: 0.295 });
 
-  card(s, 9.15, 1.4, 3.63, 1.75, TINT_T);
+  card(s, 9.15, 1.4, 3.63, 2.05, TINT_T);
   s.addText(
     [
-      { text: "The best-scoring configuration is also the second-cheapest in the study.", options: { bold: true, color: TEAL, breakLine: true } },
-      { text: "\nconfig_2: top macro F1 for 0.48 GPU-h and 0.17 GB.\nconfig_8: one more clip right for 13× the time and 115× the memory.", options: {} },
+      { text: "The cost of the ladder is entirely one rung.", options: { bold: true, color: TEAL, breakLine: true } },
+      { text: "\nBaseline → + 3D-CNN costs 14× the time and 90× the memory, for +0.009 macro F1.\n\n+ Transformer on top is free by comparison — and buys +0.21.", options: {} },
     ],
-    { x: 9.4, y: 1.53, w: 3.13, h: 1.5, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+    { x: 9.4, y: 1.52, w: 3.13, h: 1.8, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
-  card(s, 9.15, 3.3, 3.63, 1.95, TINT);
+  card(s, 9.15, 3.6, 3.63, 1.65, TINT);
   s.addText(
     [
       { text: "The inversion.", options: { bold: true, color: BERRY, breakLine: true } },
-      { text: "\nParameters and cost are almost inversely related. The Transformer is 371 k parameters and runs instantly — with the CNN off it only processes a 4 × 4 patch grid. The 3D-CNN is 18 k parameters and dominates: 85× the VRAM, 12× the time.", options: {} },
+      { text: "\nThe Transformer is 371 k parameters and runs instantly — with the CNN off it only processes a 4 × 4 patch grid. The 3D-CNN is 18 k parameters and dominates: 85× the VRAM, 12× the time.", options: {} },
     ],
-    { x: 9.4, y: 3.43, w: 3.13, h: 1.7, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
+    { x: 9.4, y: 3.72, w: 3.13, h: 1.42, fontFace: BF, fontSize: 11, color: INK, lineSpacing: 15, margin: 0, valign: "top" }
   );
 
   s.addShape(pres.ShapeType.roundRect, {
@@ -780,9 +853,9 @@ function hcell(t, o) {
   tbl(s, [
     [hcell("Config", { align: "left" }), hcell("Hold\nN=52"), hcell("Hold\nN=39"), hcell("Pilot\n5f"), hcell("Pilot\n20f"), hcell("Full LOSO\n25f")],
     [{ text: "config_8", options: { bold: true } }, { text: "0.1667", options: { align: "center" } }, { text: "0.5051", options: { align: "center" } }, { text: "—", options: { align: "center", color: MUTED } }, { text: "0.3901", options: { align: "center" } }, { text: "0.6659", options: { align: "center", bold: true, color: TEAL } }],
-    [{ text: "config_2", options: { bold: true } }, { text: "0.1075", options: { align: "center" } }, { text: "0.6044", options: { align: "center" } }, { text: "0.5487", options: { align: "center" } }, { text: "0.4347", options: { align: "center" } }, { text: "0.7122", options: { align: "center", bold: true, color: TEAL } }],
-    [{ text: "config_5" }, { text: "0.3833", options: { align: "center" } }, { text: "0.7427", options: { align: "center", bold: true, color: BERRY } }, { text: "0.5667", options: { align: "center" } }, { text: "0.5291", options: { align: "center" } }, { text: "0.4302", options: { align: "center" } }],
     [{ text: "config_16" }, { text: "0.4563", options: { align: "center", bold: true, color: BERRY } }, { text: "0.7427", options: { align: "center", bold: true, color: BERRY } }, { text: "—", options: { align: "center", color: MUTED } }, { text: "0.5473", options: { align: "center", bold: true, color: BERRY } }, { text: "0.4192", options: { align: "center" } }],
+    [{ text: "config_5" }, { text: "0.3833", options: { align: "center" } }, { text: "0.7427", options: { align: "center", bold: true, color: BERRY } }, { text: "0.5667", options: { align: "center" } }, { text: "0.5291", options: { align: "center" } }, { text: "0.4302", options: { align: "center" } }],
+    [{ text: "config_2", options: { bold: true } }, { text: "0.1075", options: { align: "center" } }, { text: "0.6044", options: { align: "center" } }, { text: "0.5487", options: { align: "center" } }, { text: "0.4347", options: { align: "center" } }, { text: "0.7122", options: { align: "center", bold: true, color: TEAL } }],
     [{ text: "Winner", options: { bold: true, italic: true } }, { text: "config_16", options: { align: "center", italic: true } }, { text: "config_5/16", options: { align: "center", italic: true } }, { text: "config_6", options: { align: "center", italic: true } }, { text: "config_16", options: { align: "center", italic: true } }, { text: "config_2", options: { align: "center", italic: true, bold: true, color: TEAL } }],
   ], { x: 7.35, y: 1.68, w: 5.43, colW: [1.03, 0.86, 0.86, 0.8, 0.83, 1.05], fontSize: 10, rowH: 0.35 });
 
