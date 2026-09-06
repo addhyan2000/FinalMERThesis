@@ -506,7 +506,7 @@ The important word is *comparable*. My previous report couldn't make this compar
 
 Now the bottom half, which is the most important slide in the deck for anyone assessing rigour.
 
-The same twelve configurations, evaluated five different ways over the project's life. The winner changes every time. Under the holdout runs the best model was SimAM plus 3D-CNN with no transformer. Under full LOSO it's the transformer alone with nothing else. Those are architecturally opposite conclusions from identical code.
+The same twelve configurations, evaluated five different ways over the project's life. Four different configurations win across those five runs. Under the holdout runs the best model was SimAM plus 3D-CNN with no transformer. Under full LOSO it's the transformer alone with nothing else. Those are architecturally opposite conclusions from identical code.
 
 Why: the old test set had 39 clips and exactly one surprise example. That one clip was worth a third of the macro F1. Getting it right isn't a measurement of architecture, it's a coin flip weighted at 33 %.
 

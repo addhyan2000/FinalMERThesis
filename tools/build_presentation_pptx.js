@@ -862,7 +862,7 @@ const GB = "GROUP B — the same ladder, EVM removed";
   card(s, 7.35, 3.9, 5.43, 2.6, TINT);
   s.addText(
     [
-      { text: "The winner changes every time the protocol changes — and nothing about the models changed, only the evaluation.", options: { bold: true, color: BERRY, breakLine: true } },
+      { text: "The winning configuration changes with the protocol — and nothing about the models changed, only the evaluation.", options: { bold: true, color: BERRY, breakLine: true } },
       { text: "\nUnder holdout the best model was SimAM + 3D-CNN with no Transformer. Under full LOSO it is the Transformer alone. Architecturally opposite conclusions, from identical code.\n\nWhy it flipped: the old 39-clip test set contained exactly one Surprise clip — worth a third of the macro F1, so getting it right was a coin flip weighted at 33 %.", options: {} },
     ],
     { x: 7.6, y: 4.02, w: 4.93, h: 2.35, fontFace: BF, fontSize: 11.5, color: INK, lineSpacing: 15.5, margin: 0, valign: "top" }
@@ -872,7 +872,7 @@ const GB = "GROUP B — the same ladder, EVM removed";
     "Against published work: 75 % accuracy is ten points above the best comparable result on this dataset, and five points above my own target.\n\n" +
     "The word that matters is comparable. My earlier report couldn't make this comparison, because its best number came from one small split while everyone else reports leave-one-subject-out. That objection is gone now.\n\n" +
     "The right-hand table is, honestly, the most important thing in this talk.\n\n" +
-    "Same twelve configurations. Five different ways of evaluating them. The winner is different every single time. Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Opposite conclusions — from identical code.\n\n" +
+    "Same twelve configurations. Five different ways of evaluating them. Four different configurations come out on top. Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Opposite conclusions — from identical code.\n\n" +
     "Why? The old test set had 39 clips and exactly one surprise example. That one clip was worth a third of the score. That's a coin flip, not a measurement."
   );
 }

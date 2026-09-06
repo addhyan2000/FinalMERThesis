@@ -473,7 +473,7 @@ So: eight of my twelve configurations contained a CNN, and between them they bur
 | **config_2** *(best here)* | Transformer | 0.1075 | 0.6044 | 0.5487 | 0.4347 | **0.7122** |
 | ***Winner of that run*** | | config_16 | **config_5 / config_16** | config_6 | config_16 | **config_2** |
 
-**The winner changes every time the protocol changes — and nothing about the models changed, only the evaluation.** Under holdout the best model was SimAM + 3D-CNN with **no** Transformer. Under full LOSO it is the Transformer **alone**. These are architecturally *opposite* conclusions drawn from identical code.
+**The winning configuration changes with the protocol — and nothing about the models changed, only the evaluation.** Under holdout the best model was SimAM + 3D-CNN with **no** Transformer. Under full LOSO it is the Transformer **alone**. These are architecturally *opposite* conclusions drawn from identical code.
 
 **Why it flipped:** the old 39-clip test set contained **exactly one Surprise clip** — worth a third of the macro F1, so getting it right was a coin flip weighted at 33 % · the double imbalance correction was actively breaking the Transformer · each LOSO fold trains on ~150 clips instead of ~117, which helps the parameter-heavy Transformer far more than the tiny CNN.
 
@@ -487,7 +487,7 @@ The word that matters is *comparable*. My earlier report couldn't make this comp
 
 The bottom table is, honestly, the most important thing in this talk.
 
-Same twelve configurations. Five different ways of evaluating them. The winner is different every single time. Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Opposite conclusions — from identical code.
+Same twelve configurations. Five different ways of evaluating them. Four different configurations come out on top. Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Opposite conclusions — from identical code.
 
 Why? The old test set had 39 clips and exactly one surprise example. That one clip was worth a third of the score. That's a coin flip, not a measurement.
 

@@ -19,7 +19,7 @@ If they forget everything else, they should walk out with these:
 
 1. **75 % accuracy under full leave-one-subject-out** — ten points above the best published result on this dataset.
 2. **Of my four components, the Transformer does nearly all the work** (+0.217 macro F1, positive in all six matched comparisons). The 3D-CNN is worth −0.031 and consumed 97 % of the compute.
-3. **How you evaluate decides what you conclude.** The same twelve configurations, evaluated five different ways, produced five different winners — two of them architecturally opposite.
+3. **How you evaluate decides what you conclude.** The same twelve configurations, evaluated five different ways, produced four different winning configurations — and the two extremes are architecturally opposite.
 
 Say each of these at least twice during the talk. Repetition is what survives.
 
@@ -301,7 +301,7 @@ Say each of these at least twice during the talk. Repetition is what survives.
 >
 > Now the table on the right, which I'd argue is the most important thing in this talk.
 >
-> These are the **same twelve configurations**, evaluated five different ways over the life of this project. **The winner is different every single time.** Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Those are architecturally *opposite* conclusions — from identical code.
+> These are the **same twelve configurations**, evaluated five different ways over the life of this project. **Four different configurations come out on top.** Under the old method, the best model had no transformer at all. Under proper leave-one-subject-out, the best model is the transformer on its own. Those are architecturally *opposite* conclusions — from identical code.
 >
 > Why did it flip? The old test set had thirty-nine clips and contained *exactly one* surprise example. That one clip was worth a third of the score. Getting it right isn't a measurement of architecture — it's a coin flip weighted at thirty-three per cent.
 
