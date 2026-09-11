@@ -1,23 +1,10 @@
 # Chapter 2 — Background
 
-## Scope and conventions
+This chapter sets out the mechanisms the rest of the thesis depends on, in the order the pipeline applies them: what a micro-expression is, what the recording supplies, how small motions are magnified and converted into a motion representation, what a neural network does, which blocks this system assembles from that foundation, how it is trained under a corpus that cannot be balanced, and how it is measured when that corpus is small.
 
-This chapter sets out the concepts and techniques needed to follow the methodology in Chapter 4 and the results in Chapter 5. It explains **what each mechanism is and how it works**; Chapter 3 surveys who has used each one, with what result, and what gap remains. Where a fact is needed in both places it is established here and cross-referenced there.
+It explains **what each mechanism is and how it works**. Chapter 3 surveys who has used each one, with what result, and what gap remains; where a fact is needed in both places it is established here and cross-referenced there. Scope is limited to what the implemented system actually does — techniques a reader might expect in a background chapter but which this project does not use are omitted, and their absence is noted where it would otherwise be assumed.
 
-**Scope is limited to what the system actually does.** Every technique described is present in the implemented pipeline. Techniques a reader might expect in a background chapter but which this project does not use — quantisation, pruning and knowledge distillation among them — are not covered, and their absence is noted at the point where it would otherwise be assumed (§2.5).
-
-**Sources.** Every work cited is a paper held in the project's `docs/` corpus. Standard machine-learning material for which the corpus holds no source is presented without citation rather than with an invented one; the reference list states which topics are handled that way. Works cited only inside the reviewed papers are attributed in the text to the paper that reports them.
-
-## Contents
-
-| § | Topic |
-|---|---|
-| 2.1 | The phenomenon: micro-expressions as involuntary, brief, low-intensity movement |
-| 2.2 | From video to motion: optical flow and optical strain |
-| 2.3 | Motion magnification |
-| 2.4 | Network building blocks |
-| 2.5 | Learning under scarcity and skew |
-| 2.6 | Evaluating on a small corpus |
+Two constraints recur. The corpus is small enough that its size, rather than any modelling preference, forces most of the design. And several stages depart from the textbook form of the technique they implement; each departure is named where it occurs.
 
 ---
 
@@ -47,8 +34,6 @@ How brief and how faint that movement is determines what the recording must capt
 
 ---
 
----
-
 ## 2.2 From Recording to Pipeline Input
 
 Before any mechanism of interest — magnification, flow, strain, or a trained network — can act on a micro-expression, something has to capture it, and something has to hand it to the pipeline in a usable form. This section describes that handoff: what the recording had to provide given the constraints fixed in §2.1, what the corpus actually supplies, and what this project does and does not do to a clip before it enters processing.
@@ -74,8 +59,6 @@ Each frame is read in greyscale and resized to 224 × 224 by bilinear interpolat
 Not every row of the corpus's coding table reaches processing. Three conditions are applied to select the rows that do: the row must belong to the CASME II dataset, its coded expression type must be `micro-expression` rather than one of the other categories the table records, and its sequence length — the number of frames between onset and offset — must exceed two. The first two conditions restrict the pipeline to the corpus and the expression class this thesis addresses. The third rules out clips too short to be usable: a sequence of two frames or fewer contains at most one frame-to-frame transition, which is not enough to construct a motion sequence of any length, whatever downstream representation is built from it.
 
 Together, these four properties of the recording and the corpus — a 200 fps capture rate, a pre-cropped facial region, a greyscale 224 × 224 frame, and a filtered, onset-to-offset clip — are what reaches the pipeline before any processing of interest begins. §2.3 turns to the first such process applied to these frames: Eulerian motion magnification.
-
----
 
 ---
 
@@ -117,7 +100,7 @@ Fourth, and a property of pipeline ordering rather than of the magnifier itself:
 
 The default operating point used throughout is $\alpha = 10$, a band of 5–25 Hz, and 4 pyramid levels; the amplified output is clipped to $[0,255]$ and quantised back to 8-bit before being handed to the downstream flow-and-strain extractor.
 
----
+What that extractor does with the amplified sequence — and why motion, rather than appearance, is what the network is given — is the subject of §2.4.
 
 ---
 
@@ -163,7 +146,41 @@ The three quantities — $u$, $v$ and $\varepsilon_{\text{mag}}$ — are stacked
 
 Normalisation is applied in two separate stages, and both remain active. At extraction time, each of the three channels is independently min–max normalised to $[0, 1]$ across the whole clip, so that a channel's own range — which differs enormously between a flow component and a strain magnitude — does not by itself determine its influence. Separately, at training load time (`Ablation_Study/dataset.py`, with `normalize=True`), each channel is z-scored per sample over its $T \times H \times W$ extent. Neither stage substitutes for the other: the first is a per-clip rescaling done once, during data preparation; the second is a per-sample standardisation applied every time a clip is loaded, centring and scaling each channel to zero mean and unit variance. Both are applied to every clip the model sees.
 
+§2.5 turns from how this tensor is built to what a network is, before §2.6 describes the blocks that consume it.
+
 ---
+
+## 2.5 Neural Network Fundamentals
+
+Everything in this thesis described as "trained" is, underneath, a neural network: a function built from simple, repeated computations whose numerical parameters are set from data rather than specified by hand. This section builds that machinery from its smallest unit upward, only as far as is needed for the architecture-specific mechanisms of §2.6, the training regime of §2.7 and the evaluation apparatus of §2.8 to be legible when they introduce anything that depends on it.
+
+### 2.5.1 Units, layers and the forward pass
+
+The basic computational unit takes a vector of inputs $x$, forms a weighted sum of them plus an offset term, and passes the result through a fixed non-linear function $\phi$:
+$$a = \phi(w^\top x + b).$$
+The entries of $w$ are the unit's **weights**, one per input; $b$ is its **bias**. Weights and biases together are the unit's **parameters** — the numbers a training procedure is free to adjust — and $a$, the unit's output, is its **activation**. A **layer** is a bank of such units applied to the same input vector in parallel, each with its own weights and bias, producing a vector of activations rather than a single scalar. A network is a sequence of layers, each layer's output vector becoming the next layer's input; evaluating the network on an input by applying each layer in turn, from the first to the last, is the **forward pass**, and its final output is the network's prediction. The number of layers is the network's **depth**; the number of units in a given layer is that layer's **width**. Both are choices made when the architecture is specified, not something training decides.
+
+### 2.5.2 Non-linearity
+
+If $\phi$ were the identity function, every layer would compute only an affine transformation of its input, and the composition of any number of affine transformations is itself a single affine transformation. A network built entirely this way would therefore compute no more than a network with one layer could, however many layers it stacked — depth would buy nothing. The non-linear function $\phi$, applied after the weighted sum at every unit, is what stops layers from collapsing into one another; it is the reason depth is a meaningful design axis at all rather than a redundant one. A common choice, used throughout the components described in this thesis, is the rectified linear unit, $\text{ReLU}(x) = \max(0, x)$: it passes positive values through unchanged and clips negative ones to zero. Its appeal is mechanical rather than subtle — it is cheap to compute, its derivative is either zero or one almost everywhere, and unlike activation functions that saturate on both sides, a unit with a positive input keeps gradient flowing through it at full strength.
+
+### 2.5.3 Learning by gradient descent
+
+A network's forward pass is fixed once its parameters are fixed, so "training" means searching for parameter values under which the forward pass produces good predictions. A **loss function** quantifies how far a prediction sits from its true label, returning a single number that is small when they agree and large when they do not; the specific loss used in this thesis, and why, is a matter for §2.7, but the role a loss plays is a property of every trained network and belongs here. Training proceeds by adjusting parameters to make the loss smaller, and the mechanism that makes that adjustment tractable is **backpropagation**: because the forward pass is a composition of layers, the chain rule from calculus lets the gradient of the loss with respect to every parameter in the network — however deep — be computed by working backward from the output layer to the input, reusing intermediate results rather than recomputing each parameter's gradient from scratch. Once every parameter's gradient is known, an **update rule** moves each parameter a small step against its gradient, since the gradient points in the direction the loss increases fastest and moving the opposite way decreases it. The size of that step is the **learning rate**. Parameters are not updated from the whole training set at once in a single step; instead the data is divided into **batches**, and one update is made per batch, while one full pass through every batch in the training set is one **epoch**, of which training runs many in succession. Throughout, a network has two distinct modes of use: in training mode its parameters are being adjusted from labelled examples by the procedure just described, while in evaluation mode its parameters are held fixed and it is only asked to produce predictions, with no update following from how correct they are.
+
+### 2.5.4 Convolution as a learned filter
+
+A layer of the kind described in §2.5.1 connects every input to every unit, which is wasteful for an image: a pattern worth detecting — an edge, a corner, a small patch of texture — can appear anywhere in the frame, and a fully connected layer would need to learn a separate copy of the detector for every position it might appear at. A convolutional layer instead learns one small filter, a **kernel**, consisting of a grid of weights (a $3\times3$ or $5\times5$ window is typical) plus a single bias, and slides that same kernel across every position of the input, at each position computing a weighted sum of the pixels currently under it. Because the identical kernel is reused at every position, the layer is said to exhibit **weight sharing**: it looks for the same pattern everywhere in the image and costs only as many parameters as the kernel itself holds, regardless of how large the input is. The result of sliding one kernel across the whole input is a single **feature map**, one value per position, recording how strongly that kernel's pattern was present there. A convolutional layer ordinarily learns several kernels at once, each producing its own feature map; stacked together these form the layer's output **channels**, so a layer with $C_{\text{out}}$ kernels produces $C_{\text{out}}$ channels from whatever number of input channels, $C_{\text{in}}$, it was given (three for an ordinary colour image, one for a greyscale image, or more once earlier layers have produced feature maps of their own). Because each kernel spans every input channel, not just one, the number of learned parameters in such a layer, for a kernel of height $k_H$ and width $k_W$, is
+$$C_{\text{out}} \times \bigl(C_{\text{in}} \times k_H \times k_W + 1\bigr),$$
+the $+1$ accounting for one bias per output channel — a formula this thesis returns to repeatedly when comparing the cost of alternative designs. Two further settings control how the kernel is applied. **Stride** is the number of positions the kernel moves between one application and the next; a stride greater than one skips positions and shrinks the output accordingly. **Padding** adds a border, typically of zeros, around the input before the kernel is applied, which controls how much the output shrinks relative to the input and lets a layer preserve spatial size exactly if that is wanted. Because a single kernel only ever looks at a small window, one convolutional layer alone only detects small, local patterns; stacking convolutional layers lets a unit in a later layer depend, indirectly, on a much larger region of the original input, since each layer's output already summarises a neighbourhood of the layer before it. This growing **receptive field** is why early convolutional layers tend to respond to local structure — edges, small textures — while later ones respond to larger, more composite structure built from what the earlier layers detected.
+
+### 2.5.5 Pooling and spatial reduction
+
+A **pooling** operation reduces the spatial size of a feature map without learning any weights of its own: it slides a small window across the map, exactly as a kernel does, but instead of a weighted sum it reports a fixed summary of the values it covers — most commonly the maximum, giving max pooling. Pooling deliberately discards information: a $2\times2$ max-pool halves both height and width, keeping only the strongest response in each small neighbourhood and throwing the rest away. What is bought in exchange is a lower computational cost for every layer that follows, since they now operate on a smaller map, and a larger receptive field per unit of depth, since a later layer's kernel now covers a coarser, wider-reaching grid of the original input for the same kernel size. The trade is therefore resolution against reach and cost: pooling is used where the exact position of a detected feature matters less than its coarser location and the network can no longer afford to carry full spatial detail forward.
+
+### 2.5.6 Parameters, capacity and small data
+
+The total count of a network's parameters — every weight and bias, across every layer — determines its **capacity**: loosely, how large and how intricate a set of functions it is able to represent. A higher-capacity network can fit more complicated relationships between input and label, but capacity is measured against the data available to constrain it, not in isolation. With a training corpus of only a few hundred or few thousand labelled examples, a network with far more parameters than examples has enough freedom to fit each training example almost exactly, including whatever is peculiar to that specific example — sensor noise, an unrepresentative pose, an idiosyncrasy of one subject — rather than the pattern that generalises across examples. This failure mode is **overfitting**: training loss keeps falling because the network is, in effect, memorising its training set, while performance on examples it did not train on stops improving or gets worse. The property actually wanted is **generalisation** — accurate prediction on data the network never saw during training — and it cannot be read off the training loss at all, since a memorising network can drive that loss arbitrarily low. Detecting whether generalisation is actually happening requires a **held-out set**: a portion of the labelled data set aside from the start, never used to compute a gradient or update a parameter, on which the network's predictions are checked only after training. A gap between good performance on the training data and poor performance on the held-out set is the signature of overfitting; parameter count, relative to the number of available training examples, is what makes that gap likely in the first place. This is precisely the constraint that governs the size and construction of every architecture described next, in §2.6.
 
 ---
 
@@ -211,6 +228,8 @@ Each learned component here can be switched off, and each switch has a specific,
 
 Both fallbacks add as little capacity as possible: the pooling operations introduce no parameters, and the one linear layer needed to match dimensions in the no-CNN case is negligible next to what it replaces. That near-absence of added capacity is what makes each fallback a fair control, isolating what the learned component contributes without also changing how much the network is capable of fitting.
 
+Isolating a component fairly also depends on how the network is trained, and §2.7 sets out the training regime held constant across every configuration.
+
 ---
 
 ## 2.7 Learning Under Scarcity and Skew
@@ -255,6 +274,8 @@ Gradient norms are clipped to $1.0$ after the AMP scaler's gradients are unscale
 
 One category of technique is absent by design: quantisation, pruning, and knowledge distillation are used nowhere in this project. Efficiency is measured rather than engineered here — §3.6 reports the compute cost of the architectural choices actually made.
 
+Measuring rather than engineering a property requires an evaluation apparatus equal to the task, and §2.8 sets out the one this corpus demands.
+
 ---
 
 ## 2.8 Evaluating on a Small Corpus
@@ -296,6 +317,18 @@ The pipeline behind every result in this thesis computes, per fold, a confusion 
 The LOSO folds enforce subject-disjointness by construction — a held-out subject's clips contribute nothing to that fold's training set — and the holdout variant asserts explicitly that its train and validation subject sets are disjoint. One property of the apparatus falls short of an analogous guarantee and must be named as a limitation rather than left implicit: there is no inner validation split. The held-out subject's fold is used both to select the best training checkpoint and as the final scored set for that same fold, so a reported fold result is not blind to the data it is checked against, as a nested train/validation/test design would keep it. This is an optimistic bias of unknown size in every reported number, a property of the apparatus itself rather than of any one configuration.
 
 Finally, no confidence interval, significance test or variance estimate is computed anywhere in the pipeline, and per-clip predictions are not saved — only aggregate metrics, the confusion matrix, and training curves persist. The consequence is concrete: with no per-clip prediction record surviving, a paired significance test between two configurations cannot be constructed from the stored artefacts, whatever the aggregate scores say.
+
+---
+
+## 2.9 Conclusion
+
+This chapter has set out the mechanisms on which the rest of the thesis depends, in the order the pipeline applies them. §2.1 defined the micro-expression by the three properties that make it hard to recognise automatically — it is brief, it is faint, and it cannot be produced on instruction — and fixed the vocabulary of onset, apex and offset, noting that only the emotion label, not the action-unit coding, is used here. §2.2 established what actually reaches the pipeline: a 200 fps recording, a facial crop the corpus itself supplies, and a greyscale frame at a fixed resolution, with no registration performed by this project. §2.3 and §2.4 covered the two transformations applied to those frames — Eulerian magnification of small motions, and the conversion of the magnified sequence into dense optical flow and optical strain.
+
+§2.5 then built the machinery of a neural network from a single unit up to the convolutional layer, ending with the relationship between parameter count and corpus size that constrains every architectural choice this thesis makes. §2.6 described the specific blocks assembled on that foundation, together with the parameter-free replacement each one falls back to when switched off. §2.7 covered training under a class distribution that cannot be balanced by collecting more data, and §2.8 the evaluation apparatus needed when a corpus is small enough that the choice of averaging changes the conclusion.
+
+Two threads run through all of it. The first is that the size of the corpus, rather than any modelling preference, forces most of the design: it dictates how few parameters the network can carry, why corrections for class skew are necessary, and why the evaluation protocol has to be chosen with care. The second is that several stages depart from the textbook or reference form of the technique they implement, and each departure has been named at the point it occurs rather than left for a reader to discover.
+
+What this chapter has deliberately not done is say who else has used any of these techniques, with what result, or what remains unresolved. That is the work of Chapter 3, which reviews the literature for each component in turn and identifies the gap this thesis addresses.
 
 ---
 

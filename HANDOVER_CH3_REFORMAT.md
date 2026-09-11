@@ -4,7 +4,9 @@
 
 **The job.** Reformat the completed Chapter 3 to the presentation conventions of two exemplar BTU Cottbus MSc theses supplied by the user (`ImprovingMusicTranscription_Thesis_PrashantVaradarajan.pdf`, `main.pdf`). **Format only — no content, argument or citation is drawn from those PDFs.** Every fact, number, quotation, table and subsection number in Chapter 3 is preserved.
 
-**Last updated:** after Task 17, 11 September 2026. **THE REFORMATTING IS COMPLETE — all 17 tasks done, all gates pass.** What remains is the user's own review, and committing.
+**Last updated:** 11 September 2026, after the Chapter 2 rebuild (see §9).
+
+**Earlier:** after Task 17. **THE REFORMATTING IS COMPLETE — all 17 tasks done, all gates pass.** What remains is the user's own review, and committing.
 
 ---
 
@@ -181,3 +183,33 @@ Three promoted headings share a construction — §3.5.7 "A declaration about wh
 - Section files are referenced from `Thesis_Chapter3_LiteratureReview/Tech-wise/`, so figure paths are `../../report_figures_thesis/…`.
 - Subagents on this plan have twice returned "Concerns: None" while shipping a real defect. **Verify every claim against the file.** Roughly two in twenty-five reported findings have also been wrong in the other direction — check those too before acting.
 - One agent staged files with `git add` despite explicit instruction. Check `git status` before committing.
+
+---
+
+## 9. Chapter 2 rebuild — COMPLETE
+
+A second, separate task run after the Chapter 3 reformatting. Chapter 2 was restructured into **pipeline order** with two new sections and a conclusion, because it previously walked the reader through the pipeline backwards and jumped into `Conv3d` with no foundation.
+
+**Final structure — 10,349 words, 9 sections:**
+
+| § | Section | State |
+|---|---|---|
+| 2.1 | The phenomenon | subsections numbered 2.1.1–2.1.4, bridge added |
+| 2.2 | From recording to pipeline input | **new**, 724 words |
+| 2.3 | Motion magnification | moved before motion; bridge added |
+| 2.4 | From video to motion | was §2.2; bridge added |
+| 2.5 | Neural network fundamentals | **new**, 1,731 words |
+| 2.6 | Network building blocks | was §2.4; bridge added |
+| 2.7 | Learning under scarcity and skew | was §2.5; bridge added |
+| 2.8 | Evaluating on a small corpus | was §2.6; no bridge — §2.9 follows naturally |
+| 2.9 | Conclusion | **new**, bridges to Chapter 3 |
+
+**41 `§2.x` cross-references were remapped** across both chapters (2.2→2.4, 2.4→2.6, 2.5→2.7, 2.6→2.8). All resolve.
+
+**Things a successor should know:**
+
+- **§2.2's most important content is a negative.** This project performs no face detection, landmarking, registration or alignment. The 68-point ASM + Local Weighted Mean work Chapter 3 §3.1.2 describes is the *corpus authors'*. A reader who has just read §3.1.2 will otherwise assume the pipeline does it too.
+- **§2.5 cites nothing, deliberately.** Chapter 2's convention is that standard ML material with no `docs/` source is stated uncited rather than with an invented citation.
+- **Section files must NOT end with a `---` divider.** Both rebuild scripts append one. Sixteen files carried their own, producing doubled dividers in the assembled output; that has been fixed and should not be reintroduced.
+- **Still open (risk R4):** Chapter 3 uses numeric `[n]` citations, Chapter 2 uses author–year. This is the one inconsistency the reformatting work introduced and it needs resolving before submission. The tooling generalises, and Chapter 2 is six sections against Chapter 3's ten.
+- **Also open:** both exemplar theses use a single thesis-wide Bibliography; this thesis keeps one reference list per chapter. A deliberate divergence, not an error, but decide it consciously.

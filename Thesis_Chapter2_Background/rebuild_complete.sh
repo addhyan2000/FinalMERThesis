@@ -8,24 +8,11 @@ OUT=00_Chapter2_Complete.md
 cat > "$OUT" <<'HDR'
 # Chapter 2 — Background
 
-## Scope and conventions
+This chapter sets out the mechanisms the rest of the thesis depends on, in the order the pipeline applies them: what a micro-expression is, what the recording supplies, how small motions are magnified and converted into a motion representation, what a neural network does, which blocks this system assembles from that foundation, how it is trained under a corpus that cannot be balanced, and how it is measured when that corpus is small.
 
-This chapter sets out the concepts and techniques needed to follow the methodology in Chapter 4 and the results in Chapter 5. It explains **what each mechanism is and how it works**; Chapter 3 surveys who has used each one, with what result, and what gap remains. Where a fact is needed in both places it is established here and cross-referenced there.
+It explains **what each mechanism is and how it works**. Chapter 3 surveys who has used each one, with what result, and what gap remains; where a fact is needed in both places it is established here and cross-referenced there. Scope is limited to what the implemented system actually does — techniques a reader might expect in a background chapter but which this project does not use are omitted, and their absence is noted where it would otherwise be assumed.
 
-**Scope is limited to what the system actually does.** Every technique described is present in the implemented pipeline. Techniques a reader might expect in a background chapter but which this project does not use — quantisation, pruning and knowledge distillation among them — are not covered, and their absence is noted at the point where it would otherwise be assumed (§2.5).
-
-**Sources.** Every work cited is a paper held in the project's `docs/` corpus. Standard machine-learning material for which the corpus holds no source is presented without citation rather than with an invented one; the reference list states which topics are handled that way. Works cited only inside the reviewed papers are attributed in the text to the paper that reports them.
-
-## Contents
-
-| § | Topic |
-|---|---|
-| 2.1 | The phenomenon: micro-expressions as involuntary, brief, low-intensity movement |
-| 2.2 | From video to motion: optical flow and optical strain |
-| 2.3 | Motion magnification |
-| 2.4 | Network building blocks |
-| 2.5 | Learning under scarcity and skew |
-| 2.6 | Evaluating on a small corpus |
+Two constraints recur. The corpus is small enough that its size, rather than any modelling preference, forces most of the design. And several stages depart from the textbook form of the technique they implement; each departure is named where it occurs.
 
 ---
 

@@ -280,8 +280,6 @@ The 200 fps capture rate established here is what lets the Eulerian Video Magnif
 
 ---
 
----
-
 ## 3.2 Motion Magnification: Eulerian Video Magnification as a Pre-Processing Stage
 
 **Scope of this section.** This section reviews Eulerian Video Magnification (EVM) through the four review-corpus papers that apply it — Bai et al. [15], Li et al. [6], and Li, Huang and Zhao [16, 17]. The original formulations it builds on, Wu et al.'s amplitude-based method and Wadhwa et al.'s phase-based method, lie outside the corpus and are described here only as attributed through those four papers.
@@ -415,8 +413,6 @@ What magnification is placed in front of therefore matters as much as its own pa
 
 ---
 
----
-
 ## 3.3 Motion Representation: Dense Optical Flow
 
 **Scope of this section.** This section reviews dense optical flow — the horizontal and vertical displacement fields that form two of the three input channels used in this thesis — through the four review-corpus papers that apply it: Liong et al. [10, 11], Xu et al. [18], and Zhao et al. [19]. The estimators themselves, Farnebäck's polynomial-expansion method and the TV-L1 variational method, lie outside the corpus and are described here only as attributed through those papers.
@@ -527,8 +523,6 @@ The reviewed literature establishes that dense optical flow is an effective and 
 This thesis differs on the second and third counts, which are the ones its research question requires. It computes flow across a **full temporally resampled sequence** rather than an onset–apex pair (§3.3.4), so that the temporal arc survives into the representation and a temporal model has something to model — and, as a by-product, removes the apex-spotting failure mode documented in §3.3.6. And it holds the motion representation fixed while varying the components that consume it across a **full factorial ablation** under complete leave-one-subject-out (§3.1.4), which makes it possible to ask, and answer, whether a learned spatio-temporal backbone contributes anything on top of an analytically computed motion field. The answer reported in Chapter 5 — that it does not, at measurable negative cost (§3.3.7) — is a statement about the *interaction* between representation and architecture that no single-architecture study in the corpus is positioned to make. On the first and fourth counts this thesis inherits the field's limitations rather than resolving them: the Farnebäck estimator is adopted without comparison against TV-L1, and no flow-based fine alignment is performed. Both are stated as limitations in Chapter 6.
 
 The same frame pair that yields this flow field also yields the third channel, optical strain, whose derivation §3.4 takes up.
-
----
 
 ---
 
@@ -676,8 +670,6 @@ This thesis differs on the third count and inherits the limitations of the other
 
 ---
 
----
-
 ## 3.5 Temporal Normalisation: The Temporal Interpolation Model
 
 **Scope of this section.** §3.3 and §3.4 covered *what* is computed from each frame pair; this section covers *which* frame pairs, through the two review-corpus papers that treat temporal interpolation directly plus several others that use it as an unremarked preprocessing step. The Temporal Interpolation Model itself was introduced by Pfister et al., outside the review corpus, and is described here only through the reviewed papers that implement and evaluate it.
@@ -799,8 +791,6 @@ In §3.6, the spatial backbone takes these now-equal-length spatio-temporal volu
 
 ---
 
----
-
 ## 3.6 The Learned Spatial Backbone: Shallow 3D Convolutional Networks
 
 **Scope of this section.** This section covers the convolutional backbone — switched on and off as Variable C of this thesis's ablation — through four papers from the review corpus. The general-purpose architectures cited for comparison in those papers — GoogLeNet, VGG16, ResNet-101 and DenseNet-169 — are outside the review corpus and appear only as figures quoted from the reviewed work.
@@ -908,8 +898,6 @@ The reviewed literature establishes that shallow convolutional backbones outperf
 This thesis differs on the third count, which is the one its research question requires. It removes the convolutional backbone entirely in four of its twelve configurations — the matrix is unbalanced because the four cells pairing attention with no backbone are architecturally invalid (§3.1.3) — replacing it with a fixed 4 × 4 spatial pooling and a linear projection, and measures the difference under complete leave-one-subject-out with every other factor held constant — the matched-pair measurement the corpus does not contain. The result, that the backbone's mean marginal contribution is negative while it consumes 97 % of the compute budget, is a finding the existing literature is not positioned to produce. On the first count this thesis inherits the field's ambiguity and answers it by declaring precisely what its own component is (§3.6.6), so the negative result is not misread as a verdict on spatio-temporal convolution. On the second count it knowingly departs from the literature's guidance rather than extending it, at the 224 × 224 resolution already flagged above as the clearest such departure — identified only through this review, and the first item of proposed further work.
 
 The same parameter-free principle invoked here to justify shrinking the backbone is the one §3.7's attention module puts into practice.
-
----
 
 ---
 
@@ -1049,8 +1037,6 @@ Having pooled the temporal axis into SimAM's statistics rather than modelling it
 
 ---
 
----
-
 ## 3.8 The Temporal Encoder: Transformers for Micro-Expression Recognition
 
 **Scope of this section.** This section covers the component that Chapter 5 identifies as responsible for essentially all of this study's measured performance: the self-attention encoder applied over the temporal axis, switched as Variable D. Two papers are covered — SLSTT, the architecture this component is named after, and the ViT it derives from — with the substantial divergence between published SLSTT and this implementation set out in full in §3.8.6.
@@ -1171,8 +1157,6 @@ Isolating this component across six matched pairs was possible only because §3.
 
 ---
 
----
-
 ## 3.9 Training Under Severe Class Imbalance
 
 **Scope of this section.** The four ablated components are covered in §3.2, §3.6, §3.7 and §3.8. This section covers the training configuration that is held constant across all twelve of them, and which §3.1.8 identified as forced by the corpus rather than chosen freely: the handling of a 4 : 1.3 : 1 class imbalance.
@@ -1270,8 +1254,6 @@ The reviewed literature establishes that spontaneous micro-expression corpora ar
 This thesis contributes to the first and third. It documents an over-correction failure in which combining inverse-frequency loss weighting with a balanced sampler drove the proposed model to predict none of the 32 Positive clips, and it reports the resolution — correcting at exactly one point in the pipeline, enforced by an explicit run-time rule — together with the recovery that followed. That is a negative result the corpus does not contain, and it is directly actionable for anyone reproducing this class of pipeline. On the second gap it offers no improvement: focal loss with $\gamma = 2.0$ and label smoothing of 0.05 is held constant across all twelve configurations, so this study measures neither focal loss against cross-entropy nor the value of either hyper-parameter. Both are recorded in Chapter 6 as cheap additions to the ablation matrix, alongside the Grad-CAM++ auditing and identity-disentanglement work that this project's earlier stages removed and that this section therefore excludes.
 
 These three gaps, and the two this thesis addresses, are drawn together with those from the other ablated components in §3.10.
-
----
 
 ---
 
@@ -1384,8 +1366,6 @@ Second, the **interpretation of Chapter 5's central result is prepared here, not
 Third, the **limits of what can be claimed are established before any number is reported**: a small, single-seed, demographically narrow corpus, measured against richer published regimes, with the ten divergences of Table 3.21 standing throughout — restated in Chapter 6 as consequences of this chapter, not concessions made after the fact.
 
 The class grouping, representation, fold structure and metric this review has fixed are what Chapter 4 now specifies in full as the study's methodology.
-
----
 
 ---
 

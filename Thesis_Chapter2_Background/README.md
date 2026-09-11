@@ -51,3 +51,30 @@ Every section passed a four-stage pipeline before being accepted:
 
 - `docs/` holds two near-identical PDFs of the Xia et al. STRCN paper (one hyphenated filename, one not) — worth de-duplicating.
 - Bibliographic details for references whose `docs/` copies are preprints or author manuscripts remain unconfirmed; the list is in `../Thesis_Chapter3_LiteratureReview/Tech-wise/README.md`.
+
+## Chapter conventions (moved from the chapter preamble, 11 September 2026)
+
+These statements and the contents table were body text at the head of the chapter until the restructure replaced the preamble with unnumbered framing prose, matching the exemplar theses. They are policy, not prose, and are preserved here. **Note the contents table below is the pre-restructure six-section version, kept for the record only.**
+
+# Chapter 2 — Background
+
+## Scope and conventions
+
+This chapter sets out the concepts and techniques needed to follow the methodology in Chapter 4 and the results in Chapter 5. It explains **what each mechanism is and how it works**; Chapter 3 surveys who has used each one, with what result, and what gap remains. Where a fact is needed in both places it is established here and cross-referenced there.
+
+**Scope is limited to what the system actually does.** Every technique described is present in the implemented pipeline. Techniques a reader might expect in a background chapter but which this project does not use — quantisation, pruning and knowledge distillation among them — are not covered, and their absence is noted at the point where it would otherwise be assumed (§2.5).
+
+**Sources.** Every work cited is a paper held in the project's `docs/` corpus. Standard machine-learning material for which the corpus holds no source is presented without citation rather than with an invented one; the reference list states which topics are handled that way. Works cited only inside the reviewed papers are attributed in the text to the paper that reports them.
+
+## Contents
+
+| § | Topic |
+|---|---|
+| 2.1 | The phenomenon: micro-expressions as involuntary, brief, low-intensity movement |
+| 2.2 | From video to motion: optical flow and optical strain |
+| 2.3 | Motion magnification |
+| 2.4 | Network building blocks |
+| 2.5 | Learning under scarcity and skew |
+| 2.6 | Evaluating on a small corpus |
+
+---
