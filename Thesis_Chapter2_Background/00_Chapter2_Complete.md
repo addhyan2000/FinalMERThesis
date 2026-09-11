@@ -25,69 +25,55 @@ This chapter sets out the concepts and techniques needed to follow the methodolo
 
 A micro-expression is a brief facial movement that leaks a felt emotion the person is actively trying to conceal (Yan et al., 2014). It is best understood by contrast with an ordinary, or macro-, expression, on three axes rather than one. Macro-expressions typically last upwards of half a second, and may run to several seconds, and can be produced at will (Qu et al., 2016); micro-expressions, by contrast, are "characterized by short durations, involuntary generation and low intensity" (Qu et al., 2016). The third axis is the one most easily overlooked: a micro-expression cannot be performed on instruction. It is a symptom of concealment rather than a communicative act. That single property governs how such data can be gathered at all, and the consequences for corpus construction are taken up in §3.1.
 
-### Duration: the first constraint
+### 2.1.1 Duration: the first constraint
 
 The field's working definition fixes an upper bound on duration. Yan et al. (2014) state that "the generally accepted upper limit of the duration is 1/2 s." Brevity is the first source of the difficulty in recognising the phenomenon automatically, and the mechanism is simple: whatever signal distinguishes one emotion from another must be carried by however many video frames fit inside that half-second window. At a modest frame rate that window may contain only a handful of frames, several of which are near-identical to their neighbours; the sequence available to a classifier is short by construction, not by any deficiency of the recording.
 
-### Low intensity: the second constraint
+### 2.1.2 Low intensity: the second constraint
 
 Duration alone would still leave a tractable problem if the movement were large. It is not. Yan et al. (2014) observe that micro-expressions are "usually low in intensity – it might be so brief for the facial muscles to become fully-stretched with suppression", with the consequence that "because of the short duration and low intensity, it is usually imperceptible or neglected by the naked eyes". In practice the movement of interest may change only a few grey levels over a small patch of skin — around an eyebrow, or the corner of a mouth — while the rest of the face stays static. This is a distinct obstacle from brevity: a longer recording does nothing to help it, because the difficulty is not how many frames are available but how far the signal in each frame sits above the noise floor of ordinary video. Duration limits how much evidence exists; intensity limits how visible that evidence is once it does.
 
-### Onset, apex and offset
+### 2.1.3 Onset, apex and offset
 
 Because a micro-expression is a movement rather than a static configuration, it is conventionally described by three temporal landmarks. The **onset** is the frame at which the face begins to depart from its neutral baseline; the **offset** is the frame at which it returns to neutral; and the **apex** is the frame at which the movement is judged most intense — the point at which, as Ekman puts it, a "snapshot taken at [the] point when the expression is at its apex can easily convey the emotion message" (as reported by Li, Huang & Zhao, 2018). All three landmarks are available in the corpus used here. This thesis, however, uses only the onset and offset frames to bound each clip passed into the pipeline; the apex frame is never read. This is a deliberate design choice rather than an oversight, and its consequences — for what information the model can and cannot see, and for how its results relate to apex-frame methods in the literature — are taken up in Chapters 3 and 4.
 
-### Action units, and the label actually used
+### 2.1.4 Action units, and the label actually used
 
 The Facial Action Coding System (FACS) describes any facial movement, however subtle, as a combination of discrete Action Units (AUs), "an objective method for labeling facial movements in terms of component actions" (Yan et al., 2014). An AU is a description of movement, not of emotion, and the mapping between the two is not one-to-one; corpora therefore assign emotion categories using AUs together with other evidence, by a procedure that differs between datasets and is described for the corpus used here in §3.1.2.
 
 It is worth being precise about how much of that machinery survives into this thesis: none of it. The work reported here uses only the resulting emotion label. The Action Units recorded for each clip are present in the label table as inherited metadata from the original annotation — carried along because the released coding includes them — but they are never read by any stage of the data pipeline and never presented to the model. Nothing in this thesis performs, or claims to perform, action-unit recognition; the sole target throughout is the emotion category.
 
----
+How brief and how faint that movement is determines what the recording must capture, and §2.2 turns to the video this pipeline actually receives.
 
 ---
 
-## 2.2 From Video to Motion: Optical Flow and Optical Strain
+---
 
-### 2.2.1 Why motion, not pixels
+## 2.2 From Recording to Pipeline Input
 
-A micro-expression is a movement, so the natural quantity to hand a classifier is a description of movement rather than of appearance. Raw pixel intensity carries the signal of interest — a few grey levels of change around an eyebrow or a mouth corner — embedded in everything else the camera also recorded: who the subject is, how the scene is lit, the fixed geometry of a particular face. None of that is discarded by presenting a network with frames directly, and on a corpus this narrow in identity and illumination a model has every incentive to fit the wrong part of the image. A displacement field is different in kind: it records how each point moved, not what colour it is, so identity and illumination do not enter it at all. That principle motivates the rest of this section; the comparative case for it is made in §3.3.1.
+Before any mechanism of interest — magnification, flow, strain, or a trained network — can act on a micro-expression, something has to capture it, and something has to hand it to the pipeline in a usable form. This section describes that handoff: what the recording had to provide given the constraints fixed in §2.1, what the corpus actually supplies, and what this project does and does not do to a clip before it enters processing.
 
-### 2.2.2 Optical flow: the brightness-constancy constraint
+### 2.2.1 High-speed capture
 
-Optical flow estimates, for every pixel, the apparent two-dimensional displacement between two frames. The estimate rests on the brightness-constancy assumption: a point on a moving surface is taken to have the same intensity in the next frame as in the current one, so that any change in a pixel's grey level is attributed to something having moved past that location, never to the thing itself changing colour or shade (Liong et al., 2019a).
+§2.1.1 fixed a half-second upper bound on the duration of a micro-expression. That bound has an immediate consequence for recording: whatever number of frames fit inside the event is the entire evidence a classifier will ever see of it, so the frame rate at which the video was captured is not a matter of picture quality but a precondition for the signal existing in the data at all. A 300 ms movement recorded at 25 or 30 fps — ordinary video rates — yields only seven or eight frames, several of them near-identical to their neighbours, since the true movement compresses into so few samples that consecutive frames barely differ. The same event recorded at 200 fps yields roughly sixty frames, enough for onset, apex and offset to be distinct, separately observable moments rather than a blur collapsed into a handful of frames.
 
-Writing $I_t(x,y)$ for the image intensity at position $(x,y)$ and time $t$, and supposing the point there moves to $(x+\delta x,\, y+\delta y)$ by time $t+1$, brightness constancy states
+CASME II was recorded at 200 fps for exactly this reason (Yan et al., 2014). The pipeline used in this thesis takes 200 as a configured constant (`fps: int = 200` in `CASMEIIConfig`, `Stage1_DataPipeline/config.py`), rather than reading it from the video files themselves, since it is a fixed property of the corpus rather than something to be inferred per clip.
 
-$$I_t(x,y) = I_{t+1}(x+\delta x,\, y+\delta y), \qquad \delta x = u_t\,\delta t,\;\; \delta y = v_t\,\delta t,$$
+### 2.2.2 What the corpus supplies, and what this project does not do
 
-where $u_t(x,y)$ and $v_t(x,y)$ are the horizontal and vertical components of the flow at that point. Expanding the right-hand side by a first-order Taylor series and substituting into the constancy equation, the intensity terms cancel and division by $\delta t$ leaves the **optical flow constraint equation**:
+The pipeline does not read raw camera output. It consumes the frames CASME II itself distributes already cropped to the face: the corpus ships a `Cropped` folder alongside its original video, and the metadata-unification stage of the pipeline reads directly from it (`Stage1_DataPipeline/metadata_unifier.py`). The resulting facial region is approximately 280 × 340 pixels.
 
-$$u_t(x,y)\,\frac{\partial I}{\partial x} + v_t(x,y)\,\frac{\partial I}{\partial y} + \frac{\partial I}{\partial t} = 0.$$
+It is worth stating plainly what this means, because the alternative assumption is the natural one to make. This project performs no face detection, no landmark localisation, no geometric registration and no alignment of its own, anywhere in the pipeline. The preprocessing that produced the crop this pipeline reads — 68-point Active Shape Model landmarking on each clip's first frame, registered to a neutral model face by a Local Weighted Mean transform, described in Chapter 3 §3.1.2 — is the corpus authors' work, carried out before this project ever sees a frame. What this pipeline inherits is that finished crop, taken as a fixed input; it adds no detection, registration or alignment step of its own on top of it.
 
-This single scalar equation holds at every pixel but contains two unknowns, $u_t$ and $v_t$: the image gradients are measurable directly from the frames, while the displacement is not determined by them alone. This under-determinacy is the **aperture problem** — a local patch of image constrains the component of motion perpendicular to an edge or gradient, but says nothing about motion parallel to it. One equation per pixel cannot fix two unknowns per pixel, so every practical estimator closes the system by adding a further assumption relating the flow at neighbouring pixels, typically that the field varies smoothly across the image. That added assumption is what distinguishes one flow algorithm from another; this thesis does not adjudicate between them (§3.3.3) and simply adopts one, described in §2.2.4. The output, for a pair of frames, is the pair of scalar fields $u(x,y)$ and $v(x,y)$ — the horizontal and vertical displacement at every pixel — forming the first two channels of the motion representation used throughout this thesis.
+### 2.2.3 Frame selection and preparation
 
-### 2.2.3 Optical strain: the finite strain tensor
+Each frame is read in greyscale and resized to 224 × 224 by bilinear interpolation. From the frames spanning a clip's annotated onset to its annotated offset, a fixed number of frames is selected for further processing — the scheme by which that selection is made is described in §2.4.4, together with the tensor it produces.
 
-Flow answers where a point moved; it does not by itself distinguish a patch of skin that moved together with its neighbours from one that stretched or sheared relative to them. Optical strain makes that distinction by taking the spatial derivative of the flow field rather than the field itself.
+### 2.2.4 Which clips enter the pipeline
 
-Writing the displacement at a point as $\mathbf{u} = [u, v]^{\mathsf T}$, the **finite strain tensor** is defined as the symmetric part of the displacement gradient (Shreve et al., 2011):
+Not every row of the corpus's coding table reaches processing. Three conditions are applied to select the rows that do: the row must belong to the CASME II dataset, its coded expression type must be `micro-expression` rather than one of the other categories the table records, and its sequence length — the number of frames between onset and offset — must exceed two. The first two conditions restrict the pipeline to the corpus and the expression class this thesis addresses. The third rules out clips too short to be usable: a sequence of two frames or fewer contains at most one frame-to-frame transition, which is not enough to construct a motion sequence of any length, whatever downstream representation is built from it.
 
-$$\varepsilon = \tfrac{1}{2}\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^{\mathsf T}\right] = \begin{bmatrix} \varepsilon_{xx} & \varepsilon_{xy} \\ \varepsilon_{yx} & \varepsilon_{yy} \end{bmatrix}, \qquad \varepsilon_{xx} = \frac{\partial u}{\partial x},\;\; \varepsilon_{yy} = \frac{\partial v}{\partial y},\;\; \varepsilon_{xy} = \varepsilon_{yx} = \frac{1}{2}\left(\frac{\partial u}{\partial y} + \frac{\partial v}{\partial x}\right).$$
-
-$\varepsilon_{xx}$ and $\varepsilon_{yy}$ are the **normal strain** components, describing stretching or compression along each axis; $\varepsilon_{xy}$ is the **shear strain** component, describing the change of angle between two initially perpendicular directions on the surface. The tensor is reduced to a single scalar per pixel:
-
-$$\varepsilon_{\text{mag}} = \sqrt{\varepsilon_{xx}^{2} + \varepsilon_{yy}^{2} + \varepsilon_{xy}^{2}}.$$
-
-The property that makes this useful, rather than a second copy of the flow field, follows from its definition as a *gradient*. If a region of the face translates rigidly — every pixel moving by the same $u$ and the same $v$, as a small head movement produces — then $u$ and $v$ are locally constant there, and their spatial derivatives, hence every component of $\varepsilon$, are zero: a rigid translation contributes nothing to the strain field, however large it is. A localised muscle contraction, by contrast, moves neighbouring points of skin by different amounts, so the displacement field has a non-zero gradient exactly where the deformation occurs, and $\varepsilon_{\text{mag}}$ is large there. Strain is thus sensitive to non-rigid deformation specifically, insensitive by construction to whatever rigid motion the flow field also contains.
-
-### 2.2.4 Assembling the three-channel tensor
-
-For each clip, the frames spanning onset to offset are uniformly resampled to a fixed sequence of 33 frames, and dense optical flow is computed between every adjacent pair using OpenCV's implementation of Farnebäck's method (Zhao et al., 2021) — `cv2.calcOpticalFlowFarneback`, with pyramid scale 0.5, three pyramid levels, window size 15, three iterations, a polynomial neighbourhood of size 5 and a polynomial smoothing of 1.2, applied to 8-bit greyscale frames. This yields **32 flow fields** per clip, each a $(u, v)$ pair over the 224 × 224 face region. Strain is computed from each field's spatial gradients using `np.gradient` (central differences at unit pixel spacing, over the two spatial axes only; no temporal gradient is used), giving $\varepsilon_{xx}$, $\varepsilon_{yy}$, $\varepsilon_{xy}$ and hence $\varepsilon_{\text{mag}}$ for each of the 32 pairs.
-
-The three quantities — $u$, $v$ and $\varepsilon_{\text{mag}}$ — are stacked as three channels, giving a tensor of shape $(3, 32, 224, 224)$ in channel order $[u, v, \text{strain}]$. When Eulerian video magnification is applied (§2.3), flow and strain are computed on the magnified frames rather than the originals; the construction is otherwise unchanged.
-
-Normalisation is applied in two separate stages, and both remain active. At extraction time, each of the three channels is independently min–max normalised to $[0, 1]$ across the whole clip, so that a channel's own range — which differs enormously between a flow component and a strain magnitude — does not by itself determine its influence. Separately, at training load time (`Ablation_Study/dataset.py`, with `normalize=True`), each channel is z-scored per sample over its $T \times H \times W$ extent. Neither stage substitutes for the other: the first is a per-clip rescaling done once, during data preparation; the second is a per-sample standardisation applied every time a clip is loaded, centring and scaling each channel to zero mean and unit variance. Both are applied to every clip the model sees.
+Together, these four properties of the recording and the corpus — a 200 fps capture rate, a pre-cropped facial region, a greyscale 224 × 224 frame, and a filtered, onset-to-offset clip — are what reaches the pipeline before any processing of interest begins. §2.3 turns to the first such process applied to these frames: Eulerian motion magnification.
 
 ---
 
@@ -135,17 +121,63 @@ The default operating point used throughout is $\alpha = 10$, a band of 5–25 H
 
 ---
 
-## 2.4 Network Building Blocks
+## 2.4 From Video to Motion: Optical Flow and Optical Strain
+
+### 2.4.1 Why motion, not pixels
+
+A micro-expression is a movement, so the natural quantity to hand a classifier is a description of movement rather than of appearance. Raw pixel intensity carries the signal of interest — a few grey levels of change around an eyebrow or a mouth corner — embedded in everything else the camera also recorded: who the subject is, how the scene is lit, the fixed geometry of a particular face. None of that is discarded by presenting a network with frames directly, and on a corpus this narrow in identity and illumination a model has every incentive to fit the wrong part of the image. A displacement field is different in kind: it records how each point moved, not what colour it is, so identity and illumination do not enter it at all. That principle motivates the rest of this section; the comparative case for it is made in §3.3.1.
+
+### 2.4.2 Optical flow: the brightness-constancy constraint
+
+Optical flow estimates, for every pixel, the apparent two-dimensional displacement between two frames. The estimate rests on the brightness-constancy assumption: a point on a moving surface is taken to have the same intensity in the next frame as in the current one, so that any change in a pixel's grey level is attributed to something having moved past that location, never to the thing itself changing colour or shade (Liong et al., 2019a).
+
+Writing $I_t(x,y)$ for the image intensity at position $(x,y)$ and time $t$, and supposing the point there moves to $(x+\delta x,\, y+\delta y)$ by time $t+1$, brightness constancy states
+
+$$I_t(x,y) = I_{t+1}(x+\delta x,\, y+\delta y), \qquad \delta x = u_t\,\delta t,\;\; \delta y = v_t\,\delta t,$$
+
+where $u_t(x,y)$ and $v_t(x,y)$ are the horizontal and vertical components of the flow at that point. Expanding the right-hand side by a first-order Taylor series and substituting into the constancy equation, the intensity terms cancel and division by $\delta t$ leaves the **optical flow constraint equation**:
+
+$$u_t(x,y)\,\frac{\partial I}{\partial x} + v_t(x,y)\,\frac{\partial I}{\partial y} + \frac{\partial I}{\partial t} = 0.$$
+
+This single scalar equation holds at every pixel but contains two unknowns, $u_t$ and $v_t$: the image gradients are measurable directly from the frames, while the displacement is not determined by them alone. This under-determinacy is the **aperture problem** — a local patch of image constrains the component of motion perpendicular to an edge or gradient, but says nothing about motion parallel to it. One equation per pixel cannot fix two unknowns per pixel, so every practical estimator closes the system by adding a further assumption relating the flow at neighbouring pixels, typically that the field varies smoothly across the image. That added assumption is what distinguishes one flow algorithm from another; this thesis does not adjudicate between them (§3.3.3) and simply adopts one, described in §2.4.4. The output, for a pair of frames, is the pair of scalar fields $u(x,y)$ and $v(x,y)$ — the horizontal and vertical displacement at every pixel — forming the first two channels of the motion representation used throughout this thesis.
+
+### 2.4.3 Optical strain: the finite strain tensor
+
+Flow answers where a point moved; it does not by itself distinguish a patch of skin that moved together with its neighbours from one that stretched or sheared relative to them. Optical strain makes that distinction by taking the spatial derivative of the flow field rather than the field itself.
+
+Writing the displacement at a point as $\mathbf{u} = [u, v]^{\mathsf T}$, the **finite strain tensor** is defined as the symmetric part of the displacement gradient (Shreve et al., 2011):
+
+$$\varepsilon = \tfrac{1}{2}\left[\nabla\mathbf{u} + (\nabla\mathbf{u})^{\mathsf T}\right] = \begin{bmatrix} \varepsilon_{xx} & \varepsilon_{xy} \\ \varepsilon_{yx} & \varepsilon_{yy} \end{bmatrix}, \qquad \varepsilon_{xx} = \frac{\partial u}{\partial x},\;\; \varepsilon_{yy} = \frac{\partial v}{\partial y},\;\; \varepsilon_{xy} = \varepsilon_{yx} = \frac{1}{2}\left(\frac{\partial u}{\partial y} + \frac{\partial v}{\partial x}\right).$$
+
+$\varepsilon_{xx}$ and $\varepsilon_{yy}$ are the **normal strain** components, describing stretching or compression along each axis; $\varepsilon_{xy}$ is the **shear strain** component, describing the change of angle between two initially perpendicular directions on the surface. The tensor is reduced to a single scalar per pixel:
+
+$$\varepsilon_{\text{mag}} = \sqrt{\varepsilon_{xx}^{2} + \varepsilon_{yy}^{2} + \varepsilon_{xy}^{2}}.$$
+
+The property that makes this useful, rather than a second copy of the flow field, follows from its definition as a *gradient*. If a region of the face translates rigidly — every pixel moving by the same $u$ and the same $v$, as a small head movement produces — then $u$ and $v$ are locally constant there, and their spatial derivatives, hence every component of $\varepsilon$, are zero: a rigid translation contributes nothing to the strain field, however large it is. A localised muscle contraction, by contrast, moves neighbouring points of skin by different amounts, so the displacement field has a non-zero gradient exactly where the deformation occurs, and $\varepsilon_{\text{mag}}$ is large there. Strain is thus sensitive to non-rigid deformation specifically, insensitive by construction to whatever rigid motion the flow field also contains.
+
+### 2.4.4 Assembling the three-channel tensor
+
+For each clip, the frames spanning onset to offset are uniformly resampled to a fixed sequence of 33 frames, and dense optical flow is computed between every adjacent pair using OpenCV's implementation of Farnebäck's method (Zhao et al., 2021) — `cv2.calcOpticalFlowFarneback`, with pyramid scale 0.5, three pyramid levels, window size 15, three iterations, a polynomial neighbourhood of size 5 and a polynomial smoothing of 1.2, applied to 8-bit greyscale frames. This yields **32 flow fields** per clip, each a $(u, v)$ pair over the 224 × 224 face region. Strain is computed from each field's spatial gradients using `np.gradient` (central differences at unit pixel spacing, over the two spatial axes only; no temporal gradient is used), giving $\varepsilon_{xx}$, $\varepsilon_{yy}$, $\varepsilon_{xy}$ and hence $\varepsilon_{\text{mag}}$ for each of the 32 pairs.
+
+The three quantities — $u$, $v$ and $\varepsilon_{\text{mag}}$ — are stacked as three channels, giving a tensor of shape $(3, 32, 224, 224)$ in channel order $[u, v, \text{strain}]$. When Eulerian video magnification is applied (§2.3), flow and strain are computed on the magnified frames rather than the originals; the construction is otherwise unchanged.
+
+Normalisation is applied in two separate stages, and both remain active. At extraction time, each of the three channels is independently min–max normalised to $[0, 1]$ across the whole clip, so that a channel's own range — which differs enormously between a flow component and a strain magnitude — does not by itself determine its influence. Separately, at training load time (`Ablation_Study/dataset.py`, with `normalize=True`), each channel is z-scored per sample over its $T \times H \times W$ extent. Neither stage substitutes for the other: the first is a per-clip rescaling done once, during data preparation; the second is a per-sample standardisation applied every time a clip is loaded, centring and scaling each channel to zero mean and unit variance. Both are applied to every clip the model sees.
+
+---
+
+---
+
+## 2.6 Network Building Blocks
 
 Chapter 3 argues why each of the following components was chosen and what its measured contribution was. This section stays one level below that argument, setting out the mechanism each component computes.
 
-### 2.4.1 Three-dimensional convolution and kernel shape
+### 2.6.1 Three-dimensional convolution and kernel shape
 
 A `Conv3d` layer generalises image convolution to a five-dimensional tensor of shape $(B, C, D, H, W)$ — batch, channel, and three spatial-like axes, here depth $D$ (time), height $H$ and width $W$. A kernel of shape $(k_D, k_H, k_W)$ slides over all three of the non-channel, non-batch axes at once, at each position computing a weighted sum over every input channel and every position it currently covers. Stacking $C_{\text{out}}$ such filters produces $C_{\text{out}}$ output channels; stride and padding along each axis control how the output's $D$, $H$ and $W$ compare to the input's.
 
 The detail that matters most for what follows is the kernel's temporal extent, $k_D$. If $k_D > 1$, the filter reaches across multiple frames at every application, so a single output value is a genuine function of more than one time step — a spatio-temporal filter in the literal sense. If $k_D = 1$, the filter at time step $t$ only ever reads input at time step $t$; no output value depends on any other frame. A stack of layers with kernel shape $(1, k_H, k_W)$ is therefore a two-dimensional convolution applied identically and independently to every frame, merely expressed using `Conv3d` operations so the tensor never leaves its $(C, D, H, W)$ layout. This is the case the model in this thesis uses throughout its convolutional stem: every kernel is shaped $(1, 3, 3)$, with padding $(0, 1, 1)$ preserving the spatial extent while the temporal axis is neither padded nor touched. The temporal dimension is carried through the stem unchanged in length; only $H$ and $W$ are affected, first by the convolutions' own padding and then by a spatial-only max-pool of shape $(1, 2, 2)$ that halves both.
 
-### 2.4.2 Normalisation and regularisation
+### 2.6.2 Normalisation and regularisation
 
 `BatchNorm3d` normalises each channel independently: for channel $c$ it computes a mean and variance over every other axis at once — the batch dimension and all spatial-temporal positions $(D, H, W)$ — and rescales,
 $$\hat{x} = \frac{x - \mu_c}{\sqrt{\sigma_c^2 + \epsilon}}, \qquad y = \gamma_c \hat{x} + \beta_c,$$
@@ -155,7 +187,7 @@ where $\gamma_c$ and $\beta_c$ are learned per-channel scale and shift parameter
 
 `LayerNorm` normalises across the feature dimension of a single position for a single sample, independent of the batch, which is why it is the default choice inside transformer blocks rather than `BatchNorm`. Here it appears inside every transformer encoder layer and once more at the end of the classifier head, immediately before the final linear projection to the output classes.
 
-### 2.4.3 Parameter-free attention: SimAM
+### 2.6.3 Parameter-free attention: SimAM
 
 SimAM (Yang et al., 2021) re-weights a feature map without learning any new parameters, by scoring each neuron on how distinctive it is from its surrounding context and using that score directly as a multiplicative gate. For a neuron with activation $x$ in a channel whose mean and variance are $\mu$ and $v$ (estimated by pooling over that channel's own spatial extent), the closed-form energy reduces to
 $$\text{energy}(x) = \frac{(x-\mu)^2}{4(v+\lambda)} + 0.5,$$
@@ -163,7 +195,7 @@ where $\lambda$ is the module's single hyperparameter. The refined output is the
 
 The implementation in this thesis follows that formula exactly, with $\lambda = 10^{-4}$, but estimates $\mu$ and $v$ by pooling over the entire spatio-temporal volume $(D, H, W)$ of a stream's feature map rather than a single frame's spatial extent alone, so a neuron's distinctiveness is judged against the whole clip.
 
-### 2.4.4 Self-attention
+### 2.6.4 Self-attention
 
 Self-attention relates every position in a sequence to every other position by learned linear projection rather than a fixed spatial neighbourhood. Each input vector is projected three ways, into a query $Q$, a key $K$ and a value $V$; attention weights are the scaled dot product of queries against keys,
 $$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V,$$
@@ -173,7 +205,7 @@ Because this is a weighted sum over the whole sequence with weights derived pure
 
 A second placement choice concerns normalisation relative to each sublayer. Post-norm — the original arrangement — applies `LayerNorm` after the residual addition that follows each sublayer; pre-norm applies it beforehand, to the sublayer's input, so the residual path carries an un-normalised signal straight through the stack, which is generally reported to train more stably since gradients reach earlier layers unimpeded. This is the placement used here. Beyond what the encoder layer itself contributes, no additional residual or skip connection is introduced anywhere else in the architecture.
 
-### 2.4.5 The fallbacks
+### 2.6.5 The fallbacks
 
 Each learned component here can be switched off, and each switch has a specific, near parameter-free replacement rather than simply removing that stage. With the convolutional stem off, every frame's motion channels are instead reduced by adaptive average pooling to a fixed $4\times4$ spatial grid regardless of input resolution, flattened per frame and passed through a single linear layer into the model's working dimension. With the transformer off, the sequence of per-frame feature vectors is instead collapsed by a plain mean over the time axis, with no parameters and no representation of frame order at all.
 
@@ -181,15 +213,15 @@ Both fallbacks add as little capacity as possible: the pooling operations introd
 
 ---
 
-## 2.5 Learning Under Scarcity and Skew
+## 2.7 Learning Under Scarcity and Skew
 
 This section sets out the training machinery — the loss function, the sampling scheme, regularisation, and the optimiser — at the level of what each mechanism computes and how it is configured here. Chapter 3 (§3.9) reviews the literature motivating these choices, gives the corpus's class counts, and reports the failure mode that follows from combining two of them carelessly; that narrative is not repeated below. What follows is the mechanism and the configuration actually used.
 
-### 2.5.1 What skew does to cross-entropy
+### 2.7.1 What skew does to cross-entropy
 
 Standard cross-entropy sums a per-example term $-\log p_t$, where $p_t$ is the model's predicted probability for the true class, weighting every example equally. Under a skewed class distribution that equal weighting is not equal in effect: a class's total gradient contribution is its example count times the per-example gradient, so a majority class dominates the sum purely by outnumbering the rest. A model facing this loss has a cheap route to a lower value — predict close to the prior on ambiguous cases — because that is correct often enough on the majority class to outweigh being wrong on every minority example. Loss can fall steadily while the model learns comparatively little about classes it rarely sees. The remainder of this section responds to that problem.
 
-### 2.5.2 Focal loss: re-weighting by difficulty, not by frequency
+### 2.7.2 Focal loss: re-weighting by difficulty, not by frequency
 
 Focal loss (Lin et al., 2017) inserts a modulating factor in front of the log term:
 
@@ -197,25 +229,25 @@ $$\text{FL}(p_t) = -\alpha_t (1-p_t)^{\gamma} \log p_t.$$
 
 Zhao et al. (2021) apply this formulation to micro-expression recognition and state the mechanism plainly: $\gamma$ is "the balance factor for loss" and $\alpha_t$ "the weight balance factor for samples". The distinction matters for what follows. The factor $(1-p_t)^{\gamma}$ shrinks toward zero as the model becomes confident and correct on an example, re-weighting by how *difficult* it currently finds that example, irrespective of its class — an easy majority-class example contributes almost nothing once learned; a hard example, of any class, keeps contributing. Nothing in that factor looks at how many examples of a class exist. Class frequency enters only through the separate $\alpha_t$ term, an explicit per-class multiplier ordinarily set near inverse class frequency.
 
-The implementation here (`Ablation_Study/losses.py`) follows this exactly: it computes `log_softmax`, gathers $\log p_t$ for the true class, exponentiates to recover $p_t$, and forms `focal_weight = (1 - p_t) ** gamma`. Label smoothing (§2.5.5) is applied first, blending the negative log-likelihood term with a uniform term over classes, so the focal weight multiplies the *smoothed* loss rather than the raw NLL. The optional $\alpha$ vector, where supplied, multiplies the result afterwards, indexed by each example's true class. $\gamma = 2.0$ throughout, following Zhao et al.'s reported setting, with label smoothing at $0.05$.
+The implementation here (`Ablation_Study/losses.py`) follows this exactly: it computes `log_softmax`, gathers $\log p_t$ for the true class, exponentiates to recover $p_t$, and forms `focal_weight = (1 - p_t) ** gamma`. Label smoothing (§2.7.5) is applied first, blending the negative log-likelihood term with a uniform term over classes, so the focal weight multiplies the *smoothed* loss rather than the raw NLL. The optional $\alpha$ vector, where supplied, multiplies the result afterwards, indexed by each example's true class. $\gamma = 2.0$ throughout, following Zhao et al.'s reported setting, with label smoothing at $0.05$.
 
-### 2.5.3 Balanced sampling
+### 2.7.3 Balanced sampling
 
 The second lever acts on the data a batch is drawn from rather than on the loss computed over it. A `WeightedRandomSampler` assigns each training example a weight equal to the inverse of its class's count, computed over the training split of the current fold only. Sampling then proceeds with replacement, drawing `num_samples = len(train)` indices per epoch, so each class is presented with roughly equal probability regardless of its true rarity. This sampler is attached to the training loader alone; the validation loader uses no sampler and iterates with `shuffle=False`, so validation scores reflect the split's true distribution.
 
-### 2.5.4 Why combining both is a choice, not a default
+### 2.7.4 Why combining both is a choice, not a default
 
 Focal loss's $\alpha$ term and the balanced sampler both correct for class frequency, at different points in the pipeline, so running both at once corrects for the same imbalance twice. This project resolves that at run time by an explicit rule: `use_loss_weights = use_class_weights and not use_balanced_sampler`. Both flags default to `True`, so in every default configuration the sampler wins and the loss-side $\alpha$ term is switched off. Focal loss, as actually run here, therefore operates through difficulty-focusing and label smoothing only — the class-frequency correction is already made upstream, by the sampler. §3.9.7 (cross-referenced rather than repeated here) explains why this rule exists and what happens when it is violated; the fact to carry forward is simply that the two mechanisms are not additive by default in this codebase.
 
-### 2.5.5 Label smoothing
+### 2.7.5 Label smoothing
 
 Label smoothing replaces the one-hot target with a softened one, mixing a fraction $\epsilon$ of uniform probability mass across all classes into the true-class target. Inside the focal-loss implementation this is a weighted combination of the ordinary negative log-likelihood term and a term averaging $-\log p_c$ over every class $c$, with $\epsilon = 0.05$. The effect is to discourage the model from driving the true-class logit arbitrarily high — regularisation against over-confidence, applied uniformly regardless of class, and distinct from a correction for imbalance. AdamW, mixed precision, gradient clipping, and label smoothing itself have no dedicated treatment in this project's `docs/` corpus and are used here as standard practice.
 
-### 2.5.6 Augmentation under scarcity
+### 2.7.6 Augmentation under scarcity
 
-With few labelled clips per class, augmentation acts before the loss or the sampler is reached at all, and is applied to the training split only. Xia et al. (2020a) motivate this for micro-expression data directly: "temporal data augmentation strategies as well as a balanced loss are jointly used for our deep network" to address "limited and imbalanced training samples". Two transformations are used here (`Ablation_Study/dataset.py`): a random temporal crop of the input window (centred at evaluation), and a horizontal flip applied with probability one half. Because the input is optical flow rather than raw pixels (§2.2), the flip cannot be a plain mirror — reversing the scene horizontally reverses the sign of horizontal displacement — so the flip is paired with a negation of the flow tensor's $u$ (horizontal) channel. Flipping without negating $u$ would hand the network motion vectors pointing the wrong way for the geometry shown, a quiet corruption motion-tensor augmentation must specifically guard against.
+With few labelled clips per class, augmentation acts before the loss or the sampler is reached at all, and is applied to the training split only. Xia et al. (2020a) motivate this for micro-expression data directly: "temporal data augmentation strategies as well as a balanced loss are jointly used for our deep network" to address "limited and imbalanced training samples". Two transformations are used here (`Ablation_Study/dataset.py`): a random temporal crop of the input window (centred at evaluation), and a horizontal flip applied with probability one half. Because the input is optical flow rather than raw pixels (§2.4), the flip cannot be a plain mirror — reversing the scene horizontally reverses the sign of horizontal displacement — so the flip is paired with a negation of the flow tensor's $u$ (horizontal) channel. Flipping without negating $u$ would hand the network motion vectors pointing the wrong way for the geometry shown, a quiet corruption motion-tensor augmentation must specifically guard against.
 
-### 2.5.7 Optimisation
+### 2.7.7 Optimisation
 
 Training uses AdamW, with decoupled weight decay applied uniformly to every parameter — no separate no-decay group for biases or normalisation terms. Learning rate is $10^{-4}$, weight decay $10^{-4}$. The schedule combines a short linear warmup with cosine annealing: `LinearLR` ramps the rate from a tenth of target to full over five epochs, after which `CosineAnnealingLR` anneals it to a floor of $10^{-7}$ over the remaining epochs; the two are joined by `SequentialLR` and stepped once per epoch, for 50 epochs in total. Cosine annealing is adopted elsewhere in the micro-expression literature on similar small-data grounds — Zhang et al. (2022) use it in a spatio-temporal transformer for this same task.
 
@@ -225,11 +257,11 @@ One category of technique is absent by design: quantisation, pruning, and knowle
 
 ---
 
-## 2.6 Evaluating on a Small Corpus
+## 2.8 Evaluating on a Small Corpus
 
 Chapter 3 argues why leave-one-subject-out evaluation and pooled macro F1 suit this corpus, and what those choices cost here (§3.1.6, §3.1.8). This section gives the mechanism underneath: the confusion matrix and per-class precision, recall, F1; averaging scores versus pooling counts; the easily conflated distinction between averaging across folds and within them; what cross-validation buys and what leave-one-subject-out protects against; and, to close, an audit of what this thesis's own measurement apparatus does and does not supply.
 
-### 2.6.1 The confusion matrix, and precision, recall, F1 for one class
+### 2.8.1 The confusion matrix, and precision, recall, F1 for one class
 
 For a single class $c$ treated as positive against all others, every prediction falls into one of four counts: true positives $TP_c$ (correctly predicted $c$), false positives $FP_c$ (predicted $c$ but truly something else), false negatives $FN_c$ (truly $c$ but predicted otherwise), and true negatives. Arranging all classes this way at once gives the confusion matrix: entry $(i,j)$ counts clips whose true label is $i$ and predicted label is $j$, so the diagonal holds correct predictions and every off-diagonal cell names a specific error — which true class is mistaken for which other.
 
@@ -239,27 +271,27 @@ Precision penalises false alarms: it falls whenever the classifier calls $c$ on 
 $$F1_c = \frac{2 \cdot \text{Precision}_c \cdot \text{Recall}_c}{\text{Precision}_c + \text{Recall}_c} = \frac{2\,TP_c}{2\,TP_c + FP_c + FN_c}$$
 is the usual single-number summary: being harmonic, it stays low whenever either input is low, so a model cannot buy a good F1 by trading recall for precision.
 
-### 2.6.2 Macro versus micro averaging
+### 2.8.2 Macro versus micro averaging
 
 Combining per-class F1 scores into one number can be done two ways. Macro averaging computes $F1_c$ per class and takes an unweighted mean, $\text{Macro-F1} = \tfrac1C\sum_c F1_c$: every class counts equally regardless of size, so ignoring a rare class is penalised as heavily as ignoring a common one. Micro averaging instead pools the raw counts across classes first — summing every class's $TP$, $FP$ and $FN$ — and computes one F1 from those totals.
 
 For single-label multi-class classification, where every clip gets exactly one predicted label, this pooling has a consequence worth stating plainly: every misclassification is simultaneously a false positive for the class it was wrongly assigned to and a false negative for its true class, so summed $FP$ and summed $FN$ equal each other and the total error count, and pooled micro-F1 reduces algebraically to $TP_{\text{total}}/N$ — plain accuracy. Micro-F1 and accuracy are not two different metrics here; they are the same number computed two ways. The contrast that actually matters is therefore not "macro versus micro" but **macro-F1 versus accuracy**: an unweighted per-class average against a count a majority class can dominate.
 
-### 2.6.3 Pooled versus per-fold averaging
+### 2.8.3 Pooled versus per-fold averaging
 
 A further averaging choice sits underneath macro-F1 once evaluation is split into folds, and it governs how every result in this thesis is reported. One option accumulates the confusion counts — $TP_c$, $FP_c$, $FN_c$ — across every fold first, then computes one set of per-class F1 scores, and one macro-F1, from that pooled total. The other computes a complete macro-F1 inside each fold from that fold's own predictions, then averages the per-fold values. See et al. (2019) define the Unweighted F1 (UF1) of the MEGC 2019 protocol the first way: the macro-averaged F1 obtained by accumulating true positives, false positives and false negatives over all folds of a leave-one-subject-out run before computing and averaging per-class F1.
 
 These are estimators of two different quantities, not two ways of writing the same one: pooled macro-F1 describes this class's F1 across the whole evaluation, once every held-out prediction sits in one confusion matrix together, while per-fold-averaged macro-F1 describes the typical per-fold macro-F1 — a quantity that depends on how classes happen to fall within each fold, not only on the classifier. When a fold's held-out set does not contain every class, its per-class F1 for the missing class is degenerate, and averaging such folds in with fully-populated ones changes what the number reflects for reasons unrelated to classifier quality; on a small, unevenly distributed corpus this is a live possibility, and fold composition can bound the per-fold estimator below what the pooled one would report. §3.1.6 and §3.1.8 work through how the fold structure of this study does exactly that; the point to carry here is only that the two quantities are not interchangeable, and which one a reported number is becomes apparent only once its computation is stated.
 
-### 2.6.4 Cross-validation and subject-disjointness
+### 2.8.4 Cross-validation and subject-disjointness
 
 $k$-fold cross-validation partitions the data into $k$ disjoint subsets, trains $k$ models — each on $k-1$ folds — and evaluates each on the one fold it never saw, so every example is scored exactly once by a model that never trained on it. Leave-one-subject-out (LOSO) is the case where $k$ equals the number of subjects, and each fold's held-out set is precisely one subject's clips, every other subject's clips forming that fold's training set.
 
 The property this buys is subject-disjointness: no fold's training and validation sets ever share a subject. Without it, a model evaluated on a clip from a subject it has already trained on can succeed by recognising that person's face or recording conditions rather than the expression class itself — an identity leak inflating the score without the model having learned anything transferable to an unseen person. Enforcing subject-disjointness in every fold closes that channel.
 
-### 2.6.5 What this apparatus does and does not provide
+### 2.8.5 What this apparatus does and does not provide
 
-The pipeline behind every result in this thesis computes, per fold, a confusion matrix and per-class precision, recall and F1 via scikit-learn; across folds it reports `accuracy` and `macro_f1` in `final_results.json` as the **mean of the per-fold values**, while summing the confusion matrices and computing `per_class_f1` and `micro_f1` from that **summed** matrix. Two consequences follow directly, stated without softening. First, the pooled macro-F1 — the UF1 quantity of §2.6.3 — is never computed by the training code itself; the field named `macro_f1` in its output is the per-fold average, not the pooled quantity, which must be derived afterwards as the mean of the stored `per_class_f1` values. Second, `micro_f1` equals accuracy here, as the code's own comment records; unweighted average recall (UAR), the balanced-accuracy counterpart to UF1, is never computed at all, though the per-class recall values it would be built from are stored.
+The pipeline behind every result in this thesis computes, per fold, a confusion matrix and per-class precision, recall and F1 via scikit-learn; across folds it reports `accuracy` and `macro_f1` in `final_results.json` as the **mean of the per-fold values**, while summing the confusion matrices and computing `per_class_f1` and `micro_f1` from that **summed** matrix. Two consequences follow directly, stated without softening. First, the pooled macro-F1 — the UF1 quantity of §2.8.3 — is never computed by the training code itself; the field named `macro_f1` in its output is the per-fold average, not the pooled quantity, which must be derived afterwards as the mean of the stored `per_class_f1` values. Second, `micro_f1` equals accuracy here, as the code's own comment records; unweighted average recall (UAR), the balanced-accuracy counterpart to UF1, is never computed at all, though the per-class recall values it would be built from are stored.
 
 The LOSO folds enforce subject-disjointness by construction — a held-out subject's clips contribute nothing to that fold's training set — and the holdout variant asserts explicitly that its train and validation subject sets are disjoint. One property of the apparatus falls short of an analogous guarantee and must be named as a limitation rather than left implicit: there is no inner validation split. The held-out subject's fold is used both to select the best training checkpoint and as the final scored set for that same fold, so a reported fold result is not blind to the data it is checked against, as a nested train/validation/test design would keep it. This is an optimistic bias of unknown size in every reported number, a property of the apparatus itself rather than of any one configuration.
 

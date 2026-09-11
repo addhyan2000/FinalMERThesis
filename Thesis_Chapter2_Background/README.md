@@ -25,8 +25,8 @@ Section files carry no reference lists of their own; the rebuild script appends 
 
 ## Conventions
 
-- **Background gives mechanism; Chapter 3 gives literature, evidence and argument.** Where both need a fact, Background owns it and Chapter 3 cross-references. Chapter 3 was edited during this work to defer to §2.1 (the definition of the phenomenon and the half-second bound), §2.2.2 (the optical flow constraint equation), §2.2.3 (the strain tensor), §2.4.1 (the spatial-only kernel), §2.5.2 (the focal-loss mechanism) and §2.6.3 (pooled versus per-fold estimators).
-- **Only what the project uses.** Quantisation, pruning and distillation are absent from the codebase and are excluded, with the absence stated in §2.5.
+- **Background gives mechanism; Chapter 3 gives literature, evidence and argument.** Where both need a fact, Background owns it and Chapter 3 cross-references. Chapter 3 was edited during this work to defer to §2.1 (the definition of the phenomenon and the half-second bound), §2.4.2 (the optical flow constraint equation), §2.4.3 (the strain tensor), §2.6.1 (the spatial-only kernel), §2.7.2 (the focal-loss mechanism) and §2.8.3 (pooled versus per-fold estimators).
+- **Only what the project uses.** Quantisation, pruning and distillation are absent from the codebase and are excluded, with the absence stated in §2.7.
 - **No invented citations.** Standard ML background with no source in `docs/` is stated uncited.
 
 ## How each section was produced
@@ -41,11 +41,11 @@ Every section passed a four-stage pipeline before being accepted:
 ### What the checks caught
 
 - **§2.1** — the pipeline never reads the apex frame, and Action Units are never read by the model; both are now stated explicitly rather than implied. Two quotations had drifted from their sources and were restored. Four duplication overlaps with §3.1 were removed.
-- **§2.2** — a parameter name was wrong (`normalize`, not `normalize_inputs`) and one reference lacked its year suffix. Normalisation is **two-stage** — min–max at extraction and z-score at load — which an earlier reading had missed.
+- **§2.4** — a parameter name was wrong (`normalize`, not `normalize_inputs`) and one reference lacked its year suffix. Normalisation is **two-stage** — min–max at extraction and z-score at load — which an earlier reading had missed.
 - **§2.3** — clean. Confirmed the temporal filter is an ideal FFT mask rather than the Butterworth filter of the cited method, that all four pyramid bands share one α, and that there is no chromatic or spatial-frequency attenuation.
-- **§2.4** — clean. Confirmed there are no author-written residual connections, and that `Ablation_Study/models.py` rather than the `Stage2_Architecture/` prototype is the file the experiments used.
-- **§2.5** — clean. Confirmed the most consequential fact in the section: because the balanced sampler is active, **the focal loss's class-weighting term is inactive in the default runs**, so it operates through difficulty-focusing and label smoothing alone.
-- **§2.6** — clean. Confirmed that the pooled macro F1 is never computed by the training code, that UAR is never computed at all, and that **there is no inner validation split** — the held-out fold serves both as the checkpoint-selection signal and as the final scored set, which is optimistically biased and is flagged as a limitation.
+- **§2.6** — clean. Confirmed there are no author-written residual connections, and that `Ablation_Study/models.py` rather than the `Stage2_Architecture/` prototype is the file the experiments used.
+- **§2.7** — clean. Confirmed the most consequential fact in the section: because the balanced sampler is active, **the focal loss's class-weighting term is inactive in the default runs**, so it operates through difficulty-focusing and label smoothing alone.
+- **§2.8** — clean. Confirmed that the pooled macro F1 is never computed by the training code, that UAR is never computed at all, and that **there is no inner validation split** — the held-out fold serves both as the checkpoint-selection signal and as the final scored set, which is optimistically biased and is flagged as a limitation.
 
 ## Outstanding
 

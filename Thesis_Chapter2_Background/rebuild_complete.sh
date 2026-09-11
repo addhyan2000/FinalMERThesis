@@ -31,11 +31,11 @@ This chapter sets out the concepts and techniques needed to follow the methodolo
 
 HDR
 
-for f in $(ls -1 0[1-6]_2.*.md | sort); do
+for f in $(ls -1 0[1-9]_2.*.md | sort); do
   awk 'f{print} /^## 2\./{if(!f){f=1; print}}' "$f" >> "$OUT"
   printf '\n---\n\n' >> "$OUT"
 done
 
-cat 07_References.md >> "$OUT"
+cat 10_References.md >> "$OUT"
 
-echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 2\.' "$OUT") sections, $(grep -c '^[A-Z].*([12][0-9]\{3\}[ab]\?)\.' 07_References.md) references."
+echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 2\.' "$OUT") sections, $(grep -c '^[A-Z].*([12][0-9]\{3\}[ab]\?)\.' 10_References.md) references."
