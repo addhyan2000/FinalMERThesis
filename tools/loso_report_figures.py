@@ -14,6 +14,15 @@ ROOT = str(pathlib.Path(__file__).resolve().parent.parent)
 OUT = f"{ROOT}/report_figures_loso"
 os.makedirs(OUT, exist_ok=True)
 
+# Thesis mode: regenerate a handful of figures WITHOUT their baked-in editorial
+# titles, so they can carry a neutral caption supplied by the thesis document
+# instead. Gated behind an env var so the normal report figures (above) are
+# completely unaffected when this is unset.
+THESIS_MODE = os.environ.get("CH3_THESIS_FIGS") == "1"
+OUT_THESIS = f"{ROOT}/report_figures_thesis"
+if THESIS_MODE:
+    os.makedirs(OUT_THESIS, exist_ok=True)
+
 D = json.load(open(f"{SP}/data.json"))
 
 BLUE, AMBER, GREEN, RED, PURPLE, GRAY = ("#4C78A8", "#F58518", "#54A24B",
@@ -58,6 +67,26 @@ def save(fig, name):
     fig.savefig(p)
     plt.close(fig)
     print("wrote", name)
+
+
+def save_thesis(fig, name):
+    p = f"{OUT_THESIS}/{name}"
+    fig.savefig(p)
+    plt.close(fig)
+    print("wrote", name)
+
+
+def editorial_title(target, text, **kwargs):
+    """Set an opinionated headline/subtitle that argues a point (as opposed to a
+    subplot title that merely states what the panel contains). No-op in thesis
+    mode (CH3_THESIS_FIGS=1): the thesis figure gets a neutral caption from the
+    document instead of an in-image editorial title."""
+    if THESIS_MODE:
+        return
+    if hasattr(target, "set_title"):
+        target.set_title(text, **kwargs)
+    else:
+        target.suptitle(text, **kwargs)
 
 
 def toggle_str(c):
@@ -121,7 +150,7 @@ def fig_l2():
     ax.set_ylabel("accuracy")
     ax.set_ylim(0, 1.0)
     ax.legend(loc="upper right", frameon=False, fontsize=9)
-    ax.set_title("Figure L2 — Why two numbers exist for every LOSO cell\n"
+    editorial_title(ax, "Figure L2 — Why two numbers exist for every LOSO cell\n"
                  "TOP: accuracy. Averaging the 25 folds equally over-weights the "
                  "1-clip subjects, inflating the score above the true pooled value.")
     ax = axes[1]
@@ -138,12 +167,15 @@ def fig_l2():
     ax.set_xticks(x)
     ax.set_xticklabels(order)
     ax.legend(loc="upper right", frameon=False, fontsize=9)
-    ax.set_title("BOTTOM: macro F1. Ten of the 25 folds contain only ONE of the three "
+    editorial_title(ax, "BOTTOM: macro F1. Ten of the 25 folds contain only ONE of the three "
                  "classes, so their per-fold macro F1 can never exceed 1/3 —\n"
                  "the mean-of-folds figure is capped at 0.627 by arithmetic alone and "
                  "must not be compared against the 0.68 target.")
     fig.tight_layout()
-    save(fig, "figL2_metric_definitions.png")
+    if THESIS_MODE:
+        save_thesis(fig, "fig3_3_metric_definitions.png")
+    else:
+        save(fig, "figL2_metric_definitions.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L3
@@ -170,7 +202,7 @@ def fig_l3():
     ax.set_ylabel("clips held out in that fold")
     ax.set_ylim(0, 38)
     ax.legend(frameon=False, ncol=3, loc="upper left")
-    ax.set_title("Figure L3 — The 25 LOSO folds are wildly unequal\n"
+    editorial_title(ax, "Figure L3 — The 25 LOSO folds are wildly unequal\n"
                  "Each bar is one held-out subject. The number above each bar is how many "
                  "of the 3 classes that subject actually has.\n"
                  "Subject 17 alone supplies 33 of the 156 clips; subjects 8, 10 and 21 "
@@ -191,7 +223,10 @@ def fig_l3():
     ax.set_xlabel("number of folds")
     ax.set_title("Weighted ceiling  =  (10x0.33 + 8x0.67 + 7x1.00) / 25  =  0.627")
     fig.tight_layout()
-    save(fig, "figL3_fold_composition.png")
+    if THESIS_MODE:
+        save_thesis(fig, "fig3_2_fold_composition.png")
+    else:
+        save(fig, "figL3_fold_composition.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L4
@@ -615,10 +650,13 @@ def fig_l14():
                 str(grp[k]), ha="center", fontsize=9)
     ax.set_title("Grouped 3-class pool actually used: 156 clips\n"
                  "ratio 99 : 32 : 25  ≈  4 : 1.3 : 1")
-    fig.suptitle("Figure L14 — The dataset behind every number in this report",
+    editorial_title(fig, "Figure L14 — The dataset behind every number in this report",
                  fontsize=11.5, fontweight="bold", y=1.04)
     fig.tight_layout()
-    save(fig, "figL14_dataset.png")
+    if THESIS_MODE:
+        save_thesis(fig, "fig3_1_dataset.png")
+    else:
+        save(fig, "figL14_dataset.png")
 
 
 for f in [fig_l1, fig_l2, fig_l3, fig_l4, fig_l5, fig_l6, fig_l7, fig_l8,

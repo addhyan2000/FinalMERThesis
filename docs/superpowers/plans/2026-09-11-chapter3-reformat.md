@@ -989,7 +989,7 @@ Every one of these must hold:
 | `broken figure references` | none |
 | `uncited reference entries` | none |
 | exit code | 0 |
-| assembled word count | between 29,445 and 30,917 (+5% / −0%) |
+| assembled word count | between 29,237 and 30,917 |
 
 - [ ] **Step 3: Prove no content was lost, mechanically**
 
@@ -1056,3 +1056,61 @@ Report: the gate output, the word count before and after, the number of drift fi
 **When an audit and the text disagree.** Check the text. Two of roughly twenty-five findings in the previous pass on this chapter were wrong, including one that reported a PDF missing from `docs/` when it was present under a misleading filename.
 
 **Reverting.** Nothing is committed. One section: `git checkout -- <file>`. Everything: `git checkout -- Thesis_Chapter3_LiteratureReview/Tech-wise/`. Note this also discards `citation_map.tsv` if it is untracked — copy it out first.
+
+---
+
+# REVISION — 11 September 2026: leaner pipeline for Tasks 5–17
+
+Adopted at the user's request to cut token cost. Tasks 1–4 are already complete under the original plan; this revision governs everything after.
+
+## What changed and why
+
+**Three of the five agents per section were doing scriptable work.** `tools/ch3_verify.py` (new) now performs mechanically what Briefs 3a, 3b and 3c did by hand:
+
+| Old brief | Now |
+|---|---|
+| 3c cross-reference audit | `tools/ch3_check.py` — already checked broken `§`, `Table` and `Figure` references |
+| 3b citation audit | `tools/ch3_verify.py` — name↔number pairing against `11_References.md`, narrative author citations only |
+| 3a no-drift audit, mechanical half | `tools/ch3_verify.py` — every number, quotation ≥12 chars, heading and table row compared against `HEAD` |
+| 3a no-drift audit, judgment half | **kept as an agent** — but scoped to the newly written prose only |
+
+Both scripts run in seconds and cost nothing. Verified against Task 4's output: `TOTAL ISSUES: 0` across all ten sections.
+
+**Sections are batched two at a time.** Eight mid-sized sections of the same shape go in four batches of two instead of eight separate cycles.
+
+## The revised cycle
+
+Per batch:
+
+1. **Writer agent** (one dispatch, N files) — applies conventions C1–C10 from the convention sheet directly. The separate format-audit stage is dropped: the convention sheet *is* the checklist, and the §3.9 pilot calibrates the brief before any batch runs.
+2. **Mechanical gate** — `python3 tools/ch3_verify.py` then `python3 tools/ch3_check.py`. Both must report zero. No agent involved.
+3. **Prose-judgment agent** (one dispatch per batch) — receives only the new prose the writer added (opening paragraphs and bridges), extracted by `git diff`, and answers one question: does any new sentence introduce a claim, hedge, comparison or evaluation not present in the source text? It does not re-check numbers, citations or references — the scripts own those.
+
+## Revised task list
+
+| # | Scope | Agents | Est. |
+|---|---|--:|--:|
+| 5 | §3.9 pilot — keeps the format-audit stage, since it calibrates every later brief | 3 | ~180k |
+| 6 | Figures — title-free regeneration | 1 | ~100k |
+| 7 | §3.1 alone — 6,064 words, three figures, most cross-reference targets | 2 | ~200k |
+| 8A | Batch A — §3.2 Eulerian magnification, §3.3 Optical flow | 2 | ~200k |
+| 8B | Batch B — §3.4 Optical strain, §3.5 Temporal normalisation | 2 | ~200k |
+| 8C | Batch C — §3.6 3D-CNN backbone, §3.7 SimAM | 2 | ~200k |
+| 8D | Batch D — §3.8 Transformer, §3.10 Synthesis | 2 | ~200k |
+| 16 | Chapter preamble in `rebuild_complete.sh` + README | 0 | ~25k |
+| 17 | Consistency pass + final gate | 1 | ~150k |
+
+**Total ≈ 1.45M**, down from ≈ 3.2M.
+
+Batches are **two sections each**, not four — the user's call, and the right one. A writer holding two files drifts far less than one holding four, and the extra ~140k buys a materially smaller blast radius: a bad batch costs one redo of two sections rather than four.
+
+## Batch safety rules
+
+- A writer handling two files edits them **one at a time**, finishing and reporting the first before opening the second. Context fills as a batch proceeds, and the later file is where drift appears.
+- After each batch, `ch3_verify.py` is run **per file**, not just in aggregate, so a drifting file cannot hide behind a clean one.
+- Any file reporting drift is reverted alone with `git checkout -- <file>` and redone individually. A batch is never re-run wholesale.
+- Batches keep the one-file-per-write discipline: the writer never has two files open simultaneously.
+
+## Unchanged
+
+Convention sheet C1–C10, the figure allocation, the §3.9-then-§3.1 ordering, the no-commit constraint, and the requirement that every finding be checked before it is applied.
