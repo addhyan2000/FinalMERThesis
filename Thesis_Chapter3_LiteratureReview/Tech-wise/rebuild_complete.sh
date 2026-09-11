@@ -45,4 +45,4 @@ done
 # single consolidated reference list
 cat 11_References.md >> "$OUT"
 
-echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 3\.' "$OUT") sections, $(grep -c '^[A-Z].*([12][0-9]\{3\}[ab]\?)\.' 11_References.md) references."
+echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 3\.' "$OUT") sections, $(grep -c '^\[[0-9][0-9]*\] ' 11_References.md) references."
