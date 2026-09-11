@@ -65,7 +65,7 @@ Each chapter folder has a `README.md` (conventions, verification log, outstandin
 
 ## 5. The workflow that produced these chapters
 
-Per section, four agent stages — repeat this for Chapters 4–6:
+**The full prompt templates are in `AGENT_PROMPTS.md`** — copy them, replace the placeholders. Per section, four agent stages; repeat for Chapters 4–6:
 
 1. **Scope check** — verify against code and data that each proposed topic has a real footprint; report exact implementation facts.
 2. **Write** — from the verified facts only, under an explicit no-duplication constraint naming what the other chapter owns.

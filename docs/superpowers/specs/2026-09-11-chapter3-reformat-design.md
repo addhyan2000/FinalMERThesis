@@ -71,7 +71,7 @@ Ten rules. Each states exactly what changes and what does not. This sheet is the
 
 ### C1e — Out-of-corpus attributions receive no number
 
-Works attributed in the text but deliberately absent from the reference list — `Zhao & Pietikäinen, 2007` for LBP-TOP, and the roughly twenty listed in the preamble to `11_References.md` — keep their author–year form and receive **no** bracket. They have no entry to resolve against, so a bracket would create a ghost reference. The Stage 0 map lists them explicitly as a do-not-touch set.
+Works attributed in the text but deliberately absent from the reference list — the roughly twenty enumerated in the preamble to `11_References.md`, including Ekman and Friesen (1969), Wu et al. and Wadhwa et al. on magnification, Farnebäck and TV-L1, Pfister et al. on TIM, Lin et al. on focal loss, the SE/CBAM/ECA/GC/SRM attention modules, and Yan et al. (2013) on CASME — keep their author–year form and receive **no** bracket. They have no entry to resolve against, so a bracket would create a ghost reference. The Stage 0 map lists them explicitly as a do-not-touch set.
 
 ### C2 — Chapter opens with unnumbered framing prose
 
@@ -139,6 +139,8 @@ Two author collisions exist in the reference list and are **already disambiguate
 
 - `Li, X.` appears twice — 2013 (SMIC) and 2018 (IEEE TAC survey). The prose writes the latter as `Li et al. (2018)`.
 - `Li, Y.` appears twice — 2018 (ICIP) and 2021 (IEEE TIP). The prose writes both as `Li, Huang and Zhao (2018)` / `(2021)`, never as `Li et al.`
+- `Yan et al. (2014)` is in-corpus (CASME II, entry 23). `Yan et al. (2013)` is the **out-of-corpus** CASME paper and must receive no bracket. A pattern matching `Yan et al.` without its year would corrupt both.
+- `Zhao, G., & Pietikäinen, M. (2007)` on LBP-TOP **is** in the reference list and does receive a number. It is not an out-of-corpus attribution.
 
 ### Step 0.4 — Surface forms handled
 
@@ -152,7 +154,7 @@ All seven occur in the text.
 | Combined years | `Li, Huang and Zhao (2018, 2021)` | `Li, Huang and Zhao [7, 8]` |
 | Multi-source | `(Yan et al., 2014; Li et al., 2018)` | `[1, 6]` |
 | Ampersand | `(Li, Huang & Zhao, 2018, 2021)` | `[7, 8]` |
-| Out-of-corpus, incl. inside table cells | `LBP-TOP (Zhao & Pietikäinen, 2007)` | unchanged |
+| Out-of-corpus, incl. inside table cells | `CASME (Yan et al., 2013)` | unchanged |
 
 ### Step 0.5 — Substitute
 
@@ -223,7 +225,7 @@ Reports back: word count before and after, and an itemised list of what was adde
 
 ### Stage 4 — Orchestrator
 
-Applies fixes; checks every reported error before accepting it, since two of roughly twenty-five findings were wrong in the previous pass; rebuilds; commits the section.
+Applies fixes; checks every reported error before accepting it, since two of roughly twenty-five findings were wrong in the previous pass; rebuilds the assembled chapter; moves to the next section.
 
 ### Batching
 
@@ -261,7 +263,7 @@ Figure 3.3 ships only if the Stage 1 agent for §3.1 confirms it is Chapter 3 ma
 
 **Then the whole-chapter pass:** consistency editor, `rebuild_complete.sh`, final reconciliation gate.
 
-**Git:** one branch; one commit per section, so any single section can be reverted alone.
+**Git: no commits are made by this task.** All work stays in the working tree. Because the section files are unmodified at `HEAD`, a single section is reverted with `git checkout -- <file>` and inspected with `git diff -- <file>`, which is scoped to that file and therefore unaffected by edits already made to other sections. The user commits when and if they choose.
 
 ---
 
@@ -269,7 +271,7 @@ Figure 3.3 ships only if the Stage 1 agent for §3.1 confirms it is Chapter 3 ma
 
 ### Per-section gate
 
-A section is not committed until all three of its Stage 3 audits return clean, or until every finding has been individually checked by the orchestrator and either applied or rejected with a stated reason.
+A section is not considered done until all three of its Stage 3 audits return clean, or until every finding has been individually checked by the orchestrator and either applied or rejected with a stated reason.
 
 | Audit result | Action |
 |---|---|
@@ -278,7 +280,7 @@ A section is not committed until all three of its Stage 3 audits return clean, o
 | 3c reports a broken cross-reference | Verify the target heading actually exists before editing. A broken reference may mean the writer renamed a heading it was forbidden to rename — in which case the fix is to restore the heading, not to repoint the reference. |
 | An audit reports a factual error in the original | Do not fix it in this task. Log it in the folder `README.md` under outstanding items. Fact corrections are a separate task with a separate audit trail. |
 
-### Whole-chapter gate, before final commit
+### Whole-chapter gate, before the chapter is declared done
 
 1. The Stage 0 reconciliation script passes again against the finished chapter.
 2. `rebuild_complete.sh` runs and `00_Chapter3_Complete.md` regenerates without error.
@@ -289,7 +291,9 @@ A section is not committed until all three of its Stage 3 audits return clean, o
 
 ### Rollback
 
-One commit per section means a bad section is reverted alone. If Stage 0's substitution proves unsound, the whole branch is discarded and the map is rebuilt — nothing downstream is trusted, because every section's citation audit was run against that map.
+Since nothing is committed, `git checkout -- <file>` restores any single section to its state at `HEAD`. If Stage 0's substitution proves unsound, every section file is restored the same way and the map is rebuilt from scratch — nothing downstream is trusted, because every section's citation audit was run against that map.
+
+The cost of not committing is that a later section's edits cannot be isolated from an earlier section's by commit boundary. This is mitigated by the one-file-per-agent rule in Stage 2: no agent ever writes to more than one section file, so per-file diffs stay clean.
 
 ---
 

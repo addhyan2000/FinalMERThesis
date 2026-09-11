@@ -1,0 +1,1086 @@
+{
+  "numeric_citations": 3,
+  "reference_entries": 27,
+  "residual_author_year": [
+    {
+      "text": "(Yan et al., 2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 11
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 13
+    },
+    {
+      "text": "(Shreve et al., 2011)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 17
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 19
+    },
+    {
+      "text": "(Yan et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 20
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 26
+    },
+    {
+      "text": "(2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 26
+    },
+    {
+      "text": "(2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 26
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 28
+    },
+    {
+      "text": "(Yan et al., 2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 30
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 30
+    },
+    {
+      "text": "(Yan et al., 2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 36
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 38
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 44
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 46
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 54
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 85
+    },
+    {
+      "text": "(MEGC 2019; See et al., 2019)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 85
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 112
+    },
+    {
+      "text": "(LBP-TOP; Zhao & Pietik\u00e4inen, 2007)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 112
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 122
+    },
+    {
+      "text": "(2018)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 122
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 132
+    },
+    {
+      "text": "(Davison et al., 2018)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 134
+    },
+    {
+      "text": "(2018)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 134
+    },
+    {
+      "text": "(Qu et al., 2016)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 136
+    },
+    {
+      "text": "(2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 149
+    },
+    {
+      "text": "(2016)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 149
+    },
+    {
+      "text": "(See et al., 2019)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 157
+    },
+    {
+      "text": "(Zhao & Pietik\u00e4inen, 2007)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 175
+    },
+    {
+      "text": "(Liong et al., 2018)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 176
+    },
+    {
+      "text": "(Liong et al., 2019a)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 177
+    },
+    {
+      "text": "(2019b)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 180
+    },
+    {
+      "text": "(2019)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 181
+    },
+    {
+      "text": "(2018)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 203
+    },
+    {
+      "text": "(See et al., 2019)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 203
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 205
+    },
+    {
+      "text": "(2014)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 207
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 224
+    },
+    {
+      "text": "(See et al., 2019)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 226
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 229
+    },
+    {
+      "text": "(2020b)",
+      "file": "01_3.1_CASME-II_Corpus.md",
+      "line": 229
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 5
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 5
+    },
+    {
+      "text": "(2018, 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 5
+    },
+    {
+      "text": "(Yan et al., 2014)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 11
+    },
+    {
+      "text": "(2014)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 11
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 13
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 21
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 25
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 33
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 39
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 53
+    },
+    {
+      "text": "(2014)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 53
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 55
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 57
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 65
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 65
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 67
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 69
+    },
+    {
+      "text": "(2018, 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 69
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 79
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 79
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 81
+    },
+    {
+      "text": "(2018, 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 81
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 81
+    },
+    {
+      "text": "(Li et al., 2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 83
+    },
+    {
+      "text": "(Li, Huang & Zhao, 2018, 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 83
+    },
+    {
+      "text": "(2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 85
+    },
+    {
+      "text": "(2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 85
+    },
+    {
+      "text": "(reported by Bai et al., 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 107
+    },
+    {
+      "text": "(Li et al., 2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 108
+    },
+    {
+      "text": "(Bai et al., 2021)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 109
+    },
+    {
+      "text": "(Li et al., 2018)",
+      "file": "02_3.2_Eulerian_Video_Magnification.md",
+      "line": 110
+    },
+    {
+      "text": "(2019a, 2019b)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 5
+    },
+    {
+      "text": "(2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 5
+    },
+    {
+      "text": "(2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 5
+    },
+    {
+      "text": "(2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 13
+    },
+    {
+      "text": "(See et al., 2019)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 17
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 23
+    },
+    {
+      "text": "(2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 27
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 31
+    },
+    {
+      "text": "(2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 39
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 41
+    },
+    {
+      "text": "(2019b)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 41
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 51
+    },
+    {
+      "text": "(2019b)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 51
+    },
+    {
+      "text": "(2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 55
+    },
+    {
+      "text": "(2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 63
+    },
+    {
+      "text": "(2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 69
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 75
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 77
+    },
+    {
+      "text": "(2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 81
+    },
+    {
+      "text": "(Xu et al., 2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 89
+    },
+    {
+      "text": "(See et al., 2019)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 89
+    },
+    {
+      "text": "(Liong et al., 2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 90
+    },
+    {
+      "text": "(Zhao et al., 2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 91
+    },
+    {
+      "text": "(2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 91
+    },
+    {
+      "text": "(Liong et al., 2019a, 2019b)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 92
+    },
+    {
+      "text": "(Zhao et al., 2021)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 92
+    },
+    {
+      "text": "(Liong et al., 2019a)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 93
+    },
+    {
+      "text": "(Xu et al., 2017)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 94
+    },
+    {
+      "text": "(Xu et al., 2016)",
+      "file": "03_3.3_Optical_Flow.md",
+      "line": 104
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 5
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 11
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 15
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 21
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 25
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 29
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 31
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 31
+    },
+    {
+      "text": "(2014b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 31
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 45
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 47
+    },
+    {
+      "text": "(2014a, 2014b, 2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 47
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 49
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 49
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 55
+    },
+    {
+      "text": "(2014a, 2014b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 57
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 57
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 57
+    },
+    {
+      "text": "(2014b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 59
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 61
+    },
+    {
+      "text": "(2019b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 65
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 71
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 84
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 90
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 96
+    },
+    {
+      "text": "(2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 96
+    },
+    {
+      "text": "(2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 102
+    },
+    {
+      "text": "(Shreve et al., 2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 112
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 112
+    },
+    {
+      "text": "(Shreve et al., 2011)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 113
+    },
+    {
+      "text": "(Shreve et al., 2011; Liong et al., 2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 114
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 114
+    },
+    {
+      "text": "(2014a, 2014b, 2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 115
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 115
+    },
+    {
+      "text": "(implicit in the max-normalisation of Liong et al., 2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 116
+    },
+    {
+      "text": "(Liong et al., 2014a, 2014b, 2016; Liong et al., 2019b)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 117
+    },
+    {
+      "text": "(Liong et al., 2014a, 2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 118
+    },
+    {
+      "text": "(Liong et al., 2016)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 119
+    },
+    {
+      "text": "(2014a)",
+      "file": "04_3.4_Optical_Strain.md",
+      "line": 135
+    },
+    {
+      "text": "(2018)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 17
+    },
+    {
+      "text": "(2015)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 19
+    },
+    {
+      "text": "(2015)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 25
+    },
+    {
+      "text": "(2015)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 29
+    },
+    {
+      "text": "(Li et al., 2013)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 37
+    },
+    {
+      "text": "(2018)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 38
+    },
+    {
+      "text": "(2015)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 39
+    },
+    {
+      "text": "(Qu et al., 2016)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 40
+    },
+    {
+      "text": "(2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 48
+    },
+    {
+      "text": "(2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 66
+    },
+    {
+      "text": "(2019a, 2019b)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 68
+    },
+    {
+      "text": "(2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 78
+    },
+    {
+      "text": "(Lu et al., 2015)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 90
+    },
+    {
+      "text": "(Ben et al., 2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 91
+    },
+    {
+      "text": "(Ben et al., 2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 92
+    },
+    {
+      "text": "(2014)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 104
+    },
+    {
+      "text": "(2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 106
+    },
+    {
+      "text": "(2021)",
+      "file": "05_3.5_Temporal_Normalisation.md",
+      "line": 116
+    },
+    {
+      "text": "(2019b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 11
+    },
+    {
+      "text": "(2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 13
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 23
+    },
+    {
+      "text": "(Xia et al., 2020a)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 25
+    },
+    {
+      "text": "(2021)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 27
+    },
+    {
+      "text": "(2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 35
+    },
+    {
+      "text": "(2019b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 45
+    },
+    {
+      "text": "(2020a)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 53
+    },
+    {
+      "text": "(2021)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 55
+    },
+    {
+      "text": "(2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 57
+    },
+    {
+      "text": "(2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 65
+    },
+    {
+      "text": "(Xia et al., 2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 79
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 79
+    },
+    {
+      "text": "(Liong et al., 2019b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 80
+    },
+    {
+      "text": "(Xia et al., 2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 81
+    },
+    {
+      "text": "(Xia et al., 2020a)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 82
+    },
+    {
+      "text": "(Xia et al., 2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 83
+    },
+    {
+      "text": "(2020b)",
+      "file": "06_3.6_3D-CNN_Backbone.md",
+      "line": 97
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 11
+    },
+    {
+      "text": "(2020b)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 24
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 26
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 32
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 42
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 72
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 80
+    },
+    {
+      "text": "(2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 88
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 104
+    },
+    {
+      "text": "(Xia et al., 2020b)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 105
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 106
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 107
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 108
+    },
+    {
+      "text": "(Yang et al., 2021)",
+      "file": "07_3.7_SimAM_Attention.md",
+      "line": 109
+    },
+    {
+      "text": "(2022)",
+      "file": "08_3.8_Transformer.md",
+      "line": 13
+    },
+    {
+      "text": "(2021)",
+      "file": "08_3.8_Transformer.md",
+      "line": 21
+    },
+    {
+      "text": "(2022)",
+      "file": "08_3.8_Transformer.md",
+      "line": 31
+    },
+    {
+      "text": "(2019)",
+      "file": "08_3.8_Transformer.md",
+      "line": 49
+    },
+    {
+      "text": "(2019)",
+      "file": "08_3.8_Transformer.md",
+      "line": 50
+    },
+    {
+      "text": "(2019)",
+      "file": "08_3.8_Transformer.md",
+      "line": 51
+    },
+    {
+      "text": "(2020)",
+      "file": "08_3.8_Transformer.md",
+      "line": 52
+    },
+    {
+      "text": "(2021)",
+      "file": "08_3.8_Transformer.md",
+      "line": 66
+    },
+    {
+      "text": "(Zhang et al., 2022)",
+      "file": "08_3.8_Transformer.md",
+      "line": 82
+    },
+    {
+      "text": "(2021)",
+      "file": "08_3.8_Transformer.md",
+      "line": 95
+    },
+    {
+      "text": "(2019a)",
+      "file": "08_3.8_Transformer.md",
+      "line": 99
+    },
+    {
+      "text": "(2022)",
+      "file": "08_3.8_Transformer.md",
+      "line": 99
+    },
+    {
+      "text": "(2014)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 13
+    },
+    {
+      "text": "(2021)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 29
+    },
+    {
+      "text": "(2020a)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 45
+    },
+    {
+      "text": "(2016)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 53
+    },
+    {
+      "text": "(2020a)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 59
+    },
+    {
+      "text": "(2021)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 59
+    },
+    {
+      "text": "(Zhao et al., 2021)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 73
+    },
+    {
+      "text": "(Zhao et al., 2021)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 74
+    },
+    {
+      "text": "(Xia et al., 2020a)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 75
+    },
+    {
+      "text": "(See et al., 2019; Liong et al., 2016)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 76
+    },
+    {
+      "text": "(2020a)",
+      "file": "09_3.9_Class_Imbalance.md",
+      "line": 85
+    }
+  ],
+  "broken_section_refs": [],
+  "broken_table_refs": [],
+  "broken_figure_refs": [],
+  "uncited_entries": [],
+  "word_count": 28095
+}
