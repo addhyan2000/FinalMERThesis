@@ -124,7 +124,7 @@ Two configurations are easily confused and serve different purposes in the desig
 
 ### 4.3.5 Matched pairs
 
-Every variable's effect is read off matched pairs: two configurations identical on the other three flags, differing only in the flag under study. Table 4.2 lists all twenty such pairs, written `off → on`.
+Table 4.2 lists all twenty matched pairs, in the sense defined in §4.1.4, written `off → on`.
 
 **Table 4.2 — Matched pairs by variable.**
 
@@ -151,7 +151,7 @@ Every result reported in this thesis was produced by a single implementation: `A
 
 ### 4.4.2 Input and the three streams
 
-The model receives a tensor of shape `[B, 3, 32, 224, 224]`: batch, three motion channels, 32 time steps, and a $224 \times 224$ spatial frame. The three channels are horizontal optical flow, vertical optical flow, and optical strain magnitude. Each channel is routed to its own convolutional stream with **unshared weights** — `ThreeStreamCNNBackbone` instantiates three independent copies of the stem described below, one per channel. Three streams therefore means three motion channels processed independently, not three architectural stages of a single pipeline.
+The model receives the tensor described in §4.2.5 with a batch dimension prepended, giving `[B, 3, 32, 224, 224]`. Each of its three motion channels is routed to its own convolutional stream with **unshared weights** — `ThreeStreamCNNBackbone` instantiates three independent copies of the stem described below, one per channel. Three streams therefore means three motion channels processed independently, not three architectural stages of a single pipeline.
 
 ### 4.4.3 The convolutional stem
 
@@ -171,7 +171,7 @@ Per stream, the shape transformation is $[B,1,32,224,224] \rightarrow [B,32,32,1
 
 ### 4.4.4 SimAM placement
 
-When SimAM is active (`use_simam=True`, and only meaningful when `use_cnn=True` — the model forces `use_simam` to `False` internally otherwise, since SimAM has no feature map to act on without a CNN), it is applied **per stream**, immediately after that stream's convolutional output and before the three streams are concatenated. Each of the three streams carries its own `SimAM3D` instance. Following the closed-form energy function of the original module [8], adapted here to the five-dimensional feature map $x \in \mathbb{R}^{B \times C \times D \times H \times W}$ produced by each stream, the module computes, for every neuron, an energy
+When SimAM is active (`use_simam=True`, and only meaningful when `use_cnn=True`, for the reason given in §4.1.3 — the model forces `use_simam` to `False` internally otherwise), it is applied **per stream**, immediately after that stream's convolutional output and before the three streams are concatenated. Each of the three streams carries its own `SimAM3D` instance. Following the closed-form energy function of the original module [8], adapted here to the five-dimensional feature map $x \in \mathbb{R}^{B \times C \times D \times H \times W}$ produced by each stream, the module computes, for every neuron, an energy
 
 $$e = \frac{(x-\mu)^2}{4\left(\sigma^2 + \lambda\right)} + 0.5$$
 
@@ -240,7 +240,7 @@ These combine into four distinct totals, one per combination of the two componen
 | no CNN, transformer | `config_2`, `config_12` | 353,923 |
 | CNN and transformer | `config_6`, `config_7`, `config_8`, `config_9` | 363,763 |
 
-In a full configuration, the transformer encoder accounts for roughly **96%** of total parameters (348,736 of 363,763), while the convolutional backbone — the component §2.5.6 would identify as the more parameter-hungry of the two by the general reputation of 3-D convolution — carries only about 14.5 thousand. This is reported here as a fact about the implementation's parameter budget; it is not a claim about which component contributes more to classification performance, which is a question for Chapter 5.
+In a full configuration, the transformer encoder accounts for roughly **96%** of total parameters (348,736 of 363,763), while the convolutional backbone carries only about 14.5 thousand. This is reported here as a fact about the implementation's parameter budget; it is not a claim about which component contributes more to classification performance, which is a question for Chapter 5.
 
 ---
 
@@ -295,7 +295,7 @@ Three safeguards operate during every training step. Gradients are clipped to a 
 
 A single global seed, `42`, is reset — via `random.seed`, `numpy.random.seed`, `torch.manual_seed` and `torch.cuda.manual_seed_all` — once at the start of the whole experiment run and again immediately before every individual training-and-evaluation call, meaning at the start of every configuration and, under the LOSO protocol of §4.6, at the start of every one of its 25 folds. This guarantees that the sampler's draw order, the model's weight initialisation, and any other stochastic step begin from the same fixed state each time a fold is trained.
 
-It does not guarantee, and is not intended to guarantee, anything about how sensitive the reported outcome is to that state. **Every configuration was trained exactly once, under this one seed, for every fold. No configuration was retrained under a second seed, and no seed variance was estimated anywhere in this study.** §4.1 raises this as a property of the experimental design; stated concretely in terms of the training procedure, it means that a single run of 50 epochs on one initialisation is the entire evidentiary basis for each fold's contribution to a configuration's aggregate score, and that no difference between any two configurations reported in Chapter 5 — however large — carries a confidence interval, a standard error, or a significance test. A different seed could in principle move any individual fold's result, and by how much is not known from this design.
+It does not guarantee, and is not intended to guarantee, anything about how sensitive the reported outcome is to that state. **Every configuration was trained exactly once, under this one seed, for every fold. No configuration was retrained under a second seed, and no seed variance was estimated anywhere in this study.** §4.1 raises this as a property of the experimental design; stated concretely in terms of the training procedure, it means that a single run of 50 epochs on one initialisation is the entire evidentiary basis for each fold's contribution to a configuration's aggregate score, A different seed could in principle move any individual fold's result, and by how much is not known from this design. §4.1.5 states the consequence for what may be claimed.
 
 ### 4.5.8 No hyperparameter search
 
@@ -402,7 +402,7 @@ The arithmetic is reproducible from the table above: the eight CNN-bearing confi
 
 ### 4.7.5 Mixed precision, and what a reproduction would need
 
-§4.5.6 records that automatic mixed precision was enabled by default and that the trainer's `use_amp` flag takes effect only when `device.type == "cuda"`; on a CPU device the same flag trains in full precision regardless of its configured value. The peak-VRAM figures in §4.7.2 exist at all only because `torch.cuda.max_memory_allocated()` returns a value on a CUDA device, so, although no GPU is named anywhere in the stored output, the runs that produced Chapter 5's results were GPU-based.
+Mixed precision was enabled and, as §4.5.6 records, takes effect only on a CUDA device. The peak-VRAM figures in §4.7.2 exist at all only because `torch.cuda.max_memory_allocated()` returns a value on a CUDA device, so, although no GPU is named anywhere in the stored output, the runs that produced Chapter 5's results were GPU-based.
 
 What is missing for exact reproduction is everything §4.7.1 already lists: the GPU model, the driver version, the CUDA runtime and PyTorch versions, and the wall-clock dates over which the sweep was run — none of which appears in any file this pipeline wrote. A future run of the same code, on different hardware or a different library version, could reproduce the same relative pattern between CNN-bearing and CNN-free configurations without reproducing these absolute timings or memory figures.
 
