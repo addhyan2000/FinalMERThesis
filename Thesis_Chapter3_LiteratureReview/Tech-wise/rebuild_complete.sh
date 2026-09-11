@@ -23,7 +23,8 @@ for f in $(ls -1 [0-9][0-9]_3.*.md | sort); do
   printf '\n---\n\n' >> "$OUT"
 done
 
-# single consolidated reference list
-cat 11_References.md >> "$OUT"
 
-echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 3\.' "$OUT") sections, $(grep -c '^\[[0-9][0-9]*\] ' 11_References.md) references."
+echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 3\.' "$OUT") sections."
+
+python3 ../../tools/bibliography.py render >/dev/null
+echo "  citations resolved against BIBLIOGRAPHY.md"

@@ -23,6 +23,8 @@ for f in $(ls -1 0[1-9]_2.*.md | sort); do
   printf '\n---\n\n' >> "$OUT"
 done
 
-cat 10_References.md >> "$OUT"
 
-echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 2\.' "$OUT") sections, $(grep -c '^[A-Z].*([12][0-9]\{3\}[ab]\?)\.' 10_References.md) references."
+echo "Rebuilt $OUT — $(wc -w < "$OUT" | tr -d ' ') words, $(grep -c '^## 2\.' "$OUT") sections."
+
+python3 ../tools/bibliography.py render >/dev/null
+echo "  citations resolved against BIBLIOGRAPHY.md"

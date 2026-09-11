@@ -22,20 +22,20 @@ As §2.1 establishes, a micro-expression is involuntary and cannot be *performed
 
 | Corpus | Subjects | Samples | fps | Posed / spontaneous | FACS-coded | Classes |
 |---|:--:|:--:|:--:|---|:--:|:--:|
-| USF-HD [2] | — | 100 | 30 | Posed | No | 6 |
+| USF-HD [6] | — | 100 | 30 | Posed | No | 6 |
 | Polikovsky et al.† | 10 | 42 | 200 | Posed | No | 6 |
-| SMIC [3] | 16 valid | 164 | 100 | Spontaneous | No | 3 |
+| SMIC [12] | 16 valid | 164 | 100 | Spontaneous | No | 3 |
 | CASME (Yan et al., 2013)† | 19 valid | 195 | 60 | Spontaneous | Yes | 7 |
 
 *Table 3.1 — The micro-expression corpora available prior to CASME II, reproduced from Yan et al. [1] (Table 1). Rows marked † are described there; the primary papers are outside the review corpus and are not cited separately.*
 
 Two problems in this landscape motivated CASME II directly, and both continue to shape the present work.
 
-The first is **construct validity**. The posed corpora asked participants to produce brief facial movements deliberately. Yan et al. [1] and Li et al. [3] both note that posed "micro-expressions" differ systematically from spontaneous ones, and Li et al. [3] further observe that USF-HD adopted a 2/3-second duration criterion that is longer than the definitional upper bound given in §2.1. A system trained on posed data is therefore not demonstrably a micro-expression recogniser at all; it may be a recogniser of fast deliberate movement.
+The first is **construct validity**. The posed corpora asked participants to produce brief facial movements deliberately. Yan et al. [1] and Li et al. [12] both note that posed "micro-expressions" differ systematically from spontaneous ones, and Li et al. [12] further observe that USF-HD adopted a 2/3-second duration criterion that is longer than the definitional upper bound given in §2.1. A system trained on posed data is therefore not demonstrably a micro-expression recogniser at all; it may be a recogniser of fast deliberate movement.
 
 The second is **acquisition quality**. Because the phenomenon is defined jointly by very short duration and very low intensity, it sits close to the noise floor of ordinary video. SMIC was recorded at 100 fps with a facial region of roughly 190 × 230 pixels, and CASME at 60 fps with roughly 150 × 190 pixels. Yan et al. [1] argue that 60 fps in particular cannot adequately sample a movement that may complete in under 200 ms, and that flickering illumination — a known artefact of high-speed capture under alternating-current lighting — contaminated earlier recordings.
 
-Early attempts to induce genuine micro-expressions through high-stakes deception paradigms (mock-theft scenarios, forced lying about opinions) produced samples heavily contaminated by conversational and other emotion-irrelevant facial movement [1]. The paradigm that eventually proved workable — and that CASME II adopts — is to have participants watch high-arousal video episodes while attempting to keep the face neutral [3].
+Early attempts to induce genuine micro-expressions through high-stakes deception paradigms (mock-theft scenarios, forced lying about opinions) produced samples heavily contaminated by conversational and other emotion-irrelevant facial movement [1]. The paradigm that eventually proved workable — and that CASME II adopts — is to have participants watch high-arousal video episodes while attempting to keep the face neutral [12].
 
 ---
 
@@ -92,7 +92,7 @@ The released coding file is finer-grained than the paper's five categories, expo
 
 **Seven-class classification is not viable on this corpus.** Fear is represented by two clips in the entire database and sadness by seven. Under any subject-disjoint protocol — and §3.1.4 shows that subject-disjointness has been the norm for this benchmark since its introduction — a two-clip class cannot be meaningfully trained or tested: a single fold either contains the class or does not, and per-class metrics degenerate.
 
-The field's response has been to group by affective valence. The convention originates with SMIC, which was released with exactly three classes — positive, negative, surprise [3] — and it was formalised for cross-corpus work by the Second Facial Micro-Expression Grand Challenge (MEGC 2019) [4], which defines:
+The field's response has been to group by affective valence. The convention originates with SMIC, which was released with exactly three classes — positive, negative, surprise [12] — and it was formalised for cross-corpus work by the Second Facial Micro-Expression Grand Challenge (MEGC 2019) [11], which defines:
 
 - **Negative** — Repression, Anger, Contempt, Disgust, Fear, Sadness
 - **Positive** — Happiness
@@ -117,7 +117,7 @@ Figure 3.1 shows this composition: the 255 released clips by raw label alongside
 
 **An important divergence from the MEGC convention, declared explicitly.**
 
-MEGC 2019 reports the CASME II portion of its composite database as **145** samples, not 156, and footnotes that "Negative class of CASME II: Disgust and Repression" [4] — that is, the challenge builds its CASME II subset from the paper's *five-category* release, in which sadness and fear do not appear as separate labels and are absorbed into "others". This thesis instead uses the released seven-label coding and, following MEGC's own class definition, assigns sadness and fear to Negative. The consequence is an **eleven-clip** difference: N = 156 here against N = 145 in the challenge protocol, with a Negative class of 99 rather than 88. Nine of those eleven are the sadness (7) and fear (2) clips that the seven-label coding exposes and the five-category release absorbs into "others". The remaining two are unaccounted for by that mapping alone: disgust and repression together number 90 in the released coding used here, against the 88 the challenge reports, so the challenge's CASME II subset is two clips smaller than the same categories in this coding. That residual is noted rather than resolved; it is a further consequence of the version ambiguity described in §3.1.9.
+MEGC 2019 reports the CASME II portion of its composite database as **145** samples, not 156, and footnotes that "Negative class of CASME II: Disgust and Repression" [11] — that is, the challenge builds its CASME II subset from the paper's *five-category* release, in which sadness and fear do not appear as separate labels and are absorbed into "others". This thesis instead uses the released seven-label coding and, following MEGC's own class definition, assigns sadness and fear to Negative. The consequence is an **eleven-clip** difference: N = 156 here against N = 145 in the challenge protocol, with a Negative class of 99 rather than 88. Nine of those eleven are the sadness (7) and fear (2) clips that the seven-label coding exposes and the five-category release absorbs into "others". The remaining two are unaccounted for by that mapping alone: disgust and repression together number 90 in the released coding used here, against the 88 the challenge reports, so the challenge's CASME II subset is two clips smaller than the same categories in this coding. That residual is noted rather than resolved; it is a further consequence of the version ambiguity described in §3.1.9.
 
 The divergence is small but must be stated when comparing against published numbers, and it has a mild direction: the nine clips this coding adds are all in the majority class and all drawn from categories the original coders found hardest to assign, so if anything they make the present task marginally harder than the challenge's, not easier.
 
@@ -127,7 +127,7 @@ The residual imbalance is severe in either case — 99 : 32 : 25, a ratio of rou
 
 ### 3.1.4 The original baseline, and what it does and does not establish
 
-Yan et al. [1] provide a baseline using Local Binary Patterns from Three Orthogonal Planes (LBP-TOP) [5] for feature extraction and a Support Vector Machine for classification. LBP-TOP extends the static LBP operator by extracting codes on the XY, XT and YT planes of the video volume and concatenating the three histograms, so that the XT and YT planes encode how pixel intensities along a row or column evolve over time — dynamic texture rather than static texture.
+Yan et al. [1] provide a baseline using Local Binary Patterns from Three Orthogonal Planes (LBP-TOP) [13] for feature extraction and a Support Vector Machine for classification. LBP-TOP extends the static LBP operator by extracting codes on the XY, XT and YT planes of the video volume and concatenating the three histograms, so that the XT and YT planes encode how pixel intensities along a row or column evolve over time — dynamic texture rather than static texture.
 
 The baseline configuration divides the face into 5 × 5 blocks, sets the number of neighbouring points P = 4, and sweeps the spatial radii $R_X, R_Y \in \{1,2,3,4\}$ and the temporal radius $R_T \in \{2,3,4\}$. The temporal radius $R_T = 1$ is deliberately excluded on the grounds that at 200 fps the change between two adjacent frames is negligible — an early acknowledgement that a high sampling rate is not automatically an advantage. Reported five-class accuracies under **leave-one-subject-out cross-validation** cluster in a narrow band in the high fifties to low sixties, with the best configuration ($R_X = R_Y = 1$, $R_T = 4$) reaching **63.41 %**.
 
@@ -137,7 +137,7 @@ Three observations from this baseline matter for the present study.
 
 **Second, the baseline is reported as accuracy alone.** No per-class or macro-averaged score is given. On a five-class problem in which "others" accounts for 102 of 247 samples, accuracy is a weak instrument: the majority-class-constant classifier scores 41 % without modelling anything. In the three-class working set of this thesis the equivalent floor is higher still — always predicting Negative yields **63.46 % accuracy** while achieving a macro F1 of only **0.2588**. A headline accuracy near the original 63.41 % baseline is therefore not, on its own, evidence of a working system.
 
-**A caution on this figure.** Yan et al. [1] state plainly that leave-one-subject-out cross-validation was applied to obtain the 63.41 % result. Li et al. [6], reproducing the same figure in their comparison table, mark it with an asterisk denoting "results achieved using leave-one-sample-out cross validation" — a materially easier protocol. The two primary sources contradict each other on the protocol behind the most widely quoted number on this benchmark. This thesis follows the originating paper's own account, but the discrepancy is recorded here because it affects how the 63.41 % figure should be read in any comparison.
+**A caution on this figure.** Yan et al. [1] state plainly that leave-one-subject-out cross-validation was applied to obtain the 63.41 % result. Li et al. [14], reproducing the same figure in their comparison table, mark it with an asterisk denoting "results achieved using leave-one-sample-out cross validation" — a materially easier protocol. The two primary sources contradict each other on the protocol behind the most widely quoted number on this benchmark. This thesis follows the originating paper's own account, but the discrepancy is recorded here because it affects how the 63.41 % figure should be read in any comparison.
 
 **Third, the sensitivity of the baseline to a purely descriptive hyper-parameter is itself informative.** Accuracy moves by several points across the radius sweep with no change to the data, the split, or the classifier. Where effect sizes of that magnitude arise from descriptor settings, differences of similar magnitude between architectures cannot be interpreted without a variance estimate — a limitation this thesis inherits and declares in Chapter 6.
 
@@ -147,11 +147,11 @@ Three observations from this baseline matter for the present study.
 
 Three further databases define the context in which CASME II is used, and each is included in this review because it isolates a specific limitation of CASME II.
 
-**SMIC [3]** — the first spontaneous micro-expression database, and the origin of the three-class taxonomy. Twenty participants were recorded; sixteen produced usable micro-expressions, yielding **164 clips** in the high-speed (HS) subset at **100 fps**, distributed as 51 positive, 70 negative and 43 surprise. SMIC uniquely provides synchronised normal-visual (VIS) and near-infrared (NIR) recordings at 25 fps alongside the high-speed stream. Its baseline — LBP-TOP with a temporal interpolation model (TIM) normalising each clip to ten frames, evaluated under leave-one-subject-out — reaches **48.78 %** on the three-class HS task. Two elements of SMIC's design are directly inherited by this thesis: the three-class valence grouping, and the use of temporal interpolation to normalise clips of unequal length before feature extraction. SMIC is, however, not FACS-coded and provides no apex annotation, which is why it is not used here.
+**SMIC [12]** — the first spontaneous micro-expression database, and the origin of the three-class taxonomy. Twenty participants were recorded; sixteen produced usable micro-expressions, yielding **164 clips** in the high-speed (HS) subset at **100 fps**, distributed as 51 positive, 70 negative and 43 surprise. SMIC uniquely provides synchronised normal-visual (VIS) and near-infrared (NIR) recordings at 25 fps alongside the high-speed stream. Its baseline — LBP-TOP with a temporal interpolation model (TIM) normalising each clip to ten frames, evaluated under leave-one-subject-out — reaches **48.78 %** on the three-class HS task. Two elements of SMIC's design are directly inherited by this thesis: the three-class valence grouping, and the use of temporal interpolation to normalise clips of unequal length before feature extraction. SMIC is, however, not FACS-coded and provides no apex annotation, which is why it is not used here.
 
-**SAMM [7]** — constructed explicitly to address the demographic narrowness of the CASME family. It comprises **159 micro-movements from 32 participants** at **200 fps** and **2040 × 1088** resolution (facial region approximately 400 × 400), FACS-coded, across seven emotion classes. Its decisive contribution is diversity: **13 ethnicities** and a mean participant age of **33.24 years (SD = 11.32)**, against CASME II's single ethnicity and mean age of 22.03 (SD = 1.60). Davison et al. [7] are direct about the problem this addresses, observing that a corpus drawn from one ethnicity and one narrow age band restricts analysis to "similar looking participants". They also tailor stimulus selection to each participant in advance rather than relying on post-hoc self-report. The design is stronger than CASME II's on both counts; the corpus is nevertheless smaller in usable micro-expression samples, and its emotion labels are distributed across seven categories with the same sparsity difficulty.
+**SAMM [15]** — constructed explicitly to address the demographic narrowness of the CASME family. It comprises **159 micro-movements from 32 participants** at **200 fps** and **2040 × 1088** resolution (facial region approximately 400 × 400), FACS-coded, across seven emotion classes. Its decisive contribution is diversity: **13 ethnicities** and a mean participant age of **33.24 years (SD = 11.32)**, against CASME II's single ethnicity and mean age of 22.03 (SD = 1.60). Davison et al. [15] are direct about the problem this addresses, observing that a corpus drawn from one ethnicity and one narrow age band restricts analysis to "similar looking participants". They also tailor stimulus selection to each participant in advance rather than relying on post-hoc self-report. The design is stronger than CASME II's on both counts; the corpus is nevertheless smaller in usable micro-expression samples, and its emotion labels are distributed across seven categories with the same sparsity difficulty.
 
-**CAS(ME)² [8]** — extends the CASME family to the macro/micro relationship, providing **250 spontaneous macro-expression and 53 micro-expression samples elicited from the same participants**, recorded with a Logitech Pro C920 at **30 fps** and 640 × 480, and labelled in four categories (positive, negative, surprise, other) using the same combination of AUs, per-movement self-report, and stimulus emotion type. Its value is that it enables study of macro-to-micro domain transfer — the strategy behind several strong MEGC entries — because both expression types come from identical subjects under identical conditions. Two properties limit its use here: the 30 fps sampling rate is an order of magnitude below CASME II's and is poorly matched to sub-200-ms movements, and only 53 micro-expression samples are available. It is also worth noting that the CAS(ME)² baseline is evaluated leave-*one-video*-out rather than leave-one-subject-out, which does not enforce subject-disjointness and is therefore not comparable to the protocol used in this thesis.
+**CAS(ME)² [2]** — extends the CASME family to the macro/micro relationship, providing **250 spontaneous macro-expression and 53 micro-expression samples elicited from the same participants**, recorded with a Logitech Pro C920 at **30 fps** and 640 × 480, and labelled in four categories (positive, negative, surprise, other) using the same combination of AUs, per-movement self-report, and stimulus emotion type. Its value is that it enables study of macro-to-micro domain transfer — the strategy behind several strong MEGC entries — because both expression types come from identical subjects under identical conditions. Two properties limit its use here: the 30 fps sampling rate is an order of magnitude below CASME II's and is poorly matched to sub-200-ms movements, and only 53 micro-expression samples are available. It is also worth noting that the CAS(ME)² baseline is evaluated leave-*one-video*-out rather than leave-one-subject-out, which does not enforce subject-disjointness and is therefore not comparable to the protocol used in this thesis.
 
 | | SMIC (HS) | CASME | **CASME II** | SAMM | CAS(ME)² |
 |---|:--:|:--:|:--:|:--:|:--:|
@@ -164,7 +164,7 @@ Three further databases define the context in which CASME II is used, and each i
 | Ethnicities | 3 | 1 | **1** | 13 | 1 |
 | Mean age (SD) | 26.7 | 22.03 (1.60) | **22.03 (1.60)** | 33.24 (11.32) | — |
 
-*Table 3.5 — The spontaneous micro-expression corpora, compiled from Yan et al. [1] (Table 1), Davison et al. [7] (Table 1), Li et al. [3] and Qu et al. [8].*
+*Table 3.5 — The spontaneous micro-expression corpora, compiled from Yan et al. [1] (Table 1), Davison et al. [15] (Table 1), Li et al. [12] and Qu et al. [2].*
 
 **Why this thesis uses CASME II alone.**
 
@@ -174,7 +174,7 @@ Three properties make it the appropriate single choice for an ablation study of 
 
 ### 3.1.6 How CASME II is evaluated in the field: MEGC 2019 and the metric convention
 
-The most consequential development in how CASME II is *used*, as opposed to how it was built, is the Composite Database Evaluation (CDE) protocol of the Second Facial Micro-Expression Grand Challenge [4]. Because this thesis adopts the challenge's metric definitions while deliberately declining its composite training regime, the protocol warrants precise description.
+The most consequential development in how CASME II is *used*, as opposed to how it was built, is the Composite Database Evaluation (CDE) protocol of the Second Facial Micro-Expression Grand Challenge [11]. Because this thesis adopts the challenge's metric definitions while deliberately declining its composite training regime, the protocol warrants precise description.
 
 CDE merges SMIC, CASME II and SAMM into a single composite database under the three-class valence grouping of §3.1.3, giving **442 samples** — Negative 250, Positive 109, Surprise 83 — of which CASME II contributes 145. Leave-one-subject-out cross-validation is run across the composite, which the organisers note "ensures subject-independent evaluation", and results are reported both overall and per constituent database.
 
@@ -198,15 +198,15 @@ Published CDE results give the most current picture of performance on the CASME 
 
 | Method | Full composite UF1 / UAR | CASME II subset UF1 / UAR |
 |---|:--:|:--:|
-| LBP-TOP [5] | 0.5882 / 0.5785 | 0.7026 / 0.7429 |
-| Bi-WOOF [9] | 0.6296 / 0.6227 | 0.7805 / 0.8026 |
-| OFF-ApexNet [10] | 0.7196 / 0.7096 | 0.8764 / 0.8681 |
+| LBP-TOP [13] | 0.5882 / 0.5785 | 0.7026 / 0.7429 |
+| Bi-WOOF [16] | 0.6296 / 0.6227 | 0.7805 / 0.8026 |
+| OFF-ApexNet [5] | 0.7196 / 0.7096 | 0.8764 / 0.8681 |
 | Quang et al.† | 0.6520 / 0.6506 | 0.7068 / 0.7018 |
 | Zhou et al.† | 0.7322 / 0.7278 | 0.8621 / 0.8560 |
-| Liong et al. [11], STSTNet | 0.7353 / 0.7605 | 0.8382 / 0.8686 |
-| Liu et al. [12], EMR | **0.7885 / 0.7824** | 0.8293 / 0.8209 |
+| Liong et al. [17], STSTNet | 0.7353 / 0.7605 | 0.8382 / 0.8686 |
+| Liu et al. [18], EMR | **0.7885 / 0.7824** | 0.8293 / 0.8209 |
 
-*Table 3.6 — MEGC 2019 CDE results, reproduced from See et al. [4] (Table IV). † outside the review corpus; reported here only as it appears in that table.*
+*Table 3.6 — MEGC 2019 CDE results, reproduced from See et al. [11] (Table IV). † outside the review corpus; reported here only as it appears in that table.*
 
 **These numbers must be read with one structural caveat, and it is a large one.** Every row of Table 3.6 is produced by a model trained on the *composite* database — roughly 442 samples spanning three corpora and 68 subjects — and then scored on the CASME II portion of the pooled predictions. The CASME II column is therefore not a CASME II-only result. It reports how well a cross-corpus model performs on CASME II clips, with approximately **2.8 times the training data** available in any single-corpus fold, and with the additional regularising effect of training across three capture conditions. A single-corpus LOSO experiment of the kind conducted in this thesis trains each fold on roughly 150 clips from one corpus. The two regimes are not interchangeable, and single-corpus results should not be compared directly against Table 3.6 without stating the difference.
 
@@ -226,7 +226,7 @@ The properties below are not criticisms of CASME II, which is a carefully constr
 
 **(d) A subject that disappears under grouping.** CASME II contains 26 participants, but subject 18's three clips are all labelled "others" and are removed by the three-class filter. The LOSO run therefore has **25 folds, not 26** — a detail that must be stated for reproducibility, since fold counts differ between papers using this corpus.
 
-**(e) Demographic homogeneity.** All participants are Chinese, with a mean age of 22.03 years and a standard deviation of 1.60 — that is, essentially a single ethnicity and a single narrow age band. Davison et al. [7] identify this as a principal motivation for SAMM. Nothing established on CASME II can be assumed to generalise across appearance, age, or cultural display rules, and the MEGC organisers observed precisely this effect in reverse: domain adaptation from CK+ helped on SMIC and SAMM but "not so for CASME II, which contain predominantly Chinese subjects" [4].
+**(e) Demographic homogeneity.** All participants are Chinese, with a mean age of 22.03 years and a standard deviation of 1.60 — that is, essentially a single ethnicity and a single narrow age band. Davison et al. [15] identify this as a principal motivation for SAMM. Nothing established on CASME II can be assumed to generalise across appearance, age, or cultural display rules, and the MEGC organisers observed precisely this effect in reverse: domain adaptation from CK+ helped on SMIC and SAMM but "not so for CASME II, which contain predominantly Chinese subjects" [11].
 
 **(f) Laboratory ecology.** Recording is frontal, under four fixed high-intensity lamps chosen to eliminate flicker, with participants instructed not to move and not speaking. Yan et al. [1] themselves flag the extension to "natural conversation and interaction" as future work. The corpus therefore contains almost none of the head motion, illumination variation, occlusion or speech-related facial movement that a deployed system would face.
 
@@ -247,12 +247,12 @@ This section makes explicit the claim advanced at the head of §3.1: on a corpus
 | Seven raw labels with fear = 2, sadness = 7 (3.1.3) | Three-class valence grouping, following SMIC and the MEGC 2019 definition; "others" discarded; N = 156 declared with its 9-clip divergence from the MEGC subset | Ch. 4 |
 | 26 subjects, single ethnicity, narrow age band (3.1.2, 3.1.7e) | Input is a **motion representation** — dense optical flow (u, v) plus optical strain — rather than raw pixels, since motion is invariant to identity and illumination whereas appearance is exactly what a 26-subject corpus would let a network memorise | Ch. 4 |
 | 200 fps capture (3.1.2) | Eulerian magnification applied in a **5–25 Hz temporal band** matched to the recording rate, prior to flow computation | Ch. 4 |
-| Onset-to-offset length varies 31–126 frames (3.1.7h) | Every clip temporally resampled to a fixed **T = 32** frames, following the TIM precedent established by SMIC's baseline [3] | Ch. 4 |
+| Onset-to-offset length varies 31–126 frames (3.1.7h) | Every clip temporally resampled to a fixed **T = 32** frames, following the TIM precedent established by SMIC's baseline [12] | Ch. 4 |
 | LOSO native to the benchmark (3.1.4); subject 17 = 21 % of clips (3.1.7c) | **Full 25-fold leave-one-subject-out**, every subject held out exactly once, no clip untested, subject-disjointness guaranteed by construction rather than by bookkeeping | Ch. 4 |
-| 10 of 25 folds are single-class (3.1.7c) | Primary metric is **pooled macro F1**, computed by accumulating TP/FP/FN across all folds before averaging per-class F1 — identical in construction to MEGC's UF1 [4]. Per-fold averaged macro F1 is explicitly rejected, since fold composition bounds it below the study's own target | Ch. 4, Ch. 5 |
+| 10 of 25 folds are single-class (3.1.7c) | Primary metric is **pooled macro F1**, computed by accumulating TP/FP/FN across all folds before averaging per-class F1 — identical in construction to MEGC's UF1 [11]. Per-fold averaged macro F1 is explicitly rejected, since fold composition bounds it below the study's own target | Ch. 4, Ch. 5 |
 | Majority class 99/156 (3.1.3) | Accuracy is never reported alone; the always-Negative reference (0.6346 accuracy, 0.2588 macro F1) is quoted alongside every result as a floor | Ch. 5 |
 | Severe imbalance (3.1.3) | Minority oversampling via a balanced sampler, with focal loss; inverse-frequency class weighting in the loss deliberately **disabled**, since applying both corrections simultaneously induced single-class collapse | Ch. 4, Ch. 5 |
-| 156 clips total (3.1.7a) | Preference for **parameter-free or low-parameter components** wherever a choice exists — motivating the use of SimAM [14], which adds zero learnable parameters — and for shallow rather than deep spatial backbones, following the model-shrinking argument of Xia et al. [13] | Ch. 4 |
+| 156 clips total (3.1.7a) | Preference for **parameter-free or low-parameter components** wherever a choice exists — motivating the use of SimAM [8], which adds zero learnable parameters — and for shallow rather than deep spatial backbones, following the model-shrinking argument of Xia et al. [19] | Ch. 4 |
 | Single corpus, laboratory conditions (3.1.7e, 3.1.7f) | No cross-dataset or in-the-wild claim is made anywhere in this thesis; generalisation is listed as future work | Ch. 6 |
 | Baseline hyper-parameter sensitivity (3.1.4); N = 156 (3.1.7a) | Effect sizes below the resolution of the corpus are reported as unresolved rather than as findings; the 95 % confidence interval at N = 156 is stated wherever two configurations are compared | Ch. 5, Ch. 6 |
 
@@ -282,7 +282,7 @@ The 200 fps capture rate established here is what lets the Eulerian Video Magnif
 
 ## 3.2 Motion Magnification: Eulerian Video Magnification as a Pre-Processing Stage
 
-**Scope of this section.** This section reviews Eulerian Video Magnification (EVM) through the four review-corpus papers that apply it — Bai et al. [15], Li et al. [6], and Li, Huang and Zhao [16, 17]. The original formulations it builds on, Wu et al.'s amplitude-based method and Wadhwa et al.'s phase-based method, lie outside the corpus and are described here only as attributed through those four papers.
+**Scope of this section.** This section reviews Eulerian Video Magnification (EVM) through the four review-corpus papers that apply it — Bai et al. [4], Li et al. [14], and Li, Huang and Zhao [3, 20]. The original formulations it builds on, Wu et al.'s amplitude-based method and Wadhwa et al.'s phase-based method, lie outside the corpus and are described here only as attributed through those four papers.
 
 ---
 
@@ -290,7 +290,7 @@ The 200 fps capture rate established here is what lets the Eulerian Video Magnif
 
 The corpus design (§3.1.1) responds to the *short-duration* half of the micro-expression definition but not to the *low-intensity* half: CASME II's 200 fps sampling represents a movement completing in under 200 ms across dozens of frames [1], yet a micro-expression may still occupy only a few grey levels of change across a small patch of skin, and Yan et al. [1] report discarding samples outright because the movement was too faint for coders to place an onset or offset.
 
-Li et al. [6] state the difficulty directly: "the intensity levels of facial movements are too low to be distinguishable." Their proposed remedy is to amplify the motion itself before any descriptor is computed, so that the *difference between expression categories is enlarged* rather than the classifier being made more sensitive. This is a data-level intervention: the model is untouched, and the modification is entirely upstream. That property is what makes EVM cleanly separable as an ablation factor in this thesis, and it is why §3.1.8 and Chapter 4 treat it as part of the data pipeline — the baseline — rather than as a network component.
+Li et al. [14] state the difficulty directly: "the intensity levels of facial movements are too low to be distinguishable." Their proposed remedy is to amplify the motion itself before any descriptor is computed, so that the *difference between expression categories is enlarged* rather than the classifier being made more sensitive. This is a data-level intervention: the model is untouched, and the modification is entirely upstream. That property is what makes EVM cleanly separable as an ablation factor in this thesis, and it is why §3.1.8 and Chapter 4 treat it as part of the data pipeline — the baseline — rather than as a network component.
 
 ---
 
@@ -298,11 +298,11 @@ Li et al. [6] state the difficulty directly: "the intensity levels of facial mov
 
 EVM is *Eulerian* in the fluid-dynamics sense: rather than tracking features as they move (a Lagrangian approach, as optical flow does), it fixes attention on each spatial location and amplifies the temporal variation observed *at that location*. Motion is amplified as a side effect of amplifying intensity change, without any explicit correspondence being computed.
 
-Bai et al. [15] give the clearest account in the review corpus of the two variants and their difference.
+Bai et al. [4] give the clearest account in the review corpus of the two variants and their difference.
 
 **Amplitude-based magnification (AMM)** proceeds in four steps. Each frame is decomposed into spatial frequency bands by a full **Laplacian pyramid**; a **Butterworth temporal band-pass filter** extracts the frequency range of interest at each band; the band-passed signal is multiplied by a **magnification factor α**; and the amplified signal is added back to the original image. This is the formulation implemented in this thesis.
 
-**Phase-based magnification (PMM)** decomposes each frame with **octave complex steerable pyramids** over four orientations, and applies the temporal filter to the *local phase* rather than the amplitude. Bai et al. [15] explain the advantage in signal terms: the steerable pyramid "has impulse response with spatial support," which makes it easier to isolate the intended temporal frequencies while suppressing the remainder. The practical consequences they report are that the phase-based method **supports larger amplification factors** and is **notably less sensitive to noise**.
+**Phase-based magnification (PMM)** decomposes each frame with **octave complex steerable pyramids** over four orientations, and applies the temporal filter to the *local phase* rather than the amplitude. Bai et al. [4] explain the advantage in signal terms: the steerable pyramid "has impulse response with spatial support," which makes it easier to isolate the intended temporal frequencies while suppressing the remainder. The practical consequences they report are that the phase-based method **supports larger amplification factors** and is **notably less sensitive to noise**.
 
 Three parameters are therefore free in any EVM application, and all three recur below:
 
@@ -310,13 +310,13 @@ Three parameters are therefore free in any EVM application, and all three recur 
 2. the **magnification factor α**, which decides *how much*;
 3. the **pyramid depth**, which decides at which spatial scales amplification occurs.
 
-**Setting the temporal band.** Bai et al. [15] report the rule given by the original EVM authors: the pass-band should correspond to the duration of the phenomenon being amplified — for micro-expressions, 1/5 s to 1/25 s, equivalently a band of **5 Hz to 25 Hz**. They also report that applying this full band produced "noticeable noise" in their setting, and that they narrowed it to 1/15–1/25 s (15–25 Hz) accordingly. This is the only explicit guidance on band selection anywhere in the review corpus, and it is the basis for the band used in this thesis (§3.2.7).
+**Setting the temporal band.** Bai et al. [4] report the rule given by the original EVM authors: the pass-band should correspond to the duration of the phenomenon being amplified — for micro-expressions, 1/5 s to 1/25 s, equivalently a band of **5 Hz to 25 Hz**. They also report that applying this full band produced "noticeable noise" in their setting, and that they narrowed it to 1/15–1/25 s (15–25 Hz) accordingly. This is the only explicit guidance on band selection anywhere in the review corpus, and it is the basis for the band used in this thesis (§3.2.7).
 
 ---
 
 ### 3.2.3 Evidence that magnification improves recognition
 
-The strongest empirical case in the review corpus is Li et al. [6], who sweep the magnification factor systematically rather than fixing it. Clips are magnified at what the paper describes as ten levels, listing α ∈ {1, 2, 4, 8, 12, 16, 20, 24, 30} — nine values, an inconsistency in the source rather than in this account — where α = 1 denotes no magnification; each magnified clip is then temporally interpolated to ten frames (TIM10), and LBP, HOG and HIGO descriptors are extracted and classified. The experiment is run on both SMIC and CASME II under leave-one-subject-out.
+The strongest empirical case in the review corpus is Li et al. [14], who sweep the magnification factor systematically rather than fixing it. Clips are magnified at what the paper describes as ten levels, listing α ∈ {1, 2, 4, 8, 12, 16, 20, 24, 30} — nine values, an inconsistency in the source rather than in this account — where α = 1 denotes no magnification; each magnified clip is then temporally interpolated to ten frames (TIM10), and LBP, HOG and HIGO descriptors are extracted and classified. The experiment is run on both SMIC and CASME II under leave-one-subject-out.
 
 Two findings emerge, and both are directly relevant here.
 
@@ -328,13 +328,13 @@ Two findings emerge, and both are directly relevant here.
 | HOG | 57.49 % | 63.97 % | **+6.48** |
 | HIGO | 57.09 % | 67.21 % | **+10.12** |
 
-*Table 3.8 — Effect of Eulerian motion magnification on CASME II under leave-one-subject-out, after Li et al. [6] (Table 6).*
+*Table 3.8 — Effect of Eulerian motion magnification on CASME II under leave-one-subject-out, after Li et al. [14] (Table 6).*
 
-The best configuration of their full framework — magnification, TIM10 and HIGO — reaches 67.21 % on CASME II and 68.29 % on SMIC-HS under LOSO, which they show to be competitive with or better than the contemporaneous state of the art. Li et al. [6] flag a problem in that comparison: several published CASME II figures, including the 63.41 % baseline of Yan et al. [1], were obtained under **leave-one-sample-out** validation, "which is much easier" than the leave-one-subject-out protocol used here (§3.1.4).
+The best configuration of their full framework — magnification, TIM10 and HIGO — reaches 67.21 % on CASME II and 68.29 % on SMIC-HS under LOSO, which they show to be competitive with or better than the contemporaneous state of the art. Li et al. [14] flag a problem in that comparison: several published CASME II figures, including the 63.41 % baseline of Yan et al. [1], were obtained under **leave-one-sample-out** validation, "which is much easier" than the leave-one-subject-out protocol used here (§3.1.4).
 
-**The relationship between α and accuracy is non-monotonic.** Li et al. [6] describe the resulting curves as "rainbow-shaped," with best performance "generally achieved when the motion is magnified in the range of **[8, 16]**." Their explanation of the two failure modes is mechanistic: "magnification at lower levels might not be enough to reveal the ME motion progress; on the other hand, magnification at higher levels degrades the performance because too many artifacts are induced." Magnification is therefore not a monotone improvement to be maximised, but a parameter with an interior optimum that must be selected.
+**The relationship between α and accuracy is non-monotonic.** Li et al. [14] describe the resulting curves as "rainbow-shaped," with best performance "generally achieved when the motion is magnified in the range of **[2, 3]**." Their explanation of the two failure modes is mechanistic: "magnification at lower levels might not be enough to reveal the ME motion progress; on the other hand, magnification at higher levels degrades the performance because too many artifacts are induced." Magnification is therefore not a monotone improvement to be maximised, but a parameter with an interior optimum that must be selected.
 
-Bai et al. [15] provide the second quantitative demonstration, using a fundamentally different downstream model — a pre-trained VGGFace2 (ResNet-50) spatial encoder feeding a bidirectional LSTM. On SMIC they report **60.60 % without magnification against 75.76 % with phase-based magnification**, and the phase-based variant outperforms the amplitude-based one. Because the pipeline shares nothing with Li et al.'s hand-crafted descriptors, the two results together establish that the benefit is not an artefact of a particular feature family — at least when the downstream representation is appearance-based.
+Bai et al. [4] provide the second quantitative demonstration, using a fundamentally different downstream model — a pre-trained VGGFace2 (ResNet-50) spatial encoder feeding a bidirectional LSTM. On SMIC they report **60.60 % without magnification against 75.76 % with phase-based magnification**, and the phase-based variant outperforms the amplitude-based one. Because the pipeline shares nothing with Li et al.'s hand-crafted descriptors, the two results together establish that the benefit is not an artefact of a particular feature family — at least when the downstream representation is appearance-based.
 
 ---
 
@@ -342,11 +342,11 @@ Bai et al. [15] provide the second quantitative demonstration, using a fundament
 
 Two further papers in the review corpus use EVM in a different regime, and the contrast is informative.
 
-Li, Huang and Zhao [16] address whether a micro-expression can be recognised from a *single* apex frame. Their argument for magnification is specific to that setting: the apex frame carries the most emotional information, but "the intensity level of apex frame is not distinguished due to subtle change, especially for deep model that describes high-layer abstract information." They magnify the spotted apex frame using EVM, set **α = 30**, and fine-tune a VGG-Face descriptor on the result. Because a single frame per clip is too little data to train on, they exploit the high frame rate to augment: the apex frame plus its two preceding and two following frames are all retained, expanding the training set fivefold. They restate the same trade-off Li et al. [6] quantified — "bigger values of motion amplification level lead to larger scale of motion amplification, but also can cause bigger displacement and artifacts."
+Li, Huang and Zhao [3] address whether a micro-expression can be recognised from a *single* apex frame. Their argument for magnification is specific to that setting: the apex frame carries the most emotional information, but "the intensity level of apex frame is not distinguished due to subtle change, especially for deep model that describes high-layer abstract information." They magnify the spotted apex frame using EVM, set **α = 30**, and fine-tune a VGG-Face descriptor on the result. Because a single frame per clip is too little data to train on, they exploit the high frame rate to augment: the apex frame plus its two preceding and two following frames are all retained, expanding the training set fivefold. They restate the same trade-off Li et al. [14] quantified — "bigger values of motion amplification level lead to larger scale of motion amplification, but also can cause bigger displacement and artifacts."
 
-Li, Huang and Zhao [17] extend this into a joint local–global learning framework with frequency-domain apex detection, and carry the same setting forward: motion magnification level "set as 30 in our framework," with the same ±2-frame augmentation producing what they name the Extended Magnified ME (EMME) database.
+Li, Huang and Zhao [20] extend this into a joint local–global learning framework with frequency-domain apex detection, and carry the same setting forward: motion magnification level "set as 30 in our framework," with the same ±2-frame augmentation producing what they name the Extended Magnified ME (EMME) database.
 
-**The α discrepancy is worth dwelling on**, because it is easy to misread as a contradiction. Li et al. [6] find the optimum at α ∈ $[8, 16]$ and observe degradation beyond it; Li, Huang and Zhao [16, 17] adopt α = 30, which sits at the extreme end of that same sweep. The regimes differ in a way that plausibly explains the gap. The $[8, 16]$ optimum is measured on **full magnified sequences** described by spatio-temporal descriptors, where inter-frame artefacts accumulate along the temporal axis and corrupt exactly the dynamic texture the descriptor encodes. The α = 30 setting is applied to a **narrow five-frame window around the apex**, consumed by a deep face encoder as largely static appearance, where the temporal artefacts that penalise a spatio-temporal descriptor have far less opportunity to express themselves — and where the encoder needs a strong appearance signal to distinguish categories at all.
+**The α discrepancy is worth dwelling on**, because it is easy to misread as a contradiction. Li et al. [14] find the optimum at α ∈ $[8, 16]$ and observe degradation beyond it; Li, Huang and Zhao [3, 20] adopt α = 30, which sits at the extreme end of that same sweep. The regimes differ in a way that plausibly explains the gap. The $[8, 16]$ optimum is measured on **full magnified sequences** described by spatio-temporal descriptors, where inter-frame artefacts accumulate along the temporal axis and corrupt exactly the dynamic texture the descriptor encodes. The α = 30 setting is applied to a **narrow five-frame window around the apex**, consumed by a deep face encoder as largely static appearance, where the temporal artefacts that penalise a spatio-temporal descriptor have far less opportunity to express themselves — and where the encoder needs a strong appearance signal to distinguish categories at all.
 
 The implication for any new system is that α cannot be transferred between pipelines. It is a parameter of the *combination* of magnification and downstream representation, not of the corpus.
 
@@ -356,13 +356,13 @@ The implication for any new system is that α cannot be transferred between pipe
 
 The review corpus is unusually candid about EVM's failure modes, and four are documented.
 
-**It amplifies everything in band, not only expressions.** This is the most important limitation and the most easily overlooked. Li et al. [6] decline to use magnification for micro-expression *spotting* at all, "because it magnifies unwanted motions (e.g. head movements) at the same time." EVM has no notion of which motion is of interest; a rigid head translation whose temporal frequency falls inside the pass-band is amplified exactly as a brow raise is. In a recognition pipeline this is mitigated by prior face alignment and cropping — Li et al. [6] magnify only after normalising and cropping to the eye-defined rectangle — but it is mitigated, not eliminated.
+**It amplifies everything in band, not only expressions.** This is the most important limitation and the most easily overlooked. Li et al. [14] decline to use magnification for micro-expression *spotting* at all, "because it magnifies unwanted motions (e.g. head movements) at the same time." EVM has no notion of which motion is of interest; a rigid head translation whose temporal frequency falls inside the pass-band is amplified exactly as a brow raise is. In a recognition pipeline this is mitigated by prior face alignment and cropping — Li et al. [14] magnify only after normalising and cropping to the eye-defined rectangle — but it is mitigated, not eliminated.
 
-**Artefacts grow with α.** All four papers report this. Li et al. [6] show it as the descending limb of the rainbow curve; Li, Huang and Zhao [16, 17] state it as a design caution; Bai et al. [15] observe it directly as noise that forced them to narrow their temporal band.
+**Artefacts grow with α.** All four papers report this. Li et al. [14] show it as the descending limb of the rainbow curve; Li, Huang and Zhao [3, 20] state it as a design caution; Bai et al. [4] observe it directly as noise that forced them to narrow their temporal band.
 
-**There is no principled procedure for choosing α.** Every value in the corpus is obtained empirically — by exhaustive sweep [6] or by citation of a prior sweep [16, 17]. No paper offers a way to select α from properties of the data.
+**There is no principled procedure for choosing α.** Every value in the corpus is obtained empirically — by exhaustive sweep [14] or by citation of a prior sweep [3, 20]. No paper offers a way to select α from properties of the data.
 
-**Evaluation is confined to appearance-based downstream representations.** LBP, HOG and HIGO in Li et al. [6]; VGGFace2 features in Bai et al. [15]; VGG-Face in both Li, Huang and Zhao papers. Every one of these descriptors is computed on **magnified pixel intensities**. No study in the review corpus measures what magnification contributes when the representation handed to the classifier is itself an explicit motion field — an optical flow and strain volume — rather than an appearance signal. §3.2.8 argues that this is the gap this thesis occupies, and §3.2.6 explains why the distinction is likely to matter.
+**Evaluation is confined to appearance-based downstream representations.** LBP, HOG and HIGO in Li et al. [14]; VGGFace2 features in Bai et al. [4]; VGG-Face in both Li, Huang and Zhao papers. Every one of these descriptors is computed on **magnified pixel intensities**. No study in the review corpus measures what magnification contributes when the representation handed to the classifier is itself an explicit motion field — an optical flow and strain volume — rather than an appearance signal. §3.2.8 argues that this is the gap this thesis occupies, and §3.2.6 explains why the distinction is likely to matter.
 
 ---
 
@@ -384,10 +384,10 @@ The review above determines this thesis's magnification settings and the way EVM
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Pass-band should match the phenomenon's duration, 1/5–1/25 s ≡ 5–25 Hz [15] | Temporal band-pass set to **5–25 Hz**, matched to CASME II's 200 fps sampling |
-| Accuracy against α is rainbow-shaped, optimum in **$[8, 16]$** for full-sequence pipelines [6] | **α = 10**, inside the reported optimum; the α = 30 of the apex-frame papers is explicitly *not* adopted, since this thesis consumes full sequences |
-| Amplitude-based magnification uses a Laplacian pyramid plus temporal band-pass [15] | Amplitude-based EVM over a **4-level Laplacian pyramid**, temporal filtering by FFT band-pass |
-| Magnification amplifies head motion as well as expression [6] | Magnification applied only after the clip has been trimmed onset-to-offset; the risk is acknowledged as a residual threat rather than claimed to be eliminated |
+| Pass-band should match the phenomenon's duration, 1/5–1/25 s ≡ 5–25 Hz [4] | Temporal band-pass set to **5–25 Hz**, matched to CASME II's 200 fps sampling |
+| Accuracy against α is rainbow-shaped, optimum in **$[8, 16]$** for full-sequence pipelines [14] | **α = 10**, inside the reported optimum; the α = 30 of the apex-frame papers is explicitly *not* adopted, since this thesis consumes full sequences |
+| Amplitude-based magnification uses a Laplacian pyramid plus temporal band-pass [4] | Amplitude-based EVM over a **4-level Laplacian pyramid**, temporal filtering by FFT band-pass |
+| Magnification amplifies head motion as well as expression [14] | Magnification applied only after the clip has been trimmed onset-to-offset; the risk is acknowledged as a residual threat rather than claimed to be eliminated |
 | Magnification is a purely upstream, data-level operation | Stage 1 is run **twice**, producing a magnified and a non-magnified tensor set; the EVM switch selects a directory and leaves the network unchanged, making it a clean ablation factor |
 | Magnification is part of the proposed data pipeline, not of the network | EVM is treated as the **baseline condition** (`config_4`), not as a component to be added; the non-magnified arm (`config_1`) is the control that isolates it — see §3.1.8 |
 
@@ -415,7 +415,7 @@ What magnification is placed in front of therefore matters as much as its own pa
 
 ## 3.3 Motion Representation: Dense Optical Flow
 
-**Scope of this section.** This section reviews dense optical flow — the horizontal and vertical displacement fields that form two of the three input channels used in this thesis — through the four review-corpus papers that apply it: Liong et al. [10, 11], Xu et al. [18], and Zhao et al. [19]. The estimators themselves, Farnebäck's polynomial-expansion method and the TV-L1 variational method, lie outside the corpus and are described here only as attributed through those papers.
+**Scope of this section.** This section reviews dense optical flow — the horizontal and vertical displacement fields that form two of the three input channels used in this thesis — through the four review-corpus papers that apply it: Liong et al. [5, 17], Xu et al. [21], and Zhao et al. [7]. The estimators themselves, Farnebäck's polynomial-expansion method and the TV-L1 variational method, lie outside the corpus and are described here only as attributed through those papers.
 
 ---
 
@@ -423,25 +423,25 @@ What magnification is placed in front of therefore matters as much as its own pa
 
 The decision to hand a classifier a motion field rather than pixels is the single most consequential representational choice in this thesis, and the review corpus supports it from three independent directions.
 
-**The argument from mechanism.** Xu et al. [18] state the case most directly in their critique of the prevailing approaches. Most existing methods, they observe, "utilize textural features like Gabor filters or LBP descriptors. These features cannot shed light on the mechanism of microexpressions intuitively. A facial-dynamics-based descriptor has the potential to expose the nature of microexpressions." A micro-expression *is* a movement — a brief contraction of specific facial muscles — so a representation that encodes displacement is describing the phenomenon itself, whereas a texture descriptor is describing a side effect of it.
+**The argument from mechanism.** Xu et al. [21] state the case most directly in their critique of the prevailing approaches. Most existing methods, they observe, "utilize textural features like Gabor filters or LBP descriptors. These features cannot shed light on the mechanism of microexpressions intuitively. A facial-dynamics-based descriptor has the potential to expose the nature of microexpressions." A micro-expression *is* a movement — a brief contraction of specific facial muscles — so a representation that encodes displacement is describing the phenomenon itself, whereas a texture descriptor is describing a side effect of it.
 
 **The argument from confounding.** Given the corpus's demographic and illumination narrowness (§3.1.7), appearance is exactly the wrong thing to model: pixel intensities encode who the subject is and how the scene is lit far more strongly than they encode a few grey levels of transient muscle movement, and a network with sufficient capacity will exploit the former. A displacement field discards absolute intensity by construction, and is therefore invariant to identity and illumination in a way no appearance descriptor is.
 
-**The argument from convergence.** §3.1.6 noted the MEGC 2019 organisers' observation that the top three submissions to the challenge "all used optical flow as their choice of" feature representation [4]. Independent teams competing on a common protocol converged on the same representation, which is stronger evidence than any single paper's ablation.
+**The argument from convergence.** §3.1.6 noted the MEGC 2019 organisers' observation that the top three submissions to the challenge "all used optical flow as their choice of" feature representation [11]. Independent teams competing on a common protocol converged on the same representation, which is stronger evidence than any single paper's ablation.
 
 ---
 
 ### 3.3.2 The brightness-constancy formulation
 
-Liong et al. [10] give the fullest derivation in the corpus, and it is worth restating because its assumptions become the limitations discussed in §3.3.6.
+Liong et al. [5] give the fullest derivation in the corpus, and it is worth restating because its assumptions become the limitations discussed in §3.3.6.
 
 Optical flow estimation rests on four stated assumptions: that the apparent brightness of moving objects is unchanged between source and target frames, so that "the noises generated by a large variety of imaging variables such as the shadows, highlights, illumination and surface translucency phenomena are entirely neglected"; that movement between consecutive frames is small; that the flow field is continuous and differentiable in space and time; and that the scene is static and its objects rigid.
 
-The constraint equation that follows from these assumptions is derived in §2.4.2 and is not repeated here; Zhao et al. [19] reach the same equation and add the flow vector and its amplitude, $V = [u, v]^{\mathsf T}$ with $m = \sqrt{u^2 + v^2}$.
+The constraint equation that follows from these assumptions is derived in §2.4.2 and is not repeated here; Zhao et al. [7] reach the same equation and add the flow vector and its amplitude, $V = [u, v]^{\mathsf T}$ with $m = \sqrt{u^2 + v^2}$.
 
 A single scalar equation cannot determine two unknowns per pixel — the aperture problem — so every practical estimator adds an assumption to close the system. **The choice of that assumption is the difference between flow algorithms**, and it is the subject of §3.3.3.
 
-Both papers arrive at the same output format. Liong et al. [10] summarise each video as the field $O_i = \{(u(x,y), v(x,y))\}$ over the image domain, giving two representations per clip: the horizontal component $u$ and the vertical component $v$. These are the first two channels of the input tensor used in this thesis; the third, optical strain, is derived from them and is the subject of §3.4.
+Both papers arrive at the same output format. Liong et al. [5] summarise each video as the field $O_i = \{(u(x,y), v(x,y))\}$ over the image domain, giving two representations per clip: the horizontal component $u$ and the vertical component $v$. These are the first two channels of the input tensor used in this thesis; the third, optical strain, is derived from them and is the subject of §3.4.
 
 ---
 
@@ -449,9 +449,9 @@ Both papers arrive at the same output format. Liong et al. [10] summarise each v
 
 The corpus contains two estimator choices, made for stated but different reasons, and never compared against each other.
 
-**Farnebäck.** Zhao et al. [19] write: "We follow the classic Farnebäck method to implement the OF estimation, which has been implemented and integrated into the OpenCV library and can be used easily." The method approximates the local neighbourhood of each pixel by a quadratic polynomial and solves for the displacement that maps one polynomial expansion onto the next, computed over an image pyramid so that both large and small displacements are recoverable. The justification offered is practical — it is classical, well understood, and available as a maintained implementation. This is the estimator used in this thesis.
+**Farnebäck.** Zhao et al. [7] write: "We follow the classic Farnebäck method to implement the OF estimation, which has been implemented and integrated into the OpenCV library and can be used easily." The method approximates the local neighbourhood of each pixel by a quadratic polynomial and solves for the displacement that maps one polynomial expansion onto the next, computed over an image pyramid so that both large and small displacements are recoverable. The justification offered is practical — it is classical, well understood, and available as a maintained implementation. This is the estimator used in this thesis.
 
-**TV-L1.** Liong et al. [10] select TV-L1 instead, and give a technical justification: it is "better in preserving the flow discontinuities and is more robust compared to the classical optical flow method." Total-variation regularisation with an L1 data term penalises the *magnitude* of flow gradients rather than their square, which permits sharp discontinuities at motion boundaries instead of smoothing across them, and the L1 data term tolerates brightness-constancy violations better than a quadratic one. Liong et al. [11] build STSTNet on the same onset–apex flow construction, though that paper does not name the estimator it uses.
+**TV-L1.** Liong et al. [5] select TV-L1 instead, and give a technical justification: it is "better in preserving the flow discontinuities and is more robust compared to the classical optical flow method." Total-variation regularisation with an L1 data term penalises the *magnitude* of flow gradients rather than their square, which permits sharp discontinuities at motion boundaries instead of smoothing across them, and the L1 data term tolerates brightness-constancy violations better than a quadratic one. Liong et al. [17] build STSTNet on the same onset–apex flow construction, though that paper does not name the estimator it uses.
 
 **No paper in the corpus compares the two on micro-expression data.** The claim that TV-L1 preserves discontinuities better is a property of the estimators in general rather than a measured result on this task, and the Farnebäck choice is justified by availability rather than by accuracy. This is a genuine gap: on a corpus where a purely descriptive hyper-parameter has been shown to move the headline figure by several points (§3.1.4), an unexamined estimator choice is not obviously safe (§3.3.8).
 
@@ -463,13 +463,13 @@ The corpus divides on a question that turns out to be decisive for this thesis, 
 
 **The two-frame position.**
 
-Liong et al. [10] compute a single flow field between the onset frame and the apex frame, and use it to represent the entire video. Their reasoning is that the apex "portrays the highest intensity of facial motion among all frames," so the onset-to-apex displacement captures the expression's full excursion; and that because the interval is short — "less than 0.2 seconds" — the brightness-constancy assumption is comfortably satisfied over it. The resulting $u$ and $v$ maps are resized to 28 × 28 and fed to a small CNN. Liong et al. [11] adopt the identical scheme for STSTNet, adding optical strain as a third channel computed from the same pair, and it is worth noting for §3.6 that this three-channel construction — **horizontal flow, vertical flow, optical strain, computed from onset and apex** — is the direct precedent for the input tensor used in this thesis.
+Liong et al. [5] compute a single flow field between the onset frame and the apex frame, and use it to represent the entire video. Their reasoning is that the apex "portrays the highest intensity of facial motion among all frames," so the onset-to-apex displacement captures the expression's full excursion; and that because the interval is short — "less than 0.2 seconds" — the brightness-constancy assumption is comfortably satisfied over it. The resulting $u$ and $v$ maps are resized to 28 × 28 and fed to a small CNN. Liong et al. [17] adopt the identical scheme for STSTNet, adding optical strain as a third channel computed from the same pair, and it is worth noting for §3.6 that this three-channel construction — **horizontal flow, vertical flow, optical strain, computed from onset and apex** — is the direct precedent for the input tensor used in this thesis.
 
 The economy of the two-frame approach is considerable: an entire video collapses to two images, a substantial defence against overfitting on a corpus this size (§3.1.3).
 
 **The sequence position.**
 
-Zhao et al. [19] reject the collapse. They construct an eleven-frame key-frame sequence from the three annotated frames — onset, apex and offset — by adaptively interpolating eight intermediate transition frames, distributed between the onset–apex and apex–offset intervals in proportion to their durations. Optical flow is then computed between each adjacent pair, yielding a **ten-frame flow sequence** rather than a single field. Their stated principles for the construction are that the sequence must be sufficient to summarise the original video, must contain as few noisy frames as possible, and must highlight the movement of the apex frame, "since it has been proven to contribute major information for facial-expression recognition".
+Zhao et al. [7] reject the collapse. They construct an eleven-frame key-frame sequence from the three annotated frames — onset, apex and offset — by adaptively interpolating eight intermediate transition frames, distributed between the onset–apex and apex–offset intervals in proportion to their durations. Optical flow is then computed between each adjacent pair, yielding a **ten-frame flow sequence** rather than a single field. Their stated principles for the construction are that the sequence must be sufficient to summarise the original video, must contain as few noisy frames as possible, and must highlight the movement of the apex frame, "since it has been proven to contribute major information for facial-expression recognition".
 
 **The trade-off is explicit.** A single onset-to-apex field records *how far* the face moved but nothing about *how* it got there; the temporal arc that defines a micro-expression — neutral, rise, apex, relaxation — is discarded. A flow sequence retains that arc at the cost of more data per sample and therefore more capacity required downstream. Since the central question of this thesis is whether explicit temporal modelling improves recognition, only the second option permits the question to be asked at all; §3.3.7 records the consequence.
 
@@ -477,25 +477,25 @@ Zhao et al. [19] reject the collapse. They construct an eleven-frame key-frame s
 
 ### 3.3.5 Flow as an alignment tool, not only as a feature
 
-Xu et al. [18] use optical flow for a second purpose that the other papers do not, and their argument for it is one of the strongest statements in the corpus about why micro-expression analysis is unlike ordinary expression analysis.
+Xu et al. [21] use optical flow for a second purpose that the other papers do not, and their argument for it is one of the strongest statements in the corpus about why micro-expression analysis is unlike ordinary expression analysis.
 
 They observe that existing methods "place less emphasis on fine face alignment," either assuming the face is already aligned or relying on landmark locators such as the Active Shape Model. Their objection is quantitative in character: "a fine face alignment is more crucial in microexpression recognition than in conventional expression recognition because microexpression is a subtle movement, and thus a rather small misalignment may result in considerably large performance degradation." Where the signal of interest is a few pixels of skin displacement, an alignment error of a few pixels is not a small perturbation — it is the same order as the signal.
 
 Their remedy is a two-stage alignment. Landmarks are located and the face coarsely aligned and cropped; then optical flow between consecutive frames is used to estimate pixel-level movement, and a **fine-scale in-sequence alignment** is performed from those fields before any descriptor is computed. Flow here is not the feature but the instrument that removes residual motion, so that what remains is expression rather than head displacement.
 
-This sharpens the concern raised in §3.2.5 about magnification amplifying head motion indiscriminately: Xu et al. [18] show that residual head movement is large enough relative to the signal to require dedicated correction in its own right. A pipeline that magnifies before computing flow — as this thesis does — is therefore exposed on both counts, and the exposure is only partly mitigated by the coarse alignment and cropping that CASME II's own release procedure applies (§3.1.2).
+This sharpens the concern raised in §3.2.5 about magnification amplifying head motion indiscriminately: Xu et al. [21] show that residual head movement is large enough relative to the signal to require dedicated correction in its own right. A pipeline that magnifies before computing flow — as this thesis does — is therefore exposed on both counts, and the exposure is only partly mitigated by the coarse alignment and cropping that CASME II's own release procedure applies (§3.1.2).
 
 ---
 
 ### 3.3.6 Limitations
 
-**The assumptions are known to be false.** Liong et al. [10] are explicit that brightness constancy causes shadows, highlights, illumination change and surface translucency to be "entirely neglected," and that the scene is assumed static and rigid. A human face is neither rigid nor free of translucency, and the assumption of small inter-frame motion sits awkwardly beside a magnification step whose declared purpose is to make motion larger (§3.2).
+**The assumptions are known to be false.** Liong et al. [5] are explicit that brightness constancy causes shadows, highlights, illumination change and surface translucency to be "entirely neglected," and that the scene is assumed static and rigid. A human face is neither rigid nor free of translucency, and the assumption of small inter-frame motion sits awkwardly beside a magnification step whose declared purpose is to make motion larger (§3.2).
 
-**Two-frame pipelines inherit the apex-detection error.** Liong et al. [10] report this against themselves. On SMIC, where no ground-truth apex is annotated, an automatic spotter must supply it, and "the average of frame difference between the detected and ground-truth apex is 13 frames"; they attribute their weaker SMIC result directly to "extracting the features from imprecise apex frame." Any representation that depends on locating one frame correctly is only as good as the spotter. It is worth recalling from §3.1.6 that one MEGC submission found mid-position frames to be an adequate substitute for annotated apex frames, which suggests the dependence is real but the precision requirement may be looser than assumed.
+**Two-frame pipelines inherit the apex-detection error.** Liong et al. [5] report this against themselves. On SMIC, where no ground-truth apex is annotated, an automatic spotter must supply it, and "the average of frame difference between the detected and ground-truth apex is 13 frames"; they attribute their weaker SMIC result directly to "extracting the features from imprecise apex frame." Any representation that depends on locating one frame correctly is only as good as the spotter. It is worth recalling from §3.1.6 that one MEGC submission found mid-position frames to be an adequate substitute for annotated apex frames, which suggests the dependence is real but the precision requirement may be looser than assumed.
 
 **The estimator is chosen, not evaluated.** As §3.3.3 noted, no paper in the corpus measures the effect of the estimator on recognition, despite two different choices being in circulation.
 
-**Flow inherits everything upstream.** It is computed on whatever the alignment stage produced, and Xu et al. [18] demonstrate that landmark-based alignment alone is insufficient for this task. Errors do not merely pass through; a misalignment of a few pixels produces a spurious displacement field of the same magnitude as the signal.
+**Flow inherits everything upstream.** It is computed on whatever the alignment stage produced, and Xu et al. [21] demonstrate that landmark-based alignment alone is insufficient for this task. Errors do not merely pass through; a misalignment of a few pixels produces a spurious displacement field of the same magnitude as the signal.
 
 ---
 
@@ -503,12 +503,12 @@ This sharpens the concern raised in §3.2.5 about magnification amplifying head 
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Motion descriptors expose the mechanism where textural ones do not [18]; flow was the convergent choice of the top MEGC entries [4] | The network never sees pixels. Every clip is converted to a motion tensor before training |
-| Horizontal and vertical flow fields $u, v$ are the standard pair [10] | Channels 1 and 2 of the input tensor are flow-$u$ and flow-$v$; channel 3 is optical strain (§3.4) |
-| Farnebäck is classical and available in OpenCV [19] | Dense **Farnebäck** estimation via OpenCV, matching Zhao et al.'s choice; the TV-L1 alternative of Liong et al. [10] is noted as untested here and listed in future work |
-| Onset→apex two-frame flow discards the temporal arc [10, 11]; an interpolated key-frame sequence retains it [19] | Flow is computed **across a full resampled sequence**, not a single onset–apex pair, following the sequence position — since the temporal arc is precisely the object of study |
-| Two-frame pipelines are limited by apex-spotting error of up to ~13 frames [10] | The pipeline trims onset→offset using CASME II's annotations and resamples to a fixed length; **no single apex frame must be located correctly**, removing that failure mode entirely. It introduces a different one: three clips are shorter than the 33-frame sampling window, so a few of their 32 pairs are duplicate-frame pairs yielding zero flow (§3.5.7) |
-| Fine alignment matters more for micro- than macro-expressions [18] | Acknowledged as a residual threat: this pipeline relies on the corpus's coarse alignment and does not perform flow-based fine alignment. Listed in Chapter 6 as the most promising unexploited improvement |
+| Motion descriptors expose the mechanism where textural ones do not [21]; flow was the convergent choice of the top MEGC entries [11] | The network never sees pixels. Every clip is converted to a motion tensor before training |
+| Horizontal and vertical flow fields $u, v$ are the standard pair [5] | Channels 1 and 2 of the input tensor are flow-$u$ and flow-$v$; channel 3 is optical strain (§3.4) |
+| Farnebäck is classical and available in OpenCV [7] | Dense **Farnebäck** estimation via OpenCV, matching Zhao et al.'s choice; the TV-L1 alternative of Liong et al. [5] is noted as untested here and listed in future work |
+| Onset→apex two-frame flow discards the temporal arc [5, 17]; an interpolated key-frame sequence retains it [7] | Flow is computed **across a full resampled sequence**, not a single onset–apex pair, following the sequence position — since the temporal arc is precisely the object of study |
+| Two-frame pipelines are limited by apex-spotting error of up to ~13 frames [5] | The pipeline trims onset→offset using CASME II's annotations and resamples to a fixed length; **no single apex frame must be located correctly**, removing that failure mode entirely. It introduces a different one: three clips are shorter than the 33-frame sampling window, so a few of their 32 pairs are duplicate-frame pairs yielding zero flow (§3.5.7) |
+| Fine alignment matters more for micro- than macro-expressions [21] | Acknowledged as a residual threat: this pipeline relies on the corpus's coarse alignment and does not perform flow-based fine alignment. Listed in Chapter 6 as the most promising unexploited improvement |
 
 *Table 3.10 — Review findings and the motion-representation decisions they determine.*
 
@@ -518,7 +518,7 @@ This sharpens the concern raised in §3.2.5 about magnification amplifying head 
 
 ### 3.3.8 Limitations of the existing work, and how this study differs
 
-The reviewed literature establishes that dense optical flow is an effective and now-conventional representation for micro-expression recognition (§3.3.1–§3.3.2), and that flow can serve as both feature and alignment instrument (§3.3.5). Four things it does not establish. First, the estimator choice is never evaluated on this task (§3.3.3), despite the corpus elsewhere showing that a purely descriptive hyper-parameter can move the headline figure by several points (§3.1.4). Second, the two-frame and sequence positions (§3.3.4) are never contrasted under a common protocol, so no study measures what the collapse costs. Third, the interaction between flow and what consumes it is unexamined: every paper pairs a flow representation with one fixed architecture, so nothing indicates whether a learned spatial backbone adds anything once the input is already a displacement field, or whether it duplicates work already done in closed form. Fourth, alignment quality is treated as either solved or as a contribution in its own right [18] but never as a controlled variable alongside the representation.
+The reviewed literature establishes that dense optical flow is an effective and now-conventional representation for micro-expression recognition (§3.3.1–§3.3.2), and that flow can serve as both feature and alignment instrument (§3.3.5). Four things it does not establish. First, the estimator choice is never evaluated on this task (§3.3.3), despite the corpus elsewhere showing that a purely descriptive hyper-parameter can move the headline figure by several points (§3.1.4). Second, the two-frame and sequence positions (§3.3.4) are never contrasted under a common protocol, so no study measures what the collapse costs. Third, the interaction between flow and what consumes it is unexamined: every paper pairs a flow representation with one fixed architecture, so nothing indicates whether a learned spatial backbone adds anything once the input is already a displacement field, or whether it duplicates work already done in closed form. Fourth, alignment quality is treated as either solved or as a contribution in its own right [21] but never as a controlled variable alongside the representation.
 
 This thesis differs on the second and third counts, which are the ones its research question requires. It computes flow across a **full temporally resampled sequence** rather than an onset–apex pair (§3.3.4), so that the temporal arc survives into the representation and a temporal model has something to model — and, as a by-product, removes the apex-spotting failure mode documented in §3.3.6. And it holds the motion representation fixed while varying the components that consume it across a **full factorial ablation** under complete leave-one-subject-out (§3.1.4), which makes it possible to ask, and answer, whether a learned spatio-temporal backbone contributes anything on top of an analytically computed motion field. The answer reported in Chapter 5 — that it does not, at measurable negative cost (§3.3.7) — is a statement about the *interaction* between representation and architecture that no single-architecture study in the corpus is positioned to make. On the first and fourth counts this thesis inherits the field's limitations rather than resolving them: the Farnebäck estimator is adopted without comparison against TV-L1, and no flow-based fine alignment is performed. Both are stated as limitations in Chapter 6.
 
@@ -528,33 +528,33 @@ The same frame pair that yields this flow field also yields the third channel, o
 
 ## 3.4 Deformation Representation: The Optical Strain Tensor
 
-**Scope of this section.** §3.3 covered dense optical flow; this section covers the third channel it feeds, optical strain, through the four review-corpus papers that develop it — Shreve et al. [2] and the Liong et al. strain series — together with STSTNet's use of it as an input channel. The continuum-mechanics results the strain tensor rests on are attributed through those same papers rather than to primary mechanics texts, which sit outside the review corpus.
+**Scope of this section.** §3.3 covered dense optical flow; this section covers the third channel it feeds, optical strain, through the four review-corpus papers that develop it — Shreve et al. [6] and the Liong et al. strain series — together with STSTNet's use of it as an input channel. The continuum-mechanics results the strain tensor rests on are attributed through those same papers rather than to primary mechanics texts, which sit outside the review corpus.
 
 ---
 
 ### 3.4.1 What strain adds that flow does not
 
-Optical flow answers *where each point moved*. Optical strain answers a different question: *how much the surface deformed*. The distinction is not cosmetic, and Shreve et al. [2] motivate their method on precisely this ground — that facial expressions are legible in "the strain impacted on the facial skin due to the non-rigid motion caused during expressions."
+Optical flow answers *where each point moved*. Optical strain answers a different question: *how much the surface deformed*. The distinction is not cosmetic, and Shreve et al. [6] motivate their method on precisely this ground — that facial expressions are legible in "the strain impacted on the facial skin due to the non-rigid motion caused during expressions."
 
 The practical consequence follows from what the strain operator does. Strain is built from *spatial derivatives* of the displacement field. A spatially uniform displacement — every pixel moving by the same amount, which is what a small rigid head translation produces — has zero spatial derivative and therefore contributes nothing to the strain field. A localised muscle contraction, in which neighbouring skin patches move by different amounts, produces a large one. Strain is thus a filter that suppresses rigid motion and preserves non-rigid deformation, which is exactly the discrimination micro-expression analysis requires and which §3.3.5 established that flow alone does not provide.
 
-Shreve et al. [2] make two separate sets of claims. The first concerns strain itself, which they hold to be "robust to moderate amounts of head translations" and which "has been shown in [8] [12] to be robust to adverse lighting conditions and heavy make-up". The second is a list of advantages of their overall method, two items of which bear on strain: that its reliability has been demonstrated "even under adverse illumination and heavy make-up", and that "optical strain can be quickly and accurately calculated from optical flow fields", so it costs almost nothing once flow has been computed. It is worth recording that both robustness claims are attributed by Shreve et al. to earlier work — their references `[8]` and `[12]` — rather than measured in that paper.
+Shreve et al. [6] make two separate sets of claims. The first concerns strain itself, which they hold to be "robust to moderate amounts of head translations" and which "has been shown in [2] [18] to be robust to adverse lighting conditions and heavy make-up". The second is a list of advantages of their overall method, two items of which bear on strain: that its reliability has been demonstrated "even under adverse illumination and heavy make-up", and that "optical strain can be quickly and accurately calculated from optical flow fields", so it costs almost nothing once flow has been computed. It is worth recording that both robustness claims are attributed by Shreve et al. to earlier work — their references `[8]` and `[12]` — rather than measured in that paper.
 
 ---
 
 ### 3.4.2 The finite strain tensor
 
-Shreve et al. [2] give the derivation that every subsequent paper in the corpus reuses.
+Shreve et al. [6] give the derivation that every subsequent paper in the corpus reuses.
 
 The tensor itself, its normal and shear components and its scalar magnitude are defined in §2.4.3. What matters here is the discretisation, which differs between the reviewed papers.
 
-Because each component is a function of the continuous displacement field but only discrete flow is available, the derivatives are approximated from the estimated flow $(p, q)$, where $u = p\,\Delta t$ and $v = q\,\Delta t$ for a fixed inter-frame interval $\Delta t$. Shreve et al. [2] evaluate the resulting spatial derivatives by the **central difference method**, for example
+Because each component is a function of the continuous displacement field but only discrete flow is available, the derivatives are approximated from the estimated flow $(p, q)$, where $u = p\,\Delta t$ and $v = q\,\Delta t$ for a fixed inter-frame interval $\Delta t$. Shreve et al. [6] evaluate the resulting spatial derivatives by the **central difference method**, for example
 
 $$\frac{\partial u}{\partial x} \;=\; \frac{u(x + \Delta x) - u(x - \Delta x)}{2\,\Delta x} \;\doteq\; \frac{p(x + \Delta x) - p(x - \Delta x)}{2\,\Delta x}$$
 
-with $(\Delta x, \Delta y) \approx 2$–3 pixels. Liong et al. [20] reproduce the same construction using finite difference approximation with $(\Delta x, \Delta y)$ "preset distances of 1 pixel."
+with $(\Delta x, \Delta y) \approx 2$–3 pixels. Liong et al. [22] reproduce the same construction using finite difference approximation with $(\Delta x, \Delta y)$ "preset distances of 1 pixel."
 
-**The strain magnitude.** Shreve et al. [2] reduce the tensor to a scalar per pixel by summing the component contributions, optionally normalised to 0–255 for display as a *strain map*. Liong et al. [20] — and, in identical form, Liong et al. [21] — state the scalar reduction explicitly as the Frobenius norm of the tensor:
+**The strain magnitude.** Shreve et al. [6] reduce the tensor to a scalar per pixel by summing the component contributions, optionally normalised to 0–255 for display as a *strain map*. Liong et al. [22] — and, in identical form, Liong et al. [23] — state the scalar reduction explicitly as the Frobenius norm of the tensor:
 
 $$\varepsilon = \sqrt{\varepsilon_{xx}^{\,2} + \varepsilon_{yy}^{\,2} + \varepsilon_{xy}^{\,2} + \varepsilon_{yx}^{\,2}}$$
 
@@ -568,39 +568,39 @@ The formulation implemented in this thesis (`Stage1_DataPipeline/step2_extractio
 
 $$\varepsilon_{\text{os}} = \sqrt{\varepsilon_{xx}^{\,2} + \varepsilon_{yy}^{\,2} + \varepsilon_{xy}^{\,2}}$$
 
-with the shear term counted **once**, where Liong et al. [20] count it twice as $\varepsilon_{xy}$ and $\varepsilon_{yx}$. Since the tensor is symmetric by construction, the published form is equivalent to $\sqrt{\varepsilon_{xx}^2 + \varepsilon_{yy}^2 + 2\varepsilon_{xy}^2}$, so the two differ by the weight given to shear relative to normal strain.
+with the shear term counted **once**, where Liong et al. [22] count it twice as $\varepsilon_{xy}$ and $\varepsilon_{yx}$. Since the tensor is symmetric by construction, the published form is equivalent to $\sqrt{\varepsilon_{xx}^2 + \varepsilon_{yy}^2 + 2\varepsilon_{xy}^2}$, so the two differ by the weight given to shear relative to normal strain.
 
-**The most directly relevant precedent, however, uses the same three-term form.** STSTNet [11], which §3.4.4 identifies as the origin of this thesis's three-channel input, prints its own strain magnitude as $|\varepsilon_{x,y}| = \sqrt{(\partial u/\partial x)^2 + (\partial v/\partial y)^2 + [\tfrac{1}{2}(\cdot)]^2}$ — three squared terms, with the shear contribution appearing once. The implementation used here therefore follows the paper whose input construction it adopts, and diverges only from the earlier four-term convention of Liong et al. [20, 21, 22]. This is stated rather than glossed because the two conventions coexist in the literature without either being flagged. Its practical significance is limited: both expressions are monotone in the same underlying quantities, both are strictly positive functions of the same two derivatives, and the channel is subsequently min–max normalised to $[0,1]$ across the whole sequence before training, which removes any global scaling. What is not removed is the *relative* weighting of shear against normal strain, which differs by a factor of $\sqrt{2}$ on the shear contribution. No experiment in this thesis isolates that difference, and it is recorded in Chapter 6 as a small unexamined implementation choice rather than claimed to be equivalent.
+**The most directly relevant precedent, however, uses the same three-term form.** STSTNet [17], which §3.4.4 identifies as the origin of this thesis's three-channel input, prints its own strain magnitude as $|\varepsilon_{x,y}| = \sqrt{(\partial u/\partial x)^2 + (\partial v/\partial y)^2 + [\tfrac{1}{2}(\cdot)]^2}$ — three squared terms, with the shear contribution appearing once. The implementation used here therefore follows the paper whose input construction it adopts, and diverges only from the earlier four-term convention of Liong et al. [22, 23, 24]. This is stated rather than glossed because the two conventions coexist in the literature without either being flagged. Its practical significance is limited: both expressions are monotone in the same underlying quantities, both are strictly positive functions of the same two derivatives, and the channel is subsequently min–max normalised to $[0,1]$ across the whole sequence before training, which removes any global scaling. What is not removed is the *relative* weighting of shear against normal strain, which differs by a factor of $\sqrt{2}$ on the shear contribution. No experiment in this thesis isolates that difference, and it is recorded in Chapter 6 as a small unexamined implementation choice rather than claimed to be equivalent.
 
-Spatial derivatives are computed with NumPy's `gradient`, which applies central differences over the interior of the array with a one-pixel spacing — matching the discretisation of Liong et al. [20] rather than the 2–3 pixel spacing of Shreve et al. [2].
+Spatial derivatives are computed with NumPy's `gradient`, which applies central differences over the interior of the array with a one-pixel spacing — matching the discretisation of Liong et al. [22] rather than the 2–3 pixel spacing of Shreve et al. [6].
 
 ---
 
 ### 3.4.4 Strain as a feature, and strain as a weight
 
-The corpus develops two distinct uses of the strain field, and Liong et al. [22] evaluate both together.
+The corpus develops two distinct uses of the strain field, and Liong et al. [24] evaluate both together.
 
 **Optical Strain Features (OSF).**
 
-The strain map is computed for each consecutive frame pair, filtered, and then **temporally pooled** into a single composite strain map. The pooling operator changed across the series: Liong et al. [20, 21] sum the per-pixel magnitudes across the sequence, while Liong et al. [22] — the source of the results in §3.4.5 — revise this to temporal *mean* pooling, on the grounds that it "ensures that the optical strain magnitudes are normalized based on their respective sequence lengths". The composite map that serves as "a temporal representative image for the respective video." The pooled map is max-normalised "to increase the significance of the strain information," resized, and used directly as the feature. Liong et al. [20] apply "two types of filters, which are the Wiener and Gaussian filters, to all the strain map images in order to suppress the background noise and interfering signals" — an explicit acknowledgement that the strain field is noisy.
+The strain map is computed for each consecutive frame pair, filtered, and then **temporally pooled** into a single composite strain map. The pooling operator changed across the series: Liong et al. [22, 23] sum the per-pixel magnitudes across the sequence, while Liong et al. [24] — the source of the results in §3.4.5 — revise this to temporal *mean* pooling, on the grounds that it "ensures that the optical strain magnitudes are normalized based on their respective sequence lengths". The composite map that serves as "a temporal representative image for the respective video." The pooled map is max-normalised "to increase the significance of the strain information," resized, and used directly as the feature. Liong et al. [22] apply "two types of filters, which are the Wiener and Gaussian filters, to all the strain map images in order to suppress the background noise and interfering signals" — an explicit acknowledgement that the strain field is noisy.
 
 **Optical Strain Weighted features (OSW).**
 
-Rather than being classified directly, the strain field is used to decide *which parts of the face matter*. Liong et al. [21] partition the image into $N \times N$ non-overlapping blocks and pool the strain magnitudes within each block to a single value; the resulting normalised coefficients form a weight matrix that is multiplied with the LBP-TOP histograms extracted from the corresponding blocks on the XY plane. Facial regions undergoing strong muscle contraction are thereby up-weighted and quiescent regions suppressed, before any classifier is trained.
+Rather than being classified directly, the strain field is used to decide *which parts of the face matter*. Liong et al. [23] partition the image into $N \times N$ non-overlapping blocks and pool the strain magnitudes within each block to a single value; the resulting normalised coefficients form a weight matrix that is multiplied with the LBP-TOP histograms extracted from the corresponding blocks on the XY plane. Facial regions undergoing strong muscle contraction are thereby up-weighted and quiescent regions suppressed, before any classifier is trained.
 
-The pooling that produces those weights is performed **separably**: Liong et al. [22] "consider spatio-temporal pooling in a separable fashion; spatial mean pooling is performed first, followed by temporal mean pooling," with mean rather than sum pooling chosen so that magnitudes remain comparable across sequences of different length.
+The pooling that produces those weights is performed **separably**: Liong et al. [24] "consider spatio-temporal pooling in a separable fashion; spatial mean pooling is performed first, followed by temporal mean pooling," with mean rather than sum pooling chosen so that magnitudes remain comparable across sequences of different length.
 
 **OSF + OSW.**
 
 The third variant concatenates the two feature histograms. This combination is the one that performs best in their experiments.
 
-Liong et al. [11] later reduce the idea to its simplest form for STSTNet, where optical strain is neither pooled nor used as a weight but supplied as **a third input channel alongside horizontal and vertical flow**, computed from the onset and apex frames. That three-channel construction is the direct precedent for the input tensor used in this thesis.
+Liong et al. [17] later reduce the idea to its simplest form for STSTNet, where optical strain is neither pooled nor used as a weight but supplied as **a third input channel alongside horizontal and vertical flow**, computed from the onset and apex frames. That three-channel construction is the direct precedent for the input tensor used in this thesis.
 
 ---
 
 ### 3.4.5 What strain measurably buys — and the protocol caveat
 
-Liong et al. [22] report the clearest quantification, and it is more equivocal than the strain literature's framing suggests.
+Liong et al. [24] report the clearest quantification, and it is more equivocal than the strain literature's framing suggests.
 
 | Method | Recog-SMIC (micro / macro avg.) | Recog-CASME II |
 |---|:--:|:--:|
@@ -609,29 +609,29 @@ Liong et al. [22] report the clearest quantification, and it is more equivocal t
 | OSW | 49.39 / 50.71 | 61.94 |
 | **OSF + OSW** | **52.44 / 58.15** | **63.16** |
 
-*Table 3.11 — Recognition performance of the strain-based methods, after Liong et al. [22] (Table 8). SMIC results use LOSO cross-validation; CASME II results use leave-one-video-out.*
+*Table 3.11 — Recognition performance of the strain-based methods, after Liong et al. [24] (Table 8). SMIC results use LOSO cross-validation; CASME II results use leave-one-video-out.*
 
 Three observations follow, and all three bear on this thesis.
 
-**The gain is dataset-dependent and much smaller on CASME II.** Liong et al. [22] summarise their own improvement as "+5% and +10% on micro-expression recognition performance for the SMIC dataset using 5 × 5 and 8 × 8 block partitions," against "+0.41% and +1.22% in 5 × 5 and 8 × 8 block partitions respectively" on CASME II. An improvement of under half a percentage point on the corpus used in this thesis is not a robust effect.
+**The gain is dataset-dependent and much smaller on CASME II.** Liong et al. [24] summarise their own improvement as "+5% and +10% on micro-expression recognition performance for the SMIC dataset using 5 × 5 and 8 × 8 block partitions," against "+0.41% and +1.22% in 5 × 5 and 8 × 8 block partitions respectively" on CASME II. An improvement of under half a percentage point on the corpus used in this thesis is not a robust effect.
 
 **The CASME II figures are obtained under a weaker protocol.** Their table footnotes SMIC results as leave-one-subject-out and CASME II results as leave-one-*video*-out — the same non-subject-disjoint protocol issue §3.1 raises for both the CAS(ME)² and original CASME II baselines. Comparison of any strain result on CASME II against the LOSO figures in this thesis is therefore not like-for-like.
 
 **Strain alone underperforms; strain as a weight does not.** OSF used directly is *worse* than baseline on CASME II (51.01 against 61.94); OSW matches it exactly; only the concatenation improves on it. The evidence that strain carries independent discriminative power is weaker than the evidence that it usefully re-weights something else.
 
-A fourth observation is methodological and supports §3.1.6 directly. Liong et al. [22] distinguish macro-averaged from micro-averaged accuracy under LOSO — the former averaging subject-wise accuracies, the latter computed over all samples — and argue for reporting F1, precision and recall because these "provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples." That is the same argument, from a different direction, that this thesis makes for pooled macro F1 over per-fold averaging.
+A fourth observation is methodological and supports §3.1.6 directly. Liong et al. [24] distinguish macro-averaged from micro-averaged accuracy under LOSO — the former averaging subject-wise accuracies, the latter computed over all samples — and argue for reporting F1, precision and recall because these "provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples." That is the same argument, from a different direction, that this thesis makes for pooled macro F1 over per-fold averaging.
 
 ---
 
 ### 3.4.6 Limitations
 
-**Strain is a derivative of an estimate, so it amplifies noise.** The flow field is itself the solution of an ill-posed problem (§3.3.2); differentiating it spatially amplifies whatever estimation error it contains. Every reviewed paper responds with filtering — Liong et al. [20] apply Wiener and Gaussian filters explicitly for this purpose — and Liong et al. [22] close by recommending "better noise filtering techniques and masking of different face regions" to alleviate instability of illumination and intensity changes on the face, which they in turn expect to "reduce the erroneous optical flow/strain computation."
+**Strain is a derivative of an estimate, so it amplifies noise.** The flow field is itself the solution of an ill-posed problem (§3.3.2); differentiating it spatially amplifies whatever estimation error it contains. Every reviewed paper responds with filtering — Liong et al. [22] apply Wiener and Gaussian filters explicitly for this purpose — and Liong et al. [24] close by recommending "better noise filtering techniques and masking of different face regions" to alleviate instability of illumination and intensity changes on the face, which they in turn expect to "reduce the erroneous optical flow/strain computation."
 
 **Strain adds no information beyond the flow field.** It is a deterministic, differentiable function of $u$ and $v$. In an information-theoretic sense a model given $u$ and $v$ has everything needed to compute strain itself. Its value is therefore one of *representation* — making deformation intensity directly available at the input rather than requiring the network to learn a differential operator from 156 clips — not one of added evidence. No paper in the corpus tests whether a sufficiently expressive model given only flow recovers the benefit.
 
 **Every strain method in the corpus collapses the temporal axis.** OSF pools the strain sequence into one composite map; OSW pools it into one weight matrix; STSTNet computes it from a single onset–apex pair. In all three the temporal evolution of the deformation is discarded before classification.
 
-**The robustness claims are largely inherited.** Shreve et al.'s [2] illumination- and make-up-robustness claims are attributed to prior work; the reviewed papers do not measure them.
+**The robustness claims are largely inherited.** Shreve et al.'s [6] illumination- and make-up-robustness claims are attributed to prior work; the reviewed papers do not measure them.
 
 **The magnitude discards direction.** Whether the skin is stretching or compressing, and along which axis, is not recoverable from the scalar. This is defensible when $u$ and $v$ accompany it, and lossy when the strain map is used alone.
 
@@ -641,14 +641,14 @@ A fourth observation is methodological and supports §3.1.6 directly. Liong et a
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Strain suppresses rigid translation and preserves non-rigid deformation [2] | Optical strain is included as **channel 3**, alongside flow-$u$ and flow-$v$ — the same three-channel construction STSTNet uses [11] |
-| Strain is derived from flow at negligible cost [2] | Strain is computed in the same pass as the flow field, from its spatial gradients, adding no separate estimation stage |
-| Tensor components from central differences of the flow [2, 20] | `np.gradient` central differences at 1-pixel spacing, matching Liong et al. [20] |
-| Two magnitude conventions coexist: four terms in Liong et al. [20, 21, 22], three in STSTNet [11] | The **three-term** form is implemented, matching STSTNet — the paper this thesis's input construction follows. Declared in §3.4.3; the difference from the four-term convention is a √2 weighting on shear and is untested |
-| Strain has a numerical range unlike raw flow [22] | Each channel is **min–max normalised independently** to $[0,1]$ across the sequence, so the strain channel cannot dominate training |
-| Every reviewed method pools strain over time [20, 21, 22, 11] | **Temporal pooling is deliberately not applied.** The strain field is retained as a per-frame-pair sequence, since the temporal evolution of deformation is what the temporal encoder under study is meant to model |
-| Strain maps are noisy and are routinely filtered [20, 22] | **No dedicated strain post-filter is applied**; the only smoothing is that internal to the Farnebäck estimator. Recorded in Chapter 6 as an untested omission |
-| Strain's measured benefit on CASME II is +0.41 % to +1.22 %, under leave-one-video-out [22] | Expectations are set accordingly: a small effect on this corpus is the *predicted* result, not an anomaly |
+| Strain suppresses rigid translation and preserves non-rigid deformation [6] | Optical strain is included as **channel 3**, alongside flow-$u$ and flow-$v$ — the same three-channel construction STSTNet uses [17] |
+| Strain is derived from flow at negligible cost [6] | Strain is computed in the same pass as the flow field, from its spatial gradients, adding no separate estimation stage |
+| Tensor components from central differences of the flow [6, 22] | `np.gradient` central differences at 1-pixel spacing, matching Liong et al. [22] |
+| Two magnitude conventions coexist: four terms in Liong et al. [22, 23, 24], three in STSTNet [17] | The **three-term** form is implemented, matching STSTNet — the paper this thesis's input construction follows. Declared in §3.4.3; the difference from the four-term convention is a √2 weighting on shear and is untested |
+| Strain has a numerical range unlike raw flow [24] | Each channel is **min–max normalised independently** to $[0,1]$ across the sequence, so the strain channel cannot dominate training |
+| Every reviewed method pools strain over time [22, 23, 24, 17] | **Temporal pooling is deliberately not applied.** The strain field is retained as a per-frame-pair sequence, since the temporal evolution of deformation is what the temporal encoder under study is meant to model |
+| Strain maps are noisy and are routinely filtered [22, 24] | **No dedicated strain post-filter is applied**; the only smoothing is that internal to the Farnebäck estimator. Recorded in Chapter 6 as an untested omission |
+| Strain's measured benefit on CASME II is +0.41 % to +1.22 %, under leave-one-video-out [24] | Expectations are set accordingly: a small effect on this corpus is the *predicted* result, not an anomaly |
 
 *Table 3.12 — Review findings and the deformation-representation decisions they determine.*
 
@@ -664,7 +664,7 @@ The second extends §3.3.7's conclusion that dense flow already performs, in clo
 
 The reviewed literature establishes the finite strain tensor as a principled deformation descriptor for facial analysis, provides a complete and reproducible discretisation of it from optical flow, demonstrates that strain suppresses rigid head motion by construction, and shows two workable uses — as a feature in its own right and as a spatial weighting on another descriptor. What it does not establish is fourfold, and each point was flagged above in §3.4.5–§3.4.6: strain's independent contribution on CASME II is small and equivocal, and measured moreover under leave-one-video-out rather than a subject-disjoint protocol, so the headline claim for strain rests largely on SMIC; no paper isolates strain against a matched control, so what it adds *over flow alone* remains unmeasured; every strain method reviewed collapses the temporal axis before classification, discarding what may be the most expression-specific thing strain could encode; and the noise sensitivity of differentiating an estimated field is handled by filtering choices that are stated but never evaluated.
 
-This thesis differs on the third count and inherits the limitations of the others. It retains strain as a **full temporal sequence** rather than a pooled composite, so that the deformation trajectory is available to the temporal encoder under study — the first of the four listed gaps that this project's research question actually requires closing. On the first and second counts it does not improve on the literature, for the reasons §3.4.7 already gives; Chapter 6 records the strain-on/strain-off ablation as the most obvious extension. On the fourth it is weaker than the reviewed work, applying no dedicated strain filtering where Liong et al. [20] apply Wiener and Gaussian filters, and this is likewise declared rather than defended. The contribution of this section is therefore primarily interpretive: it establishes that the input representation used in this thesis already embeds a hand-specified differential operator, which becomes the principal explanation offered in Chapter 5 for why an additional learned convolutional stem fails to pay for itself.
+This thesis differs on the third count and inherits the limitations of the others. It retains strain as a **full temporal sequence** rather than a pooled composite, so that the deformation trajectory is available to the temporal encoder under study — the first of the four listed gaps that this project's research question actually requires closing. On the first and second counts it does not improve on the literature, for the reasons §3.4.7 already gives; Chapter 6 records the strain-on/strain-off ablation as the most obvious extension. On the fourth it is weaker than the reviewed work, applying no dedicated strain filtering where Liong et al. [22] apply Wiener and Gaussian filters, and this is likewise declared rather than defended. The contribution of this section is therefore primarily interpretive: it establishes that the input representation used in this thesis already embeds a hand-specified differential operator, which becomes the principal explanation offered in Chapter 5 for why an additional learned convolutional stem fails to pay for itself.
 
 §3.5 addresses how many frames a normalised sequence should retain, the temporal axis that every strain method reviewed here has already collapsed.
 
@@ -684,19 +684,19 @@ This creates two distinct difficulties.
 
 **The architectural one.** Any batched network requires a fixed input shape. A model consuming a spatio-temporal volume must be told how many frames that volume contains, and the corpus does not supply a constant.
 
-**The descriptor one, which is older and better documented.** Li et al. [6] set it out for the low-frame-rate case: "when recording at a standard speed of 25 fps, some MEs only last for four to five frames, which limit the application of some spatial-temporal descriptors, e.g., if we use LBP-TOP we can only use the radius $r = 1$." A descriptor with a temporal radius cannot be applied at all if the sequence is shorter than that radius, so short clips constrain the descriptor for the whole dataset.
+**The descriptor one, which is older and better documented.** Li et al. [14] set it out for the low-frame-rate case: "when recording at a standard speed of 25 fps, some MEs only last for four to five frames, which limit the application of some spatial-temporal descriptors, e.g., if we use LBP-TOP we can only use the radius $r = 1$." A descriptor with a temporal radius cannot be applied at all if the sequence is shorter than that radius, so short clips constrain the descriptor for the whole dataset.
 
-Lu et al. [23] add a third motivation that is about signal rather than mechanics: temporal normalisation removes "temporal fluctuations of micro-expressions, which may introduce noise irrelevant to classification of micro-expressions." On this view, unequal duration is not merely an inconvenience but a nuisance variable — a clip is not more *surprised* for lasting longer, so length is variance the classifier should not have to model.
+Lu et al. [25] add a third motivation that is about signal rather than mechanics: temporal normalisation removes "temporal fluctuations of micro-expressions, which may introduce noise irrelevant to classification of micro-expressions." On this view, unequal duration is not merely an inconvenience but a nuisance variable — a clip is not more *surprised* for lasting longer, so length is variance the classifier should not have to model.
 
 ---
 
 ### 3.5.2 What TIM is
 
-Lu et al. [23] give the most compact description in the corpus: "TIM is a manifold-based interpolation method, which builds a low-dimensional embedding of an image sequence, and then interpolates a curve in the low-dimensional space. The interpolated frames are mapped back to the original high-dimensional space to form the temporally normalized image sequence."
+Lu et al. [25] give the most compact description in the corpus: "TIM is a manifold-based interpolation method, which builds a low-dimensional embedding of an image sequence, and then interpolates a curve in the low-dimensional space. The interpolated frames are mapped back to the original high-dimensional space to form the temporally normalized image sequence."
 
 Three properties follow from that construction and matter for §3.5.7.
 
-First, TIM operates on **images**, not on features: it embeds whole frames, interpolates in the embedded space, and reconstructs frames. Second, it can **synthesise frames that were never recorded** — Lu et al. [23] note that Pfister et al. originally proposed TIM "to generate sufficient frames from an image sequence," i.e. as an *upsampler* for short clips, not only as a length-standardiser. Third, because it interpolates along a curve in a learned low-dimensional space rather than by pixel-wise blending, it assumes the appearance variation across a clip is smooth and low-dimensional — an assumption that holds well for a face moving slightly and less well for a noisy or artefact-laden sequence.
+First, TIM operates on **images**, not on features: it embeds whole frames, interpolates in the embedded space, and reconstructs frames. Second, it can **synthesise frames that were never recorded** — Lu et al. [25] note that Pfister et al. originally proposed TIM "to generate sufficient frames from an image sequence," i.e. as an *upsampler* for short clips, not only as a length-standardiser. Third, because it interpolates along a curve in a learned low-dimensional space rather than by pixel-wise blending, it assumes the appearance variation across a clip is smooth and low-dimensional — an assumption that holds well for a face moving slightly and less well for a noisy or artefact-laden sequence.
 
 ---
 
@@ -704,10 +704,10 @@ First, TIM operates on **images**, not on features: it embeds whole frames, inte
 
 TIM appears throughout the corpus as an unremarked preprocessing step, almost always at ten frames.
 
-- **SMIC's baseline** [3] normalises clips with TIM to ten frames before LBP-TOP, reaching 48.78 % on the three-class HS task under leave-one-subject-out (§3.1.5).
-- **Li et al. [6]** apply TIM10 after motion magnification, in the pipeline whose magnification results §3.2.3 reported.
-- **Lu et al. [23]** apply TIM as the first stage of their Delaunay-based coding model, and follow the protocol of Pfister et al. so as to compare directly against TIM10 baselines — reported at 74.3 % for separating micro from non-micro expressions and 71.4 % for positive-versus-negative classification, both under leave-one-subject-out.
-- **CAS(ME)²'s baseline** [8] likewise combines TIM with LBP-TOP.
+- **SMIC's baseline** [12] normalises clips with TIM to ten frames before LBP-TOP, reaching 48.78 % on the three-class HS task under leave-one-subject-out (§3.1.5).
+- **Li et al. [14]** apply TIM10 after motion magnification, in the pipeline whose magnification results §3.2.3 reported.
+- **Lu et al. [25]** apply TIM as the first stage of their Delaunay-based coding model, and follow the protocol of Pfister et al. so as to compare directly against TIM10 baselines — reported at 74.3 % for separating micro from non-micro expressions and 71.4 % for positive-versus-negative classification, both under leave-one-subject-out.
+- **CAS(ME)²'s baseline** [2] likewise combines TIM with LBP-TOP.
 
 The convergence is striking and, in the corpus, essentially unjustified: ten frames became the default because the SMIC baseline used ten frames. Only one study interrogates the choice.
 
@@ -715,7 +715,7 @@ The convergence is striking and, in the corpus, essentially unjustified: ten fra
 
 ### 3.5.4 How many frames? The one systematic comparison
 
-Ben et al. [24] run the only controlled experiment on the question in the review corpus. Holding alignment, descriptor and classifier fixed — JCFDA alignment, LBP-TOP, SVM with an RBF kernel — they interpolate micro-expression sequences to **10, 20, 30, 40, 50, 60, 70, 80, 90, 100 and 110 frames** using two algorithms, **Newton interpolation** and **TIM**, and record the best recognition rate at each length on the MMEW dataset.
+Ben et al. [26] run the only controlled experiment on the question in the review corpus. Holding alignment, descriptor and classifier fixed — JCFDA alignment, LBP-TOP, SVM with an RBF kernel — they interpolate micro-expression sequences to **10, 20, 30, 40, 50, 60, 70, 80, 90, 100 and 110 frames** using two algorithms, **Newton interpolation** and **TIM**, and record the best recognition rate at each length on the MMEW dataset.
 
 Two results follow.
 
@@ -733,9 +733,9 @@ The structural parallel with §3.2.3 is worth naming. The magnification factor �
 
 The corpus spans a remarkably wide range of answers to "how many frames", and two alternatives to plain interpolation are worth recording.
 
-**Adaptive, annotation-aware construction.** Zhao et al. [19] do not interpolate uniformly. They build an eleven-frame key-frame sequence from the three annotated frames — onset, apex and offset — by generating eight intermediate transition frames, allocated between the onset–apex and apex–offset intervals **in proportion to the duration of each sub-interval**, so that the sampling density follows the expression's own phase structure. Their stated principles include that the sequence must summarise the original video, contain as few noisy frames as possible, and highlight the movement of the apex frame "since it has been proven to contribute major information for facial-expression recognition." Optical flow is then computed between adjacent key-frames, yielding a ten-frame flow sequence.
+**Adaptive, annotation-aware construction.** Zhao et al. [7] do not interpolate uniformly. They build an eleven-frame key-frame sequence from the three annotated frames — onset, apex and offset — by generating eight intermediate transition frames, allocated between the onset–apex and apex–offset intervals **in proportion to the duration of each sub-interval**, so that the sampling density follows the expression's own phase structure. Their stated principles include that the sequence must summarise the original video, contain as few noisy frames as possible, and highlight the movement of the apex frame "since it has been proven to contribute major information for facial-expression recognition." Optical flow is then computed between adjacent key-frames, yielding a ten-frame flow sequence.
 
-**Collapse to two frames.** Liong et al. [10, 11] take the limiting case: the entire clip is represented by the onset and apex frames alone, so the temporal dimension is removed rather than normalised (§3.3.4).
+**Collapse to two frames.** Liong et al. [5, 17] take the limiting case: the entire clip is represented by the onset and apex frames alone, so the temporal dimension is removed rather than normalised (§3.3.4).
 
 Taken together, the corpus contains temporal representations of length 2, 10, 11, 30, 60 and 110 frames, chosen variously by convention, by sweep, and by architecture. There is no consensus, and the one systematic comparison is single-corpus.
 
@@ -745,7 +745,7 @@ Taken together, the corpus contains temporal representations of length 2, 10, 11
 
 **Ten frames is a convention, not a finding.** The most-used setting in the corpus traces to a single baseline paper's choice, and the only study to test it finds a substantially higher optimum — 30 to 60 frames rather than 10.
 
-**The one systematic result is narrow.** Ben et al. [24] test on one dataset with one descriptor and one classifier. Interpolation length interacts with the temporal receptive field of whatever consumes it, and their consumer is LBP-TOP.
+**The one systematic result is narrow.** Ben et al. [26] test on one dataset with one descriptor and one classifier. Interpolation length interacts with the temporal receptive field of whatever consumes it, and their consumer is LBP-TOP.
 
 **Frame synthesis and motion analysis are in tension.** TIM generates frames that were not recorded, by interpolating along a manifold of appearances. Where the downstream representation is appearance-based, this is benign. Where the downstream representation is *motion* — flow computed between adjacent frames — synthesised intermediate frames produce synthesised displacements: motion that no muscle produced. No paper in the corpus examines this interaction, because those using TIM extract appearance descriptors and those extracting flow either use two frames or, in Zhao et al.'s case, generate transition frames and accept the consequence without discussing it.
 
@@ -757,9 +757,9 @@ Taken together, the corpus contains temporal representations of length 2, 10, 11
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Fixed-length input is required, and unequal duration is nuisance variance [23] | Every clip is normalised to a fixed temporal length before training |
-| TIM beats Newton interpolation by 5.6 points, with a joint optimum at 30 or 60 frames [24] | **L = 33 frames sampled, giving T = 32 flow pairs** — placed at the lower of the two reported optima rather than at the field-conventional 10 |
-| Sequence length has an interior optimum found only by sweep [24] | Acknowledged: T = 32 is fixed throughout this study and is **not** swept. Listed in Chapter 6 as an untested parameter |
+| Fixed-length input is required, and unequal duration is nuisance variance [25] | Every clip is normalised to a fixed temporal length before training |
+| TIM beats Newton interpolation by 5.6 points, with a joint optimum at 30 or 60 frames [26] | **L = 33 frames sampled, giving T = 32 flow pairs** — placed at the lower of the two reported optima rather than at the field-conventional 10 |
+| Sequence length has an interior optimum found only by sweep [26] | Acknowledged: T = 32 is fixed throughout this study and is **not** swept. Listed in Chapter 6 as an untested parameter |
 | Onset and offset are annotated in CASME II (§3.1.2) | Sampling is bounded by the annotated onset and offset, so the fixed-length window spans the expression rather than surrounding neutral frames. This holds on the image-folder path used for CASME II; the loader's `.avi` branch samples across a whole file and is not exercised here |
 | TIM synthesises frames; flow between synthesised frames is synthesised motion (§3.5.6) | **No frames are synthesised.** See the declaration below |
 
@@ -775,7 +775,7 @@ The choice is nonetheless defensible on the grounds of §3.5.6. Because the down
 
 *Effective temporal resolution is reduced, by a clip-dependent factor.* Sampling 33 frames from a clip of $N$ frames recorded at 200 fps yields an effective sampling rate of $6600/N$ fps. For the median clip ($N = 66$) this is **100 fps** — exactly SMIC's recording rate, and half of what CASME II was built to provide. For the longest clip ($N = 126$) it falls to roughly **52 fps**, below the 60 fps of the original CASME database that Yan et al. [1] judged inadequate. Eighty-one of the 156 clips are downsampled by a factor of two or more. This is a real cost of fixed-length normalisation and it is not one the reviewed literature discusses.
 
-*Magnification is applied after subsampling, which shifts the effective pass-band.* The pipeline loads the 33 sampled frames first and applies Eulerian magnification to that sequence, passing the corpus's nominal 200 fps to the magnifier. But the sampled sequence spans the clip's full duration in 33 frames, so its true inter-frame interval is $N/(200 \times 32)$ seconds rather than $1/200$. For the median clip the sequence's effective rate is 100 fps, so a band-pass specified as 5–25 Hz against a nominal 200 fps corresponds to roughly 2.5–12.5 Hz in physical terms; for the longest clip the discrepancy is larger still. The band is therefore not the 5–25 Hz that §3.2.7 derives from the duration rule reported by Bai et al. [15], and it is clip-dependent rather than constant. This is recorded here as a discrepancy between the intended and realised pass-band; whether magnifying before rather than after subsampling changes the measured EVM effect is untested and is listed in Chapter 6.
+*Magnification is applied after subsampling, which shifts the effective pass-band.* The pipeline loads the 33 sampled frames first and applies Eulerian magnification to that sequence, passing the corpus's nominal 200 fps to the magnifier. But the sampled sequence spans the clip's full duration in 33 frames, so its true inter-frame interval is $N/(200 \times 32)$ seconds rather than $1/200$. For the median clip the sequence's effective rate is 100 fps, so a band-pass specified as 5–25 Hz against a nominal 200 fps corresponds to roughly 2.5–12.5 Hz in physical terms; for the longest clip the discrepancy is larger still. The band is therefore not the 5–25 Hz that §3.2.7 derives from the duration rule reported by Bai et al. [4], and it is clip-dependent rather than constant. This is recorded here as a discrepancy between the intended and realised pass-band; whether magnifying before rather than after subsampling changes the measured EVM effect is untested and is listed in Chapter 6.
 
 *Three clips are shorter than the sampling window.* The shortest clips contain 31 frames against a target of 33, so uniform index sampling necessarily repeats indices, producing a small number of duplicated frames and hence near-zero flow at those positions. This affects **3 of 156 clips** and is noted for completeness rather than as a material threat.
 
@@ -785,7 +785,7 @@ The choice is nonetheless defensible on the grounds of §3.5.6. Because the down
 
 The reviewed literature establishes that temporal normalisation is necessary, that manifold-based interpolation outperforms polynomial interpolation where the two have been compared, and that the number of frames has an interior optimum. What it does not establish is fourfold, and each was flagged above in §3.5.3–§3.5.6: the field's most-used setting, ten frames, rests on convention rather than evidence, with the one controlled study finding an optimum three to six times higher, confined to one dataset, one hand-crafted descriptor and one classifier that need not transfer to a learned model consuming motion; no paper examines the interaction between frame *synthesis* and motion extraction, for the reason §3.5.6 gives; and the trade-off between temporal normalisation and acquisition frame rate goes unremarked, the same TIM10 setting applied to 100 fps and 200 fps corpora alike.
 
-This thesis differs on the third and fourth counts and inherits the limitations of the first two. It **does not synthesise frames**, sampling only recorded ones, so that every flow field it computes corresponds to displacement that physically occurred — the appropriate choice for a pipeline whose entire representation is motion, and one the corpus does not make explicitly. And, as §3.5.7 quantifies, it states the resulting cost rather than leaving it unremarked — a price no reviewed paper reports. On the first two counts it improves on convention only partially: T = 32 is placed at the lower of the two optima Ben et al. [24] identify rather than at the conventional 10, but the value is fixed rather than swept, and the corpus on which that optimum was measured is neither CASME II nor evaluated with a learned temporal model. A sweep over T under the full leave-one-subject-out protocol is listed in Chapter 6 as a direct extension of the ablation reported here.
+This thesis differs on the third and fourth counts and inherits the limitations of the first two. It **does not synthesise frames**, sampling only recorded ones, so that every flow field it computes corresponds to displacement that physically occurred — the appropriate choice for a pipeline whose entire representation is motion, and one the corpus does not make explicitly. And, as §3.5.7 quantifies, it states the resulting cost rather than leaving it unremarked — a price no reviewed paper reports. On the first two counts it improves on convention only partially: T = 32 is placed at the lower of the two optima Ben et al. [26] identify rather than at the conventional 10, but the value is fixed rather than swept, and the corpus on which that optimum was measured is neither CASME II nor evaluated with a learned temporal model. A sweep over T under the full leave-one-subject-out protocol is listed in Chapter 6 as a direct extension of the ablation reported here.
 
 In §3.6, the spatial backbone takes these now-equal-length spatio-temporal volumes as its input, the batched-network requirement this normalisation exists to satisfy.
 
@@ -799,9 +799,9 @@ In §3.6, the spatial backbone takes these now-equal-length spatio-temporal volu
 
 ### 3.6.1 The case for, and against, a learned spatial stem
 
-By 2019 the field had converged on optical flow as the input representation (§3.3.1). The open question was what should consume it. Liong et al. [11] frame the motivation for a learned backbone in terms of what hand-crafted descriptors cannot do: "the robustness of deep learning has yielded promising performance beyond that of traditional handcrafted approaches."
+By 2019 the field had converged on optical flow as the input representation (§3.3.1). The open question was what should consume it. Liong et al. [17] frame the motivation for a learned backbone in terms of what hand-crafted descriptors cannot do: "the robustness of deep learning has yielded promising performance beyond that of traditional handcrafted approaches."
 
-Against that stands the small-data constraint already established (§3.1.3, §3.1.7): a general-purpose image classifier's parameter count runs into the tens of millions, against a training set of at most a few hundred clips — a ratio orders of magnitude beyond anything such architectures were designed to fit. Xia et al. [13] state the resulting failure mode precisely: "the important subtle dynamics are prone to disappearing in the domain shift such that the models greatly degrade their performance, especially for deep models."
+Against that stands the small-data constraint already established (§3.1.3, §3.1.7): a general-purpose image classifier's parameter count runs into the tens of millions, against a training set of at most a few hundred clips — a ratio orders of magnitude beyond anything such architectures were designed to fit. Xia et al. [19] state the resulting failure mode precisely: "the important subtle dynamics are prone to disappearing in the domain shift such that the models greatly degrade their performance, especially for deep models."
 
 The literature's answer is not to abandon the learned backbone but to shrink it, and §3.6.3 shows how far that shrinking goes.
 
@@ -811,11 +811,11 @@ The literature's answer is not to abandon the learned backbone but to shrink it,
 
 The term is used for three materially different architectures, and the distinction matters directly for how this thesis's ablation result should be worded.
 
-**A convolution over spatial and modality axes, with no temporal axis at all.** STSTNet [11] is the canonical shallow model in this field and is described as a "Shallow Triple Stream Three-dimensional CNN". Its input is a single **28 × 28 × 3** tensor computed from the onset and apex frames, where the third dimension holds the three motion modalities — horizontal flow, vertical flow, optical strain — not time. The image "is passed through three parallel streams, each consists of a convolutional layer (each stream has a different number of kernels, i.e. 3, 5, 8) followed by a max pooling layer," with the stated purpose of supplementing "the small scale input data by utilizing different number of 3 × 3 kernels on each stream to avoid the problem of underfitting the data." Stream outputs are merged channel-wise, average-pooled 2 × 2, and passed to a 400-node fully connected layer. The reported architecture table gives filter size 3 × 3 × 3 with 3, 5 and 8 filters and output sizes 28 × 28 × 3, 28 × 28 × 5 and 28 × 28 × 8. **There is no time dimension in this network**; the entire clip has already been collapsed to a single frame pair upstream (§3.3.4).
+**A convolution over spatial and modality axes, with no temporal axis at all.** STSTNet [17] is the canonical shallow model in this field and is described as a "Shallow Triple Stream Three-dimensional CNN". Its input is a single **28 × 28 × 3** tensor computed from the onset and apex frames, where the third dimension holds the three motion modalities — horizontal flow, vertical flow, optical strain — not time. The image "is passed through three parallel streams, each consists of a convolutional layer (each stream has a different number of kernels, i.e. 3, 5, 8) followed by a max pooling layer," with the stated purpose of supplementing "the small scale input data by utilizing different number of 3 × 3 kernels on each stream to avoid the problem of underfitting the data." Stream outputs are merged channel-wise, average-pooled 2 × 2, and passed to a 400-node fully connected layer. The reported architecture table gives filter size 3 × 3 × 3 with 3, 5 and 8 filters and output sizes 28 × 28 × 3, 28 × 28 × 5 and 28 × 28 × 8. **There is no time dimension in this network**; the entire clip has already been collapsed to a single frame pair upstream (§3.3.4).
 
-**A convolution genuinely extended across time.** STRCN [25] takes the opposite approach, proposing "several recurrent convolutional layers for extracting visual features" and explicitly "two types of extending the connectivity of convolutional networks across temporal domain," modelling spatiotemporal deformation "in views of facial appearance and geometry separately."
+**A convolution genuinely extended across time.** STRCN [9] takes the opposite approach, proposing "several recurrent convolutional layers for extracting visual features" and explicitly "two types of extending the connectivity of convolutional networks across temporal domain," modelling spatiotemporal deformation "in views of facial appearance and geometry separately."
 
-**A convolution over a short flow sequence.** Zhao et al. [19] apply a C3D-style network to the ten-frame optical-flow sequence built from their eleven adaptively interpolated key-frames (§3.5.5), so the temporal axis is present but short.
+**A convolution over a short flow sequence.** Zhao et al. [7] apply a C3D-style network to the ten-frame optical-flow sequence built from their eleven adaptively interpolated key-frames (§3.5.5), so the temporal axis is present but short.
 
 The label "3D CNN" therefore covers architectures with no temporal extent, with recurrent temporal extent, and with a ten-frame temporal extent. §3.6.6 declares which of these describes the component ablated in this thesis, because the answer is not the one the component's name implies.
 
@@ -823,7 +823,7 @@ The label "3D CNN" therefore covers architectures with no temporal extent, with 
 
 ### 3.6.3 The central finding: shrink the model *and* the input
 
-Xia et al. [13] provide the most useful experiment in the corpus for a study of this kind, because they treat architectural depth and input resolution as controlled variables rather than as design choices.
+Xia et al. [19] provide the most useful experiment in the corpus for a study of this kind, because they treat architectural depth and input resolution as controlled variables rather than as design choices.
 
 They construct four models of increasing depth — from a single convolutional layer alone (Model 1), through one convolutional plus one recurrent convolutional layer (Model 2), up to one convolutional plus three recurrent convolutional layers (Model 4) — and evaluate each at nine input resolutions: **20, 40, 60, 80, 100, 150, 200, 250 and 300 pixels**, using optical flow as input and UAR as the metric. Three results follow.
 
@@ -833,7 +833,7 @@ They construct four models of increasing depth — from a single convolutional l
 
 **The conclusion they draw is a design rule.** "Suitable input resolutions (flow-map resolutions) and model architectures (network layers) are helpful to ease the degradation." They select their four-layer Model 2 as the backbone, "which pursues a trade-off between powerful representation ability and domain-shift overfitting."
 
-STSTNet is the same argument taken to its limit and validated competitively. Liong et al. [11] report parameter counts alongside those of the models they compare against: **STSTNet 0.00167 M parameters across 2 layers at 28 × 28 × 3 input**, against OFF-ApexNet's 2.77 M across 5 layers and GoogLeNet's 7 M across 22. Roughly seventeen hundred learnable parameters — three orders of magnitude below a general-purpose classifier — and, as §3.1.6 recorded, that network posts a UF1 of 0.8382 and the highest UAR of any MEGC 2019 entry on the CASME II subset.
+STSTNet is the same argument taken to its limit and validated competitively. Liong et al. [17] report parameter counts alongside those of the models they compare against: **STSTNet 0.00167 M parameters across 2 layers at 28 × 28 × 3 input**, against OFF-ApexNet's 2.77 M across 5 layers and GoogLeNet's 7 M across 22. Roughly seventeen hundred learnable parameters — three orders of magnitude below a general-purpose classifier — and, as §3.1.6 recorded, that network posts a UF1 of 0.8382 and the highest UAR of any MEGC 2019 entry on the CASME II subset.
 
 ---
 
@@ -841,11 +841,11 @@ STSTNet is the same argument taken to its limit and validated competitively. Lio
 
 Three distinct strategies appear, and all three have counterparts in this thesis's training configuration.
 
-Xia et al. [25] address "the shortcomings of limited and imbalanced training samples" with "temporal data augmentation strategies as well as a balanced loss … jointly used for our deep network" — the same pairing of augmentation and loss rebalancing that §3.1.8 recorded as a source of difficulty in this project, where applying two imbalance corrections simultaneously caused single-class collapse.
+Xia et al. [9] address "the shortcomings of limited and imbalanced training samples" with "temporal data augmentation strategies as well as a balanced loss … jointly used for our deep network" — the same pairing of augmentation and loss rebalancing that §3.1.8 recorded as a source of difficulty in this project, where applying two imbalance corrections simultaneously caused single-class collapse.
 
-Zhao et al. [19] borrow from few-shot learning, splitting training into a prior stage that learns generic features from same/different sample pairs and a target stage that learns high-level discriminative features, on the analogy of a child generalising from comparison before naming.
+Zhao et al. [7] borrow from few-shot learning, splitting training into a prior stage that learns generic features from same/different sample pairs and a target stage that learns high-level discriminative features, on the analogy of a child generalising from comparison before naming.
 
-Xia et al. [13] take a third route: adding capability without adding capacity. They "develop three parameter-free modules … integrate with RCN without increasing any learnable parameters," so that representational power grows while the parameter count — and therefore the overfitting risk — does not. That principle is the direct justification for the attention mechanism reviewed in §3.7.
+Xia et al. [19] take a third route: adding capability without adding capacity. They "develop three parameter-free modules … integrate with RCN without increasing any learnable parameters," so that representational power grows while the parameter count — and therefore the overfitting risk — does not. That principle is the direct justification for the attention mechanism reviewed in §3.7.
 
 ---
 
@@ -853,7 +853,7 @@ Xia et al. [13] take a third route: adding capability without adding capacity. T
 
 **The terminology obscures what is being compared.** Papers titled as three-dimensional CNNs include networks with no temporal axis at all. A reader comparing "3D-CNN" results across the corpus is not comparing like with like.
 
-**Input resolution is almost never controlled.** Xia et al. [13] are the exception; elsewhere the resolution is stated as an implementation detail — 28 × 28 in STSTNet and OFF-ApexNet — with no indication of sensitivity, despite Xia et al. showing sensitivity strong enough to reverse a comparison.
+**Input resolution is almost never controlled.** Xia et al. [19] are the exception; elsewhere the resolution is stated as an implementation detail — 28 × 28 in STSTNet and OFF-ApexNet — with no indication of sensitivity, despite Xia et al. showing sensitivity strong enough to reverse a comparison.
 
 **The evidence base is composite-database.** Both Xia et al. papers and STSTNet are developed and evaluated for the MEGC composite setting, which supplies substantially more training data per fold than a single-corpus study (§3.1.6), so conclusions about how much model capacity is affordable do not transfer directly here — if anything they understate the constraint.
 
@@ -867,11 +867,11 @@ The component ablated as Variable C in this thesis is a **three-stream shallow c
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Shallow beats deep on small micro-expression data [13]; STSTNet uses 2 layers and ~1,670 parameters [11] | Two convolutional layers per stream, **14,544 parameters** in the backbone (15,027 including the classifier head) — shallow by the corpus's standards, though roughly nine times STSTNet's 1,670 |
-| Triple-stream design supplements small-scale input [11] | Three unshared streams, one per input modality. Note the difference: STSTNet's streams differ in *filter count* over the same input, whereas these differ in *input channel* |
-| Parameter-free modules add capability without capacity [13] | Motivates the parameter-free attention evaluated as Variable B (§3.7) |
-| Limited and imbalanced data require augmentation plus loss correction [25] | Balanced sampling with focal loss; loss class-weighting deliberately disabled after single-class collapse (§3.1.8) |
-| **Performance degrades above 100 × 100 input, dramatically for deeper models [13]** | **Not followed.** This pipeline feeds the backbone at **224 × 224**, more than twice that threshold and eight times STSTNet's 28 × 28. See below |
+| Shallow beats deep on small micro-expression data [19]; STSTNet uses 2 layers and ~1,670 parameters [17] | Two convolutional layers per stream, **14,544 parameters** in the backbone (15,027 including the classifier head) — shallow by the corpus's standards, though roughly nine times STSTNet's 1,670 |
+| Triple-stream design supplements small-scale input [17] | Three unshared streams, one per input modality. Note the difference: STSTNet's streams differ in *filter count* over the same input, whereas these differ in *input channel* |
+| Parameter-free modules add capability without capacity [19] | Motivates the parameter-free attention evaluated as Variable B (§3.7) |
+| Limited and imbalanced data require augmentation plus loss correction [9] | Balanced sampling with focal loss; loss class-weighting deliberately disabled after single-class collapse (§3.1.8) |
+| **Performance degrades above 100 × 100 input, dramatically for deeper models [19]** | **Not followed.** This pipeline feeds the backbone at **224 × 224**, more than twice that threshold and eight times STSTNet's 28 × 28. See below |
 
 *Table 3.14 — Review findings and the backbone decisions they determine.*
 
@@ -887,7 +887,7 @@ Two mitigating observations, and one aggravating one, follow.
 
 *The stem is competing against a representation that has already done comparable work.* §3.3.7 and §3.4.7 argued that dense flow performs spatio-temporal feature extraction analytically, and that the strain channel is a hand-specified first-order spatial differential operator. A two-layer spatial CNN is being asked to add something on top of both, from 156 clips.
 
-*The input resolution is the clearest unforced departure from the literature.* Xia et al. [13] report performance decreasing dramatically above 100 × 100 and shallow models improving as resolution falls toward 40 × 40; STSTNet and OFF-ApexNet both operate at 28 × 28. This pipeline uses 224 × 224. That single choice also explains the compute figures reported in Chapter 5 — the eight configurations containing this backbone consume 48.9 of the study's 50.6 GPU-hours, because the cost of convolving over a 224 × 224 × 32 volume dominates everything else. **The measured −0.031 may therefore be a resolution result as much as an architecture result**, and re-running the backbone arm at 28 × 28 or 56 × 56 is the single cheapest and most informative experiment left undone. Chapter 6 lists it first.
+*The input resolution is the clearest unforced departure from the literature.* Xia et al. [19] report performance decreasing dramatically above 100 × 100 and shallow models improving as resolution falls toward 40 × 40; STSTNet and OFF-ApexNet both operate at 28 × 28. This pipeline uses 224 × 224. That single choice also explains the compute figures reported in Chapter 5 — the eight configurations containing this backbone consume 48.9 of the study's 50.6 GPU-hours, because the cost of convolving over a 224 × 224 × 32 volume dominates everything else. **The measured −0.031 may therefore be a resolution result as much as an architecture result**, and re-running the backbone arm at 28 × 28 or 56 × 56 is the single cheapest and most informative experiment left undone. Chapter 6 lists it first.
 
 ---
 
@@ -909,7 +909,7 @@ The same parameter-free principle invoked here to justify shrinking the backbone
 
 ### 3.7.1 Why attention, and why it must be free
 
-Attention modules re-weight a network's feature maps so that informative regions contribute more to the representation than uninformative ones — for micro-expression recognition, a small, localised signal (a brow, a lip corner) against an otherwise quiescent frame. The obstacle is that attention normally costs parameters, already established as the scarcest resource in this problem (§3.1.7, §3.6.3). Yang et al. [14] tabulate the cost of the standard modules, and it is not small:
+Attention modules re-weight a network's feature maps so that informative regions contribute more to the representation than uninformative ones — for micro-expression recognition, a small, localised signal (a brow, a lip corner) against an otherwise quiescent frame. The obstacle is that attention normally costs parameters, already established as the scarcest resource in this problem (§3.1.7, §3.6.3). Yang et al. [8] tabulate the cost of the standard modules, and it is not small:
 
 | Module | Operators | Learnable parameters | Design |
 |---|---|:--:|---|
@@ -920,17 +920,17 @@ Attention modules re-weight a network's feature maps so that informative regions
 | SRM | GAP, GSP, CFC, BN | $6C$ | handcrafted |
 | **SimAM** | GAP, /, ⊙, + | **0** | Eqn (5) |
 
-*Table 3.15 — Attention modules compared, after Yang et al. [14] (Table 1). $C$ is the channel count and $r$ the reduction ratio. The Design column reproduces the source's own entries: every competitor is labelled "handcrafted", while SimAM's points to the energy equation it is derived from.*
+*Table 3.15 — Attention modules compared, after Yang et al. [8] (Table 1). $C$ is the channel count and $r$ the reduction ratio. The Design column reproduces the source's own entries: every competitor is labelled "handcrafted", while SimAM's points to the energy equation it is derived from.*
 
-On a 156-clip corpus a module costing $2C^2/r$ parameters is a material addition to a backbone that has fewer than fifteen thousand in total (§3.6.6). Xia et al. [13] reach the same conclusion independently from within micro-expression research itself, for the same reason (§3.6.4). A zero-parameter attention module is therefore not merely convenient here; it is the only kind whose cost is unambiguously justified.
+On a 156-clip corpus a module costing $2C^2/r$ parameters is a material addition to a backbone that has fewer than fifteen thousand in total (§3.6.6). Xia et al. [19] reach the same conclusion independently from within micro-expression research itself, for the same reason (§3.6.4). A zero-parameter attention module is therefore not merely convenient here; it is the only kind whose cost is unambiguously justified.
 
-The second column of Table 3.15 matters as much as the third. Every competing module is marked "handcrafted" — its structure is a design choice validated after the fact. SimAM's is described by Yang et al. [14] as following from a defined objective, which they present as an advantage in its own right: "most of the operators are selected based on the solution to the defined energy function, avoiding too many efforts for structure tuning."
+The second column of Table 3.15 matters as much as the third. Every competing module is marked "handcrafted" — its structure is a design choice validated after the fact. SimAM's is described by Yang et al. [8] as following from a defined objective, which they present as an advantage in its own right: "most of the operators are selected based on the solution to the defined energy function, avoiding too many efforts for structure tuning."
 
 ---
 
 ### 3.7.2 The premise: spatial suppression
 
-SimAM's derivation begins from visual neuroscience rather than from architecture search. Yang et al. [14] argue that "the most informative neurons are usually the ones that show distinctive firing patterns from surrounding neurons," and that "an active neuron may also suppress the activities of surrounding neurons, a phenomenon termed as spatial suppression." From this they take the operational rule that "the neurons displaying clear spatial suppression effects should be given higher priority (i.e., importance) in visual processing."
+SimAM's derivation begins from visual neuroscience rather than from architecture search. Yang et al. [8] argue that "the most informative neurons are usually the ones that show distinctive firing patterns from surrounding neurons," and that "an active neuron may also suppress the activities of surrounding neurons, a phenomenon termed as spatial suppression." From this they take the operational rule that "the neurons displaying clear spatial suppression effects should be given higher priority (i.e., importance) in visual processing."
 
 The engineering translation is that importance can be measured as *distinctiveness from context* — and the simplest way to measure that is "the linear separability between one target neuron and other neurons."
 
@@ -940,7 +940,7 @@ A second neuroscientific result determines *how* the resulting weights are appli
 
 ### 3.7.3 The energy function and its closed-form solution
 
-For a target neuron $t$ and the other neurons $x_i$ in the same channel, Yang et al. [14] define an energy that is minimised when a linear transform separates the target from its context:
+For a target neuron $t$ and the other neurons $x_i$ in the same channel, Yang et al. [8] define an energy that is minimised when a linear transform separates the target from its context:
 
 $$e_t(w_t, b_t, y, x_i) = (y_t - \hat{t})^2 + \frac{1}{M-1}\sum_{i=1}^{M-1}(y_o - \hat{x}_i)^2$$
 
@@ -970,7 +970,7 @@ Two details of this implementation are load-bearing. The variance divides by $n 
 
 ### 3.7.4 Three-dimensional weights
 
-Yang et al.'s [14] structural argument against the existing modules is that they attend along one axis at a time. Refinement "is usually operated along either the channel dimension or the spatial dimension. As a result, those methods generate 1-D or 2-D weights and treat neurons in each channel or spatial location equally, which may limit their capability of learning more discriminative cues."
+Yang et al.'s [8] structural argument against the existing modules is that they attend along one axis at a time. Refinement "is usually operated along either the channel dimension or the spatial dimension. As a result, those methods generate 1-D or 2-D weights and treat neurons in each channel or spatial location equally, which may limit their capability of learning more discriminative cues."
 
 SimAM instead produces a weight for every neuron — a full three-dimensional tensor over channel, height and width — at no parameter cost, because the weight is computed from the feature map's own statistics rather than predicted by a learned sub-network.
 
@@ -978,7 +978,7 @@ SimAM instead produces a weight for every neuron — a full three-dimensional te
 
 ### 3.7.5 What the evidence shows
 
-Yang et al. [14] evaluate on CIFAR and ImageNet classification against SE, CBAM, ECA, GC and SRM, and report SimAM as competitive with or better than modules that cost parameters. They note in particular that it holds up on networks that are already large — remarking that one baseline "contains nearly 2.4 M parameters, which is even bigger than ResNet-110 with ∼1.17 M parameters," and demonstrating results on a WideResNet with "about 36 M free parameters", concluding that "the effectiveness of our parameter-free SimAM is not confined to some specific networks".
+Yang et al. [8] evaluate on CIFAR and ImageNet classification against SE, CBAM, ECA, GC and SRM, and report SimAM as competitive with or better than modules that cost parameters. They note in particular that it holds up on networks that are already large — remarking that one baseline "contains nearly 2.4 M parameters, which is even bigger than ResNet-110 with ∼1.17 M parameters," and demonstrating results on a WideResNet with "about 36 M free parameters", concluding that "the effectiveness of our parameter-free SimAM is not confined to some specific networks".
 
 The single hyper-parameter $\lambda$ is swept from $10^{-1}$ to $10^{-6}$, five repetitions per value. Two conclusions are drawn: "our module can significantly boost performance using a wide range of $\lambda$", and "$\lambda = 10^{-4}$ provides a good balance between the top-1 accuracy and the standard deviation." That value is adopted for all CIFAR networks. Notably, for ImageNet they "still employ cross-validation to find a good $\lambda$" rather than transferring the CIFAR value — an indication that the authors themselves do not treat $10^{-4}$ as universal.
 
@@ -986,7 +986,7 @@ The single hyper-parameter $\lambda$ is swept from $10^{-1}$ to $10^{-6}$, five 
 
 ### 3.7.6 Limitations
 
-**The evidence base is generic large-scale vision, not micro-expression recognition.** Every result in Yang et al. [14] comes from CIFAR or ImageNet classification, with millions of training images against this corpus's few hundred clips (§3.1.3). Nothing in the paper speaks to behaviour at that scale, where the statistics from which SimAM computes its weights are estimated from far fewer and far more homogeneous feature maps.
+**The evidence base is generic large-scale vision, not micro-expression recognition.** Every result in Yang et al. [8] comes from CIFAR or ImageNet classification, with millions of training images against this corpus's few hundred clips (§3.1.3). Nothing in the paper speaks to behaviour at that scale, where the statistics from which SimAM computes its weights are estimated from far fewer and far more homogeneous feature maps.
 
 **The input is appearance, not motion.** SimAM's premise is that informative neurons are those distinctive from their spatial surroundings. On a natural image that is a strong prior. On an optical-flow map — where large regions are legitimately near-zero because nothing moved, and the non-zero region is the signal — the prior may be either unusually well matched or subtly wrong, and no reviewed work tests which.
 
@@ -1002,12 +1002,12 @@ The component ablated as Variable B is a **5-D adaptation of SimAM**, applied in
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Attention normally costs $2C^2/r$ or more parameters; SimAM costs 0 [14] | SimAM chosen over SE/CBAM/ECA specifically because it adds **zero learnable parameters**, the only defensible choice at ~15 k backbone parameters (§3.6.6) |
-| Parameter-free modules are the right trade in micro-expression recognition [13] | Corroborates the choice from within the task domain rather than from generic vision |
-| $\lambda = 10^{-4}$ balances accuracy against variance [14] | $\lambda = 10^{-4}$ adopted unchanged. **Not re-tuned for this corpus**, although the authors re-tuned it when moving from CIFAR to ImageNet — declared as an untested inheritance |
-| Refinement by scaling, gated by a monotonic sigmoid [14] | Implemented exactly as specified: `x * sigmoid(energy)` |
-| Statistics computed over a channel's $H\times W$ plane with an $n = HW-1$ correction [14] | Extended to $n = D \times H \times W - 1$ over the spatio-temporal volume — see the declaration below |
-| SimAM requires a feature map to attend over [14] | Creates the architectural dependency that prunes 4 of the 16 factorial cells (§3.1.3): attention without a backbone is undefined |
+| Attention normally costs $2C^2/r$ or more parameters; SimAM costs 0 [8] | SimAM chosen over SE/CBAM/ECA specifically because it adds **zero learnable parameters**, the only defensible choice at ~15 k backbone parameters (§3.6.6) |
+| Parameter-free modules are the right trade in micro-expression recognition [19] | Corroborates the choice from within the task domain rather than from generic vision |
+| $\lambda = 10^{-4}$ balances accuracy against variance [8] | $\lambda = 10^{-4}$ adopted unchanged. **Not re-tuned for this corpus**, although the authors re-tuned it when moving from CIFAR to ImageNet — declared as an untested inheritance |
+| Refinement by scaling, gated by a monotonic sigmoid [8] | Implemented exactly as specified: `x * sigmoid(energy)` |
+| Statistics computed over a channel's $H\times W$ plane with an $n = HW-1$ correction [8] | Extended to $n = D \times H \times W - 1$ over the spatio-temporal volume — see the declaration below |
+| SimAM requires a feature map to attend over [8] | Creates the architectural dependency that prunes 4 of the 16 factorial cells (§3.1.3): attention without a backbone is undefined |
 
 *Table 3.16 — Review findings and the attention decisions they determine.*
 
@@ -1047,7 +1047,7 @@ Having pooled the temporal axis into SimAM's statistics rather than modelling it
 
 Given the temporal structure established in §3.1.1–§3.1.2 — a movement with an annotated onset, apex and offset — a model that can relate any frame to any other frame is matched to the phenomenon in a way that a local operator is not.
 
-Zhang et al. [26] frame the gap this addresses: "the problem of capturing both local and global spatio-temporal patterns remains challenging." Their solution is "the first purely transformer based approach (i.e. void of any convolutional network use) for micro-expression recognition," comprising "a spatial encoder which learns spatial patterns, a temporal aggregator for temporal dimension analysis, and a classification head."
+Zhang et al. [10] frame the gap this addresses: "the problem of capturing both local and global spatio-temporal patterns remains challenging." Their solution is "the first purely transformer based approach (i.e. void of any convolutional network use) for micro-expression recognition," comprising "a spatial encoder which learns spatial patterns, a temporal aggregator for temporal dimension analysis, and a classification head."
 
 The alternative this thesis measures against is mean pooling over time — an operator with no parameters and no notion of order, which averages the apex into the baseline. The contrast between the two is the whole of Variable D.
 
@@ -1065,7 +1065,7 @@ Taken at face value this is a discouraging prior for a 156-clip corpus, and §3.
 
 ### 3.8.3 SLSTT: architecture
 
-Zhang et al. [26] assemble three components.
+Zhang et al. [10] assemble three components.
 
 **Long-term optical flow.**
 
@@ -1089,14 +1089,14 @@ Evaluated under the composite-database protocol with LOSO and MEGC's UF1/UAR met
 |---|:--:|:--:|:--:|
 | LBP-TOP | 0.588 | 0.703 | 0.743 |
 | Bi-WOOF | 0.630 | 0.781 | 0.803 |
-| OFF-ApexNet [10] | 0.720 | 0.876 | 0.868 |
-| STSTNet [11] | 0.735 | 0.838 | 0.869 |
-| EMR [12] | 0.789 | 0.829 | 0.821 |
-| RCN [25] | 0.705 | 0.809 | 0.856 |
+| OFF-ApexNet [5] | 0.720 | 0.876 | 0.868 |
+| STSTNet [17] | 0.735 | 0.838 | 0.869 |
+| EMR [18] | 0.789 | 0.829 | 0.821 |
+| RCN [9] | 0.705 | 0.809 | 0.856 |
 | **SLSTT-Mean** | 0.788 | 0.844 | 0.830 |
 | **SLSTT-LSTM** | **0.816** | **0.901** | **0.885** |
 
-*Table 3.17 — Composite-database evaluation, after Zhang et al. [26] (CDE results table). Selected rows.*
+*Table 3.17 — Composite-database evaluation, after Zhang et al. [10] (CDE results table). Selected rows.*
 
 Zhang et al. describe this as "the first framework in the published literature on micro-expression recognition to achieve the unweighted F1-score greater than 0.9 on any of the aforementioned data sets."
 
@@ -1122,7 +1122,7 @@ The component ablated as Variable D is a **pre-norm transformer encoder applied 
 
 **It is named for SLSTT, and it differs from SLSTT in six material respects.** These are set out in full because the component carries this study's headline result, and because a reader who assumes the published architecture was reproduced would be misled.
 
-| | Published SLSTT [26] | This thesis |
+| | Published SLSTT [10] | This thesis |
 |---|---|---|
 | **What attention operates over** | Patches within a frame — a **spatial** encoder | Frames within a clip — a **temporal** encoder |
 | **Temporal aggregation** | LSTM | Mean pooling (SLSTT's own weaker variant) |
@@ -1141,7 +1141,7 @@ The honest description of Variable D is therefore **a small transformer encoder 
 
 Across six matched pairs, the transformer's mean marginal contribution is **+0.217 pooled macro F1**, positive in every pair, with a minimum of +0.158. The configurations containing it score 0.583–0.712 and those without it 0.419–0.448, two ranges separated by an empty gap of 0.135. Against components whose measured effects are +0.015, +0.003 and −0.031 (§3.2, §3.7, §3.6), this is not a marginal difference in degree.
 
-The mechanism is the one §3.8.1 anticipated. Self-attention is the only component in the study that sees all 32 frames simultaneously and can relate an early frame to a late one directly. Every alternative collapses the temporal axis by averaging, which removes the apex — the single most informative frame, as both Liong et al. [10] and Zhang et al. [26] argue — into the neutral baseline surrounding it.
+The mechanism is the one §3.8.1 anticipated. Self-attention is the only component in the study that sees all 32 frames simultaneously and can relate an early frame to a late one directly. Every alternative collapses the temporal axis by averaging, which removes the apex — the single most informative frame, as both Liong et al. [5] and Zhang et al. [10] argue — into the neutral baseline surrounding it.
 
 **Three cheap improvements follow directly from the divergence table**, and Chapter 6 lists them in this order. Replacing mean pooling with an LSTM aggregator is worth 5.7 UF1 points in SLSTT's own ablation (§3.8.4). Recomputing the input as long-term onset-referenced flow rather than consecutive-frame flow is a Stage 1 change costing no training time and is the modification Zhang et al. argue most strongly for. And the fixed sinusoidal encoding could be replaced with learned embeddings at a cost of $32 \times 96$ parameters. None of the three was tested here, and all three are independent of the ablation's conclusions.
 
@@ -1183,7 +1183,7 @@ The reviewed corpus corrects for imbalance at three distinct points in the pipel
 
 ### 3.9.3 Loss-level correction: focal loss
 
-Zhao et al. [19] bring focal loss into micro-expression recognition, introducing it "to alleviate the inefficient model training caused by the class imbalance in the MEs Datasets". Their motivation is stated plainly: cross-entropy is "usually used for back propagation to update model parameters. However, there is an imbalanced distribution of samples in the spontaneous MEs datasets. This could be biased toward particular emotions that constitute a larger portion of the training set. Therefore, applying a fairer loss function is critical."
+Zhao et al. [7] bring focal loss into micro-expression recognition, introducing it "to alleviate the inefficient model training caused by the class imbalance in the MEs Datasets". Their motivation is stated plainly: cross-entropy is "usually used for back propagation to update model parameters. However, there is an imbalanced distribution of samples in the spontaneous MEs datasets. This could be biased toward particular emotions that constitute a larger portion of the training set. Therefore, applying a fairer loss function is critical."
 
 They adopt the formulation developed for one-stage object detection, where the imbalance is between foreground and background regions:
 
@@ -1199,7 +1199,7 @@ Note the division of labour in that sentence. $\gamma$ controls *difficulty* re-
 
 ### 3.9.4 Data-level correction: resampling and augmentation
 
-Xia et al. [25] address the same problem at the data end, and pair the two interventions. Their stated aim is "to overcome the shortcomings of limited and imbalanced training samples", for which "temporal data augmentation strategies as well as a balanced loss are jointly used for our deep network" — augmentation to enrich a small dataset, and a balanced loss "for counterweighing imbalanced classes".
+Xia et al. [9] address the same problem at the data end, and pair the two interventions. Their stated aim is "to overcome the shortcomings of limited and imbalanced training samples", for which "temporal data augmentation strategies as well as a balanced loss are jointly used for our deep network" — augmentation to enrich a small dataset, and a balanced loss "for counterweighing imbalanced classes".
 
 The word **jointly** is the one to note. Xia et al. apply a data-level and a loss-level correction simultaneously and report no difficulty arising from the combination. §3.9.7 records that this thesis did encounter one.
 
@@ -1207,13 +1207,13 @@ The word **jointly** is the one to note. Xia et al. apply a data-level and a los
 
 ### 3.9.5 Metric-level correction
 
-The third intervention is metric-level; §3.1.6 defines UF1 and the case for macro-averaged metrics in full. Liong et al. [22] add the argument from the subject side rather than the class side, distinguishing macro- from micro-averaged accuracy under LOSO and reporting F1, precision and recall because these "provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples." The two arguments compound on CASME II, where classes are skewed **and** per-subject clip counts range from 1 to 33 (§3.1.7c).
+The third intervention is metric-level; §3.1.6 defines UF1 and the case for macro-averaged metrics in full. Liong et al. [24] add the argument from the subject side rather than the class side, distinguishing macro- from micro-averaged accuracy under LOSO and reporting F1, precision and recall because these "provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples." The two arguments compound on CASME II, where classes are skewed **and** per-subject clip counts range from 1 to 33 (§3.1.7c).
 
 ---
 
 ### 3.9.6 Limitations
 
-**No study reports the interaction between corrections.** Xia et al. [25] apply augmentation and a balanced loss together; Zhao et al. [19] apply focal loss without resampling. Nothing in the corpus examines whether combining a data-level and a loss-level correction over-corrects — which is the failure this project encountered and documents in §3.9.7.
+**No study reports the interaction between corrections.** Xia et al. [9] apply augmentation and a balanced loss together; Zhao et al. [7] apply focal loss without resampling. Nothing in the corpus examines whether combining a data-level and a loss-level correction over-corrects — which is the failure this project encountered and documents in §3.9.7.
 
 **$\gamma = 2$ is inherited rather than tuned.** Zhao et al. adopt the value from the object-detection literature "in practice", without a sweep on micro-expression data. Every subsequent use in this project inherits it.
 
@@ -1227,10 +1227,10 @@ The third intervention is metric-level; §3.1.6 defines UF1 and the case for mac
 
 | Finding from the review | Decision taken in this thesis |
 |---|---|
-| Focal loss addresses class-frequency bias in MER [19] | Focal loss adopted as the training objective, with **$\gamma = 2.0$**, matching Zhao et al.'s reported setting |
-| $\alpha$ is a dataset-specific class-weight term [19] | Implemented as an optional per-class $\alpha$ vector, **switched off at run time** — see the declaration below |
-| Balanced presentation of classes during training [25] | Minority oversampling via a weighted sampler, active in every configuration |
-| Imbalance-aware metrics are mandatory [4, 22] | Pooled macro F1 — identical in construction to MEGC's UF1 — as the primary metric, with accuracy quoted only alongside the always-Negative floor |
+| Focal loss addresses class-frequency bias in MER [7] | Focal loss adopted as the training objective, with **$\gamma = 2.0$**, matching Zhao et al.'s reported setting |
+| $\alpha$ is a dataset-specific class-weight term [7] | Implemented as an optional per-class $\alpha$ vector, **switched off at run time** — see the declaration below |
+| Balanced presentation of classes during training [9] | Minority oversampling via a weighted sampler, active in every configuration |
+| Imbalance-aware metrics are mandatory [11, 24] | Pooled macro F1 — identical in construction to MEGC's UF1 — as the primary metric, with accuracy quoted only alongside the always-Negative floor |
 | *(not from the corpus)* | Label smoothing of 0.05 applied inside the focal loss. **No reviewed paper uses or discusses this**; it is an out-of-corpus choice and is declared as such |
 
 *Table 3.19 — Review findings and the imbalance-handling decisions they determine.*
@@ -1241,7 +1241,7 @@ The configuration is resolved at run time by a single rule — class weighting i
 
 That rule exists because of a failure. In this project's earlier runs, inverse-frequency class weights were applied in the loss **and** no balanced sampler was used; in a later configuration both were active. The documented consequence was that the proposed model predicted **zero** Positive clips — an entire minority class abandoned, scoring 0.000 F1 on it — which was initially misdiagnosed as over-capacity overfitting. With the sampler active and loss weighting stood down, the same configuration recovers 15 of 32 Positive clips and no configuration in the final study abandons any class (§3.1, Chapter 5).
 
-This is worth stating as a contribution rather than an incident, because §3.9.6 established that the corpus offers no guidance on it: Xia et al. [25] apply both corrections jointly and report no problem, and no reviewed paper warns that doing so can invert the intended effect. On a 156-clip corpus with a 4 : 1 skew, over-correction is evidently as damaging as no correction, and the safe configuration is to correct at exactly one point in the pipeline.
+This is worth stating as a contribution rather than an incident, because §3.9.6 established that the corpus offers no guidance on it: Xia et al. [9] apply both corrections jointly and report no problem, and no reviewed paper warns that doing so can invert the intended effect. On a 156-clip corpus with a 4 : 1 skew, over-correction is evidently as damaging as no correction, and the safe configuration is to correct at exactly one point in the pipeline.
 
 **A second declaration.** The severity of the imbalance also constrains what the ablation can conclude. Because every configuration shares the same sampler, loss and $\gamma$, this thesis measures **no** effect attributable to the imbalance treatment itself — it is a constant, not a factor. The claim supported is that the four architectural components were compared under a training regime that does not abandon minority classes, not that this regime is optimal.
 
@@ -1369,62 +1369,3 @@ The class grouping, representation, fold structure and metric this review has fi
 
 ---
 
-## References
-
-*Every source listed is a paper held in the project's `docs/` corpus. Works cited only **inside** those papers — Ekman and Friesen (1969) on nonverbal leakage; the Active Shape Model and Local Weighted Mean registration methods; the original Eulerian magnification formulations of Wu et al. (amplitude) and Wadhwa et al. (phase); the Farnebäck polynomial-expansion and TV-L1 flow estimators; the Temporal Interpolation Model of Pfister et al.; Newton interpolation; the focal loss of Lin et al.; the competing attention modules SE, CBAM, ECA, GC and SRM; the general-purpose architectures GoogLeNet, VGG16, ResNet-101 and DenseNet-169; the CASME (2013), Polikovsky (2009) and Dual-Inception (2019) papers; and the CIFAR, ImageNet-21k and JFT-300M datasets — are attributed in the text to the reviewed source that reports them, and are deliberately not listed here. Label smoothing (§3.9.7) has no source in the corpus and is declared as an out-of-corpus choice at the point of use.*
-
----
-
-[1] Yan, W.-J., Li, X., Wang, S.-J., Zhao, G., Liu, Y.-J., Chen, Y.-H., & Fu, X. (2014). CASME II: An improved spontaneous micro-expression database and the baseline evaluation. *PLoS ONE*, 9(1), e86041.
-
-[2] Shreve, M., Godavarthy, S., Goldgof, D., & Sarkar, S. (2011). Macro- and micro-expression spotting in long videos using spatio-temporal strain. *IEEE International Conference on Automatic Face and Gesture Recognition (FG 2011)*, 51–56.
-
-[3] Li, X., Pfister, T., Huang, X., Zhao, G., & Pietikäinen, M. (2013). A spontaneous micro-expression database: Inducement, collection and baseline. *10th IEEE International Conference on Automatic Face and Gesture Recognition (FG 2013)*.
-
-[4] See, J., Yap, M. H., Li, J., Hong, X., & Wang, S.-J. (2019). MEGC 2019 — The second facial micro-expressions grand challenge. *14th IEEE International Conference on Automatic Face and Gesture Recognition (FG 2019)*.
-
-[5] Zhao, G., & Pietikäinen, M. (2007). Dynamic texture recognition using local binary patterns with an application to facial expressions. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 29(6), 915–928.
-
-[6] Li, X., Hong, X., Moilanen, A., Huang, X., Pfister, T., Zhao, G., & Pietikäinen, M. (2018). Towards reading hidden emotions: A comparative study of spontaneous micro-expression spotting and recognition methods. *IEEE Transactions on Affective Computing*, 9(4), 563–577.
-
-[7] Davison, A. K., Lansley, C., Costen, N., Tan, K., & Yap, M. H. (2018). SAMM: A spontaneous micro-facial movement dataset. *IEEE Transactions on Affective Computing*, 9(1), 116–129.
-
-[8] Qu, F., Wang, S.-J., Yan, W.-J., & Fu, X. (2016). CAS(ME)²: A database of spontaneous macro-expressions and micro-expressions. In M. Kurosu (Ed.), *Human-Computer Interaction, HCI 2016, Part III*, LNCS 9733 (pp. 48–59). Springer.
-
-[9] Liong, S.-T., See, J., Wong, K., & Phan, R. C.-W. (2018). Less is more: Micro-expression recognition from video using apex frame. *Signal Processing: Image Communication*, 62, 82–92.
-
-[10] Liong, S.-T., Gan, Y. S., Yau, W.-C., Huang, Y.-C., & Tan, L. K. (2019a). OFF-ApexNet on micro-expression recognition system. *Signal Processing: Image Communication*, 74, 129–139.
-
-[11] Liong, S.-T., Gan, Y. S., See, J., Khor, H.-Q., & Huang, Y.-C. (2019b). Shallow triple stream three-dimensional CNN (STSTNet) for micro-expression recognition. *14th IEEE International Conference on Automatic Face and Gesture Recognition (FG 2019)*.
-
-[12] Liu, Y., Du, H., Zheng, L., & Gedeon, T. (2019). A neural micro-expression recognizer. *14th IEEE International Conference on Automatic Face and Gesture Recognition (FG 2019)*.
-
-[13] Xia, Z., Peng, W., Khor, H.-Q., Feng, X., & Zhao, G. (2020b). Revealing the invisible with model and data shrinking for composite-database micro-expression recognition. *IEEE Transactions on Image Processing*, 29, 8590–8605.
-
-[14] Yang, L., Zhang, R.-Y., Li, L., & Xie, X. (2021). SimAM: A simple, parameter-free attention module for convolutional neural networks. *38th International Conference on Machine Learning (ICML)*.
-
-[15] Bai, M., Goecke, R., & Herath, D. (2021). Micro-expression recognition based on video motion magnification and pre-trained neural network. *IEEE International Conference on Image Processing (ICIP 2021)*, 549–553.
-
-[16] Li, Y., Huang, X., & Zhao, G. (2018). Can micro-expression be recognized based on single apex frame? *IEEE International Conference on Image Processing (ICIP 2018)*.
-
-[17] Li, Y., Huang, X., & Zhao, G. (2021). Joint local and global information learning with single apex frame detection for micro-expression recognition. *IEEE Transactions on Image Processing*, 30, 249–263.
-
-[18] Xu, F., Zhang, J., & Wang, J. Z. (2017). Microexpression identification and categorization using a facial dynamics map. *IEEE Transactions on Affective Computing*, 8(2), 254–267.
-
-[19] Zhao, S., Tao, H., Zhang, Y., Xu, T., Zhang, K., Hao, Z., & Chen, E. (2021). A two-stage 3D CNN based learning method for spontaneous micro-expression recognition. *Neurocomputing*, 448, 276–289.
-
-[20] Liong, S.-T., Phan, R. C.-W., See, J., Oh, Y.-H., & Wong, K. (2014a). Optical strain based recognition of subtle emotions. *International Symposium on Intelligent Signal Processing and Communication Systems (ISPACS)*.
-
-[21] Liong, S.-T., See, J., Phan, R. C.-W., Le Ngo, A. C., Oh, Y.-H., & Wong, K. (2014b). Subtle expression recognition using optical strain weighted features. *Asian Conference on Computer Vision (ACCV) Workshops*.
-
-[22] Liong, S.-T., See, J., Phan, R. C.-W., Oh, Y.-H., Le Ngo, A. C., Wong, K., & Tan, S.-W. (2016). Spontaneous subtle expression detection and recognition based on facial strain. *Signal Processing: Image Communication*, 47, 170–182.
-
-[23] Lu, Z., Luo, Z., Zheng, H., Chen, J., & Li, W. (2015). A Delaunay-based temporal coding model for micro-expression recognition. In C. V. Jawahar & S. Shan (Eds.), *ACCV 2014 Workshops, Part II*, LNCS 9009 (pp. 698–711). Springer.
-
-[24] Ben, X., Ren, Y., Zhang, J., Wang, S.-J., Kpalma, K., Meng, W., & Liu, Y.-J. (2021). Video-based facial micro-expression analysis: A survey of datasets, features and algorithms. *IEEE Transactions on Pattern Analysis and Machine Intelligence*. https://doi.org/10.1109/TPAMI.2021.3067464
-
-[25] Xia, Z., Hong, X., Gao, X., Feng, X., & Zhao, G. (2020a). Spatiotemporal recurrent convolutional networks for recognizing spontaneous micro-expressions. *IEEE Transactions on Multimedia*, 22(3), 626–640.
-
-[26] Zhang, L., Hong, X., Arandjelović, O., & Zhao, G. (2022). Short and long range relation based spatio-temporal transformer for micro-expression recognition. *IEEE Transactions on Affective Computing*, 13(4), 1973–1985.
-
-[27] Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., Dehghani, M., Minderer, M., Heigold, G., Gelly, S., Uszkoreit, J., & Houlsby, N. (2021). An image is worth 16 × 16 words: Transformers for image recognition at scale. *International Conference on Learning Representations (ICLR)*.

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Verification gate for the Chapter 3 reformatting task.
+"""Structural gate for Chapter 3: cross-references, tables, figures, word count.
+
+NOTE: citation checking moved to tools/bibliography.py when the thesis adopted a
+single keyed bibliography. This tool no longer inspects citations at all.
 
 Read-only. Never edits. Run from the repository root:
     python3 tools/ch3_check.py
@@ -14,7 +17,7 @@ from pathlib import Path
 CH3 = Path("Thesis_Chapter3_LiteratureReview/Tech-wise")
 CH2 = Path("Thesis_Chapter2_Background")
 SECTION_GLOB = "[0-9][0-9]_3.*.md"
-REFS = CH3 / "11_References.md"
+
 
 # A reference-list entry after renumbering: "[12] Yan, W.-J., ..."
 ENTRY_RE = re.compile(r"^\[(\d+)\]\s+[A-ZÄÖÜ]")
@@ -101,7 +104,7 @@ def main():
 
     bodies = {p: p.read_text(encoding="utf-8") for p in section_files()}
     all_body = "\n".join(bodies.values())
-    refs_text = REFS.read_text(encoding="utf-8")
+    refs_text = ""
 
     # --- citations -------------------------------------------------------
     masked_all = mask(all_body, quotes=True)
