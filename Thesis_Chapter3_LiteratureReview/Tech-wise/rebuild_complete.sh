@@ -8,30 +8,11 @@ OUT=00_Chapter3_Complete.md
 cat > "$OUT" <<'HDR'
 # Chapter 3 — Literature Review
 
-## Scope and conventions
+This chapter reviews the literature bearing on each component of the recognition pipeline evaluated in this thesis: the corpus on which every experiment is run, the four techniques placed under ablation, the three input transformations they operate on, and the training regime held constant across all of them.
 
-This chapter reviews the literature bearing on each component of the pipeline evaluated in this thesis. It is written to be read continuously: a fact is established once, in the section that owns it, and referred to by cross-reference thereafter. The corpus and its properties are established in §3.1, the metric convention in §3.1.6, and each component's measured contribution in the section that reviews it.
+It is organised as a single continuous argument rather than as ten independent surveys. A fact is established once, in the section that owns it, and referred to by cross-reference thereafter. The corpus and its properties are established in §3.1, the metric convention in §3.1.6, and each component's measured contribution in the section that reviews it. Each section runs from what the technique addresses, through how it works and what the published evidence shows, to its limitations and the implications for this thesis, closing with a statement of the gap and how this work differs.
 
-**Sources.** Every work cited is a paper held in the project's `docs/` corpus. Works cited only *inside* those papers are attributed in the text to the reviewed source that reports them, and are not listed as separate references; the reference list at the end of the chapter enumerates which works are handled this way. Two topics that appear in the project's reading list — Grad-CAM++ visual auditing and adversarial identity disentanglement — are excluded because the implemented system does not use them (§3.9).
-
-**Structure.** Each section runs: what the technique addresses → how it works → the published evidence → its limitations → the implications for this thesis → a closing statement of the gap and how this work differs. §3.10 consolidates those ten closing statements into a single research gap, and Table 3.21 collects every point at which the implemented system departs from the literature it draws on.
-
-**Verification.** Every quotation in this chapter was checked verbatim against the source PDF; every reference was confirmed to correspond to a PDF in `docs/`; and every project-specific figure was recomputed from the code and from `Ablation_Study/results/config_*/final_results.json` using pooled macro F1 (mean of `per_class_f1`), not the mean-of-folds column that §3.1.6 rejects. Bibliographic details that could not be confirmed because the copy in `docs/` is a preprint or author manuscript are listed in this folder's `README.md`.
-
-## Contents
-
-| § | Topic | Ablation variable |
-|---|---|---|
-| 3.1 | The evaluation corpus: CASME II and the benchmark family | — |
-| 3.2 | Motion magnification: Eulerian Video Magnification | A |
-| 3.3 | Motion representation: dense optical flow | — (input) |
-| 3.4 | Deformation representation: the optical strain tensor | — (input) |
-| 3.5 | Temporal normalisation | — (input) |
-| 3.6 | The learned spatial backbone: shallow 3D CNNs | C |
-| 3.7 | Parameter-free attention: SimAM | B |
-| 3.8 | The temporal encoder: transformers | D |
-| 3.9 | Training under severe class imbalance | — (constant) |
-| 3.10 | Synthesis and research gap | — |
+Two claims recur and are worth stating at the outset. The first is that on a corpus of 156 clips, several decisions usually presented as modelling choices are in fact forced by properties of the data. The second is that several results usually attributed to architecture turn out, on inspection, to be attributable to the evaluation protocol. Section 3.10 consolidates the nine closing statements into a single research gap, and collects every point at which the implemented system departs from the literature it draws on.
 
 ---
 

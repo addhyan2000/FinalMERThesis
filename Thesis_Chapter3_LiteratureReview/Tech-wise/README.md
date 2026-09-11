@@ -75,3 +75,36 @@ One reported error was **rejected on inspection**: an auditor reported Qu et al.
 - **Xu et al.** — the PDF masthead reads 2016 but the cited volume, IEEE TAC 8(2), corresponds to 2017. The chapter uses 2017 throughout for internal consistency; confirm against the IEEE record.
 - **A Delaunay-Based Temporal Coding Model** — the PDF's own front matter gives pages 698–711; the filename's "703-716" is wrong. The chapter cites 698–711.
 - **The residual two-clip gap** between this thesis's disgust + repression count (90) and MEGC's reported CASME II Negative count (88), flagged in §3.1.3.
+
+## Chapter conventions (moved from the chapter preamble, 11 September 2026)
+
+These three statements and the contents table were body text at the head of the chapter until the reformatting task replaced the preamble with unnumbered framing prose, matching the exemplar theses. They are policy, not prose, and are preserved here verbatim.
+
+# Chapter 3 — Literature Review
+
+## Scope and conventions
+
+This chapter reviews the literature bearing on each component of the pipeline evaluated in this thesis. It is written to be read continuously: a fact is established once, in the section that owns it, and referred to by cross-reference thereafter. The corpus and its properties are established in §3.1, the metric convention in §3.1.6, and each component's measured contribution in the section that reviews it.
+
+**Sources.** Every work cited is a paper held in the project's `docs/` corpus. Works cited only *inside* those papers are attributed in the text to the reviewed source that reports them, and are not listed as separate references; the reference list at the end of the chapter enumerates which works are handled this way. Two topics that appear in the project's reading list — Grad-CAM++ visual auditing and adversarial identity disentanglement — are excluded because the implemented system does not use them (§3.9).
+
+**Structure.** Each section runs: what the technique addresses → how it works → the published evidence → its limitations → the implications for this thesis → a closing statement of the gap and how this work differs. §3.10 consolidates those ten closing statements into a single research gap, and Table 3.21 collects every point at which the implemented system departs from the literature it draws on.
+
+**Verification.** Every quotation in this chapter was checked verbatim against the source PDF; every reference was confirmed to correspond to a PDF in `docs/`; and every project-specific figure was recomputed from the code and from `Ablation_Study/results/config_*/final_results.json` using pooled macro F1 (mean of `per_class_f1`), not the mean-of-folds column that §3.1.6 rejects. Bibliographic details that could not be confirmed because the copy in `docs/` is a preprint or author manuscript are listed in this folder's `README.md`.
+
+## Contents
+
+| § | Topic | Ablation variable |
+|---|---|---|
+| 3.1 | The evaluation corpus: CASME II and the benchmark family | — |
+| 3.2 | Motion magnification: Eulerian Video Magnification | A |
+| 3.3 | Motion representation: dense optical flow | — (input) |
+| 3.4 | Deformation representation: the optical strain tensor | — (input) |
+| 3.5 | Temporal normalisation | — (input) |
+| 3.6 | The learned spatial backbone: shallow 3D CNNs | C |
+| 3.7 | Parameter-free attention: SimAM | B |
+| 3.8 | The temporal encoder: transformers | D |
+| 3.9 | Training under severe class imbalance | — (constant) |
+| 3.10 | Synthesis and research gap | — |
+
+---
