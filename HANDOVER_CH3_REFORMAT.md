@@ -214,3 +214,32 @@ A second, separate task run after the Chapter 3 reformatting. Chapter 2 was rest
 - **Risk R4 is RESOLVED.** Chapter 2 was converted to numeric `[n]` citations, reference list renumbered `[1]`–`[11]` by first appearance. `(Lin et al., 2017)` correctly remains author–year: focal loss is out-of-corpus and has no reference entry. Chapter 2's `rebuild_complete.sh` reference counter was fixed at the same time — it had the same author–year regex bug Chapter 3's had.
 - **A new question this raises.** Chapter 2 is now `[1]`–`[11]` and Chapter 3 is `[1]`–`[27]`, numbered independently because the thesis keeps one reference list per chapter. So `[1]` means Yan et al. in Chapter 2 and Yan et al. in Chapter 3 — but `[3]` means Li, Y. in one and Li, X. in the other. Both exemplar theses avoid this with a single thesis-wide Bibliography. Decide deliberately.
 - **Also open:** both exemplar theses use a single thesis-wide Bibliography; this thesis keeps one reference list per chapter. A deliberate divergence, not an error, but decide it consciously.
+
+---
+
+## 10. Chapter 4 (Methodology) — COMPLETE
+
+Written from a code-verified scope check, not from the handover's summary figures. **9,052 words, 8 sections.**
+
+| § | Section | Words |
+|---|---|--:|
+| 4.1 | Research approach and experimental design | 1,187 |
+| 4.2 | The corpus and its preparation | 986 |
+| 4.3 | The ablation matrix | 909 |
+| 4.4 | Model architecture | 1,455 |
+| 4.5 | Training procedure | 1,337 |
+| 4.6 | Evaluation protocol | 1,520 |
+| 4.7 | Computational environment | 874 |
+| 4.8 | Conclusion | 554 |
+
+**Facts the scope check corrected or established — do not revert these:**
+
+- **Batch size is 4, not 2.** `ablation_config.py` defaults to 2; `tools/run_ablation_gpu.py` overrides to `--batch_size 4`, and 4 produced every stored result.
+- **The code builds 16 configurations, not 12.** `itertools.product` makes all sixteen; `is_valid()` rejects SimAM-without-CNN at run time, leaving twelve. The "8-cell" and "12-cell" docstrings are both stale.
+- **The 48.9/50.6 GPU-hour figure is an extrapolation, not a measurement** — stored single-fold time × 25, and only the *last* fold's timing survives the fold loop. §4.7 says so explicitly.
+- **Two model implementations exist.** `Ablation_Study/models.py::AblationMERModel` produced every result; `Stage2_Architecture/models/hybrid_model.py` is an earlier fixed prototype with no toggles and no dropout in its head. Chapter 4 describes the former.
+- Confirmed exactly as the handover claimed: inactive α term, no inner validation split, single seed 42, pooled macro F1 never stored by the code.
+
+**Not recorded anywhere, and deliberately not invented:** GPU model, CPU, RAM, and all library versions. §4.7.1 states this as a gap in the record.
+
+**Still to write:** Chapters 1, 5 and 6.

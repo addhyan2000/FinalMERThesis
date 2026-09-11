@@ -28,6 +28,8 @@ THESIS_ORDER = [
      "Thesis_Chapter2_Background/00_Chapter2_Complete.md"),
     ("Thesis_Chapter3_LiteratureReview/Tech-wise/[0-9][0-9]_3.*.md",
      "Thesis_Chapter3_LiteratureReview/Tech-wise/00_Chapter3_Complete.md"),
+    ("Thesis_Chapter4_Methodology/0[1-9]_4.*.md",
+     "Thesis_Chapter4_Methodology/00_Chapter4_Complete.md"),
 ]
 
 CITE = re.compile(r"\[@([A-Za-z0-9]+(?:\s*;\s*@[A-Za-z0-9]+)*)\]")
