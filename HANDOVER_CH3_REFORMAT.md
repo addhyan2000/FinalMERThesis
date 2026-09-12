@@ -1,3 +1,5 @@
+> **SUPERSEDED by `THESIS_WRITING_HANDOVER.md`**, which covers all four written chapters. This file is kept for its detailed record of the Chapter 3 reformatting and the Chapter 2 rebuild.
+
 # Handover — Chapter 3 reformatting (read this first)
 
 **Purpose.** Lets a fresh session resume the Chapter 3 literature-review reformatting without re-deriving anything. Read end to end before touching a file. This is a *task* handover; the project-level one is `HANDOVER.md` and still applies.

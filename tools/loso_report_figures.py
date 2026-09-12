@@ -69,11 +69,12 @@ def save(fig, name):
     print("wrote", name)
 
 
-def save_thesis(fig, name):
+def save_thesis(fig, name, close=True):
     p = f"{OUT_THESIS}/{name}"
     fig.savefig(p)
-    plt.close(fig)
     print("wrote", name)
+    if close:
+        plt.close(fig)
 
 
 def editorial_title(target, text, **kwargs):
@@ -97,7 +98,7 @@ def toggle_str(c):
 
 
 # ───────────────────────────────────────────────────────────────── FIG L1
-def fig_l1():
+def _build_fig_l1(thesis):
     order = sorted(IDS, key=lambda c: -pooled_mf1(L[c]))
     f1 = [pooled_mf1(L[c]) for c in order]
     acc = [L[c]["metrics"]["micro_f1"] for c in order]
@@ -119,8 +120,16 @@ def fig_l1():
     ax.set_xticklabels([f"{c}\n{toggle_str(c)}" for c in order], fontsize=8.5)
     ax.set_ylim(0, 0.92)
     ax.set_ylabel("score")
-    ax.set_title("Figure L1 — Full 25-fold LOSO on CASME-II: all 12 configurations, "
-                 "ranked by pooled macro F1\n(toggle key: E=EVM  S=SimAM  C=3D-CNN  T=Transformer;  · = off)")
+    if thesis:
+        # The "Figure L1 —" headline argues a ranking claim, so it is dropped.
+        # The toggle key is not a conclusion though - it is the only place
+        # that decodes the E/S/C/T letters baked into the x-tick labels, so
+        # it is kept as a plain in-plot annotation instead of a title.
+        ax.text(0.5, 1.03, "toggle key: E=EVM  S=SimAM  C=3D-CNN  T=Transformer;  · = off",
+                transform=ax.transAxes, ha="center", fontsize=8.5)
+    else:
+        ax.set_title("Figure L1 — Full 25-fold LOSO on CASME-II: all 12 configurations, "
+                     "ranked by pooled macro F1\n(toggle key: E=EVM  S=SimAM  C=3D-CNN  T=Transformer;  · = off)")
     ax.legend(loc="upper right", frameon=False)
     # shade transformer-bearing configs
     for i, c in enumerate(order):
@@ -128,7 +137,13 @@ def fig_l1():
             ax.axvspan(i - .5, i + .5, color=GREEN, alpha=.07, zorder=0)
     ax.text(0.25, 0.955, "green band = Transformer ON", transform=ax.transAxes,
             fontsize=9, color=GREEN, ha="center", fontweight="bold")
-    save(fig, "figL1_loso_headline.png")
+    return fig
+
+
+def fig_l1():
+    save(_build_fig_l1(False), "figL1_loso_headline.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l1(True), "fig5_1_headline.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L2
@@ -173,7 +188,10 @@ def fig_l2():
                  "must not be compared against the 0.68 target.")
     fig.tight_layout()
     if THESIS_MODE:
-        save_thesis(fig, "fig3_3_metric_definitions.png")
+        # Rejected from Chapter 3 as results material; also emitted under the
+        # Chapter 5 name. Same figure, two filenames.
+        save_thesis(fig, "fig3_3_metric_definitions.png", close=False)
+        save_thesis(fig, "fig5_2_metric_definitions.png")
     else:
         save(fig, "figL2_metric_definitions.png")
 
@@ -240,7 +258,7 @@ PAIRS = {
 }
 
 
-def fig_l4():
+def _build_fig_l4(thesis):
     fig, axes = plt.subplots(1, 4, figsize=(14, 4.6))
     for ax, (comp, pairs) in zip(axes, PAIRS.items()):
         deltas = [pooled_mf1(L[on]) - pooled_mf1(L[off]) for off, on in pairs]
@@ -260,12 +278,27 @@ def fig_l4():
         ax.set_title(f"{comp}\nmean effect {m:+.3f}", fontsize=10)
         ax.set_xlim(-0.24, 0.42)
         ax.set_xlabel("Δ pooled macro F1")
-    fig.suptitle("Figure L4 — Marginal contribution of each component under full 25-fold LOSO\n"
-                 "Every bar is a matched pair of configurations that differ in exactly one "
-                 "switch. Green = the component helped, red = it hurt. Dashed line = mean effect.",
-                 fontsize=11, fontweight="bold", y=1.10)
+    if thesis:
+        # Drop the "Figure L4 —" headline. Keep the green/red/dashed-line
+        # legend sentence: it is not explained anywhere else in the figure
+        # (there is no separate ax.legend() for colour or line meaning).
+        fig.suptitle("Every bar is a matched pair of configurations that differ in exactly "
+                     "one switch. Green = the component helped, red = it hurt. "
+                     "Dashed line = mean effect.",
+                     fontsize=9.5, fontweight="normal", y=1.06)
+    else:
+        fig.suptitle("Figure L4 — Marginal contribution of each component under full 25-fold LOSO\n"
+                     "Every bar is a matched pair of configurations that differ in exactly one "
+                     "switch. Green = the component helped, red = it hurt. Dashed line = mean effect.",
+                     fontsize=11, fontweight="bold", y=1.10)
     fig.tight_layout()
-    save(fig, "figL4_component_effects.png")
+    return fig
+
+
+def fig_l4():
+    save(_build_fig_l4(False), "figL4_component_effects.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l4(True), "fig5_9_component_effects.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L5
@@ -288,7 +321,7 @@ def _cm_panel(ax, cm, title, sub):
     return im
 
 
-def fig_l5():
+def _build_fig_l5(thesis):
     picks = [("C1", "C1 — pure baseline (no components)"),
              ("C8", "C8 — proposed unified (all four ON)"),
              ("C2", "C2 — transformer only (best macro F1)")]
@@ -297,16 +330,30 @@ def fig_l5():
         m = L[c]["metrics"]
         _cm_panel(ax, m["confusion_matrix"], t,
                   f"pooled acc {m['micro_f1']:.3f} | pooled macro F1 {pooled_mf1(L[c]):.3f}")
-    fig.suptitle("Figure L5 — Pooled LOSO confusion matrices (all 156 clips, "
-                 "aggregated over the 25 folds)\nCell = clip count and row-normalised "
-                 "recall. Rows are the true class, columns the prediction.",
-                 fontsize=11, fontweight="bold", y=1.06)
+    if thesis:
+        # Drop the "Figure L5 —" headline; keep the cell-notation sentence -
+        # it is the only place explaining what the two numbers in each cell
+        # mean (count and row-normalised recall %).
+        fig.suptitle("Cell = clip count and row-normalised recall. Rows are the true "
+                     "class, columns the prediction.",
+                     fontsize=9.5, fontweight="normal", y=1.03)
+    else:
+        fig.suptitle("Figure L5 — Pooled LOSO confusion matrices (all 156 clips, "
+                     "aggregated over the 25 folds)\nCell = clip count and row-normalised "
+                     "recall. Rows are the true class, columns the prediction.",
+                     fontsize=11, fontweight="bold", y=1.06)
     fig.tight_layout()
-    save(fig, "figL5_confusion_matrices.png")
+    return fig
+
+
+def fig_l5():
+    save(_build_fig_l5(False), "figL5_confusion_matrices.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l5(True), "fig5_6_confusion_matrices.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L6
-def fig_l6():
+def _build_fig_l6(thesis):
     order = sorted(IDS, key=lambda c: -pooled_mf1(L[c]))
     x = np.arange(len(order))
     w = 0.26
@@ -322,11 +369,20 @@ def fig_l6():
     ax.set_ylim(0, 1.0)
     ax.set_ylabel("per-class F1 (pooled over 156 clips)")
     ax.legend(frameon=False, ncol=3, loc="upper right")
-    ax.set_title("Figure L6 — Per-class F1 under full LOSO\n"
-                 "No configuration abandons a class entirely — every bar is non-zero. "
-                 "The class ordering flips: weak models are best on Positive, "
-                 "strong models are best on Negative.")
-    save(fig, "figL6_per_class_f1.png")
+    if not thesis:
+        # Entirely a set of conclusions about the data (no configuration
+        # abandons a class, the class ordering flips) - dropped wholesale.
+        ax.set_title("Figure L6 — Per-class F1 under full LOSO\n"
+                     "No configuration abandons a class entirely — every bar is non-zero. "
+                     "The class ordering flips: weak models are best on Positive, "
+                     "strong models are best on Negative.")
+    return fig
+
+
+def fig_l6():
+    save(_build_fig_l6(False), "figL6_per_class_f1.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l6(True), "fig5_7_per_class_f1.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L7
@@ -382,7 +438,7 @@ def fig_l7():
 
 
 # ───────────────────────────────────────────────────────────────── FIG L8
-def fig_l8():
+def _build_fig_l8(thesis):
     on = [c for c in IDS if TOG[c]["trans"]]
     off = [c for c in IDS if not TOG[c]["trans"]]
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5))
@@ -405,8 +461,11 @@ def fig_l8():
     ax.set_xlim(-.55, 1.75)
     ax.set_ylim(.37, .78)
     ax.set_ylabel("pooled macro F1 (25-fold LOSO)")
-    ax.set_title("Full LOSO — the split is total and gap-free:\n"
-                 "every ON config beats every OFF config")
+    if not thesis:
+        # States the finding ("the split is total and gap-free... every ON
+        # config beats every OFF config") rather than labelling panel content.
+        ax.set_title("Full LOSO — the split is total and gap-free:\n"
+                     "every ON config beats every OFF config")
     ax.axhspan(.4192, .4480, color=RED, alpha=.08)
     ax.axhspan(.5830, .7122, color=GREEN, alpha=.08)
 
@@ -433,21 +492,31 @@ def fig_l8():
     ax.set_ylabel("Δ pooled macro F1 from switching the transformer ON")
     ax.set_ylim(-.34, .40)
     ax.legend(frameon=False, loc="lower left", fontsize=9)
-    ax.set_title("Under Holdout the transformer's effect was erratic;\n"
-                 "under full LOSO it is uniformly large and positive")
-    fig.suptitle("Figure L8 — The single biggest finding: under real LOSO the "
-                 "Transformer is decisive, not harmful",
-                 fontsize=11.5, fontweight="bold", y=1.04)
+    if not thesis:
+        # States a comparative conclusion ("erratic" vs "uniformly large and
+        # positive"), not a description of panel contents.
+        ax.set_title("Under Holdout the transformer's effect was erratic;\n"
+                     "under full LOSO it is uniformly large and positive")
+        fig.suptitle("Figure L8 — The single biggest finding: under real LOSO the "
+                     "Transformer is decisive, not harmful",
+                     fontsize=11.5, fontweight="bold", y=1.04)
     fig.tight_layout()
-    save(fig, "figL8_transformer_split.png")
+    return fig
+
+
+def fig_l8():
+    save(_build_fig_l8(False), "figL8_transformer_split.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l8(True), "fig5_3_transformer_split.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L9
-def fig_l9():
+def _build_fig_l9(thesis):
     pairs = PAIRS["EVM (motion magnification)"]
     fig, axes = plt.subplots(1, 2, figsize=(13, 4.8), sharey=True)
-    for ax, (key, title) in zip(axes, [("holdout39", "Earlier Holdout baseline (N=39) — EVM inert"),
-                                       ("loso25", "This branch, full LOSO (N=156) — EVM live")]):
+    panels = [("holdout39", "Earlier Holdout baseline (N=39)", " — EVM inert"),
+              ("loso25", "This branch, full LOSO (N=156)", " — EVM live")]
+    for ax, (key, lead, conclusion) in zip(axes, panels):
         x = np.arange(len(pairs)); w = .36
         off = [pooled_mf1(D[key][a]) for a, b in pairs]
         on = [pooled_mf1(D[key][b]) for a, b in pairs]
@@ -463,17 +532,27 @@ def fig_l9():
         ax.set_xticks(x)
         ax.set_xticklabels([f"{a}→{b}" for a, b in pairs], fontsize=9)
         ax.set_ylim(0, .88)
-        ax.set_title(title, fontsize=10)
+        # "— EVM inert/live" is the conclusion drawn from the data, not a
+        # label of what the panel contains, so it is dropped in thesis mode;
+        # the descriptive "which run this is" lead-in is kept.
+        ax.set_title(lead if thesis else f"{lead}{conclusion}", fontsize=10)
         ax.legend(frameon=False, fontsize=8.5, loc="upper left")
     axes[0].set_ylabel("pooled macro F1")
-    fig.suptitle("Figure L9 — The EVM data-routing defect is fixed\n"
-                 "Left: in the old run every EVM/non-EVM pair was identical to four "
-                 "decimals, proving both arms read the same tensors.\n"
-                 "Right: in this run all six pairs differ, so the magnified tensor set "
-                 "is genuinely being loaded and the EVM hypothesis is finally testable.",
-                 fontsize=11.5, fontweight="bold", y=1.13)
+    if not thesis:
+        fig.suptitle("Figure L9 — The EVM data-routing defect is fixed\n"
+                     "Left: in the old run every EVM/non-EVM pair was identical to four "
+                     "decimals, proving both arms read the same tensors.\n"
+                     "Right: in this run all six pairs differ, so the magnified tensor set "
+                     "is genuinely being loaded and the EVM hypothesis is finally testable.",
+                     fontsize=11.5, fontweight="bold", y=1.13)
     fig.tight_layout()
-    save(fig, "figL9_evm_pairs.png")
+    return fig
+
+
+def fig_l9():
+    save(_build_fig_l9(False), "figL9_evm_pairs.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l9(True), "fig5_4_evm_pairs.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L10
@@ -511,7 +590,7 @@ def fig_l10():
 
 
 # ───────────────────────────────────────────────────────────────── FIG L11
-def fig_l11():
+def _build_fig_l11(thesis):
     hwd = D["loso25_hw"]
     # Manual label offsets so the near-coincident EVM twins stay readable.
     OFF = {"C1": (0, -.020), "C4": (0, .011), "C2": (0, .012), "C12": (0, -.021),
@@ -543,17 +622,27 @@ def fig_l11():
     axes[0].annotate("best macro F1,\ncheapest to train",
                      xy=(0.55, .706), xytext=(1.5, .755), fontsize=8.5, color=GREEN,
                      arrowprops=dict(arrowstyle="->", color=GREEN, lw=1.1))
-    fig.suptitle("Figure L11 — Cost versus benefit: the cheapest model is the best\n"
-                 "C2 (transformer, no 3D-CNN) tops the macro-F1 table for ~0.5 GPU hours "
-                 "and 0.17 GB of VRAM; the 3D-CNN configs cost 5.8-6.5 GPU hours and up "
-                 "to 19.6 GB for no gain.",
-                 fontsize=11, fontweight="bold", y=1.07)
+    if not thesis:
+        # The whole headline argues a conclusion ("the cheapest model is the
+        # best", "for no gain") - dropped wholesale; the two in-plot
+        # annotations above carry the pointer-level detail and are kept.
+        fig.suptitle("Figure L11 — Cost versus benefit: the cheapest model is the best\n"
+                     "C2 (transformer, no 3D-CNN) tops the macro-F1 table for ~0.5 GPU hours "
+                     "and 0.17 GB of VRAM; the 3D-CNN configs cost 5.8-6.5 GPU hours and up "
+                     "to 19.6 GB for no gain.",
+                     fontsize=11, fontweight="bold", y=1.07)
     fig.tight_layout()
-    save(fig, "figL11_cost_vs_performance.png")
+    return fig
+
+
+def fig_l11():
+    save(_build_fig_l11(False), "figL11_cost_vs_performance.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l11(True), "fig5_5_cost_vs_performance.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L12
-def fig_l12():
+def _build_fig_l12(thesis):
     lit = [(r["reference"], float(r["accuracy"]),
             float(r["macro_f1"]) if r["macro_f1"] else None)
            for r in D["literature"]]
@@ -589,11 +678,25 @@ def fig_l12():
                        Patch(color=GREEN, label="this project — best macro F1"),
                        Patch(color=BLUE, label="this project — proposed model")],
               frameon=False, fontsize=8.5, loc="upper left")
-    ax.set_title("Figure L12 — This project's full-LOSO results against the literature "
-                 "baselines and the dissertation target\n"
-                 "Solid bars = accuracy, hatched bars = macro F1. 'n/r' = the source does "
-                 "not report macro F1. All bars are LOSO on CASME-II, 3-class grouped.")
-    save(fig, "figL12_literature.png")
+    if thesis:
+        # Drop the "Figure L12 —" comparative headline; keep the bar-encoding
+        # / 'n/r' legend sentence, which is not explained by the Patch legend
+        # (that legend explains bar colour/group, not solid-vs-hatched).
+        ax.set_title("Solid bars = accuracy, hatched bars = macro F1. 'n/r' = the source "
+                     "does not report macro F1. All bars are LOSO on CASME-II, 3-class grouped.",
+                     fontsize=9.5, fontweight="normal")
+    else:
+        ax.set_title("Figure L12 — This project's full-LOSO results against the literature "
+                     "baselines and the dissertation target\n"
+                     "Solid bars = accuracy, hatched bars = macro F1. 'n/r' = the source does "
+                     "not report macro F1. All bars are LOSO on CASME-II, 3-class grouped.")
+    return fig
+
+
+def fig_l12():
+    save(_build_fig_l12(False), "figL12_literature.png")
+    if THESIS_MODE:
+        save_thesis(_build_fig_l12(True), "fig5_8_literature.png")
 
 
 # ───────────────────────────────────────────────────────────────── FIG L13
