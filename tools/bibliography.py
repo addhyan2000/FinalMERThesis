@@ -24,6 +24,8 @@ RENDERED = ROOT / "BIBLIOGRAPHY_NUMBERED.md"
 # Chapters in thesis reading order: (section-file glob, assembled file).
 # Add Chapters 1, 4, 5 and 6 here as they are written.
 THESIS_ORDER = [
+    ("Thesis_Chapter1_Introduction/0[1-9]_1.*.md",
+     "Thesis_Chapter1_Introduction/00_Chapter1_Complete.md"),
     ("Thesis_Chapter2_Background/0[1-9]_2*.md",
      "Thesis_Chapter2_Background/00_Chapter2_Complete.md"),
     ("Thesis_Chapter3_LiteratureReview/Tech-wise/[0-9][0-9]_3.*.md",
@@ -32,6 +34,8 @@ THESIS_ORDER = [
      "Thesis_Chapter4_Methodology/00_Chapter4_Complete.md"),
     ("Thesis_Chapter5_Results/0[1-9]_5.*.md",
      "Thesis_Chapter5_Results/00_Chapter5_Complete.md"),
+    ("Thesis_Chapter6_Conclusion/0[1-9]_6.*.md",
+     "Thesis_Chapter6_Conclusion/00_Chapter6_Complete.md"),
 ]
 
 CITE = re.compile(r"\[@([A-Za-z0-9]+(?:\s*;\s*@[A-Za-z0-9]+)*)\]")

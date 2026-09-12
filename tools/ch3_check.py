@@ -15,9 +15,11 @@ import sys
 from pathlib import Path
 
 CH3 = Path("Thesis_Chapter3_LiteratureReview/Tech-wise")
+CH1 = Path("Thesis_Chapter1_Introduction")
 CH2 = Path("Thesis_Chapter2_Background")
 CH4 = Path("Thesis_Chapter4_Methodology")
 CH5 = Path("Thesis_Chapter5_Results")
+CH6 = Path("Thesis_Chapter6_Conclusion")
 SECTION_GLOB = "[0-9][0-9]_3.*.md"
 
 
@@ -96,7 +98,7 @@ def collect_headings():
     """
     found = set()
     for path in (list(section_files()) + sorted(CH2.glob("*.md"))
-                 + _numbered(CH4) + _numbered(CH5)):
+                 + _numbered(CH1) + _numbered(CH4) + _numbered(CH5) + _numbered(CH6)):
         for num in HEADING_RE.findall(path.read_text(encoding="utf-8")):
             found.add(num)
             # A reference to §3.1 is satisfied by the heading "## 3.1".
@@ -160,6 +162,17 @@ def main():
     broken_secs = sorted({r for r in SECREF_RE.findall(all_body)
                           if r not in headings})
 
+    # Chapters 4-6 are not part of all_body, so their own cross-references would
+    # otherwise never be checked. Scan every chapter's section files as well.
+    thesis_refs = {}
+    for path in (list(section_files()) + sorted(CH2.glob("*.md"))
+                 + _numbered(CH1) + _numbered(CH4) + _numbered(CH5) + _numbered(CH6)):
+        for ref in SECREF_RE.findall(path.read_text(encoding="utf-8")):
+            if ref not in headings:
+                thesis_refs.setdefault(ref, set()).add(path.name)
+    broken_thesis = sorted(f"{r} ({', '.join(sorted(f))})"
+                           for r, f in thesis_refs.items())
+
     tables_defined = set(TABLEDEF_RE.findall(all_body))
     broken_tables = sorted({r for r in TABLEREF_RE.findall(all_body)
                             if r not in tables_defined})
@@ -175,6 +188,7 @@ def main():
         "reference_entries": reference_entries,
         "residual_author_year": residual,
         "broken_section_refs": broken_secs,
+        "broken_refs_all_chapters": broken_thesis,
         "broken_table_refs": broken_tables,
         "broken_figure_refs": broken_figs,
         "uncited_entries": uncited,
@@ -192,6 +206,7 @@ def main():
         if len(residual) > 15:
             print(f"    … and {len(residual) - 15} more")
         print(f"broken section cross-references    : {broken_secs or 'none'}")
+        print(f"broken refs, all chapters          : {broken_thesis or 'none'}")
         print(f"broken table references            : {broken_tables or 'none'}")
         print(f"broken figure references           : {broken_figs or 'none'}")
         print(f"uncited reference entries          : {uncited or 'none'}")

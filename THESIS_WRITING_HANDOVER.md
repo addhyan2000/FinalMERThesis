@@ -2,7 +2,7 @@
 
 **Supersedes `HANDOVER_CH3_REFORMAT.md`**, which covered only the Chapter 3 reformatting and is kept for its detailed record of that task. `HANDOVER.md` remains the project-level document about the experiment itself; this one covers the *writing*.
 
-**Last updated:** 12 September 2026, after Chapter 5's three-way audit (numbers, citations, duplication), its corrections, and the Figure 5.4 / 5.8 regeneration.
+**Last updated:** 12 September 2026 (Chapter 1 completed; thesis body complete), after Chapter 5's three-way audit (numbers, citations, duplication), its corrections, and the Figure 5.4 / 5.8 regeneration; then Chapter 6, written subagent-driven with a scope check, two writers and a verification pass.
 
 ---
 
@@ -10,13 +10,13 @@
 
 | Chapter | Words | State |
 |---|--:|---|
-| 1 — Introduction | — | ❌ not started |
+| 1 — Introduction | 826 | ✅ complete, written last against Ch2–6 |
 | 2 — Background | 9,783 | ✅ complete, restructured into pipeline order |
-| 3 — Literature Review | 29,367 | ✅ complete, reformatted to the exemplar conventions |
-| 4 — Methodology | 8,949 | ✅ complete, written from a code-verified scope check |
+| 3 — Literature Review | 28,225 | ✅ complete; protocol-instability claim withdrawn, EVM-defect scope corrected |
+| 4 — Methodology | 9,600 | ✅ complete; §4.6.7 added, documenting the four excluded evaluations |
 | 5 — Results | 7,911 | ✅ complete, 9 figures; audited and corrected |
-| 6 — Conclusion | — | ❌ not started |
-| **Body total** | **56,010** | |
+| 6 — Conclusion | 2,018 | ✅ complete, 4 sections, zero citations |
+| **Body total** | **58,363** | |
 
 Single thesis-wide bibliography: 27 entries, all cited, no orphans.
 
@@ -69,6 +69,14 @@ Each chapter has `rebuild_complete.sh`. It concatenates the numbered section fil
 - **A complete 16-cell matrix gives every flag eight matched pairs.** EVM and the transformer realise six; SimAM and the CNN stem realise four. "Four rather than six" is wrong.
 - **SimAM is free in parameters only.** It costs +11% training time and +5,292 MB peak VRAM (+35.9%) per matched pair — about 2.64 of the sweep's 50.61 extrapolated GPU-hours, 5.2%. Any claim that it "costs nothing" is false.
 - **Lowest Surprise-class F1 is `config_4`'s 0.2462**, not `config_9`'s 0.3000. `config_2` holds the *highest* Positive and Surprise F1 in the study, and the widest spread belongs to `config_9` (0.5491).
+- **Chapter 6 cites, it never restates.** Only `0.7122` and `0.6659` appear as figures, once each, in §6.1. Every other number is referenced by section. Chapter 6 carries **zero citations**, matching both exemplar theses.
+- **Chapters 3 and 5 make 23 forward commitments to Chapter 6.** §6.3 discharges them. Adding a commitment elsewhere without adding it to §6.3 leaves a promise the thesis does not keep — grep Chapters 2–5 for `Chapter 6`, `further work`, `next ablation` before assuming the list is closed.
+- **The five-protocol / four-winner claim is withdrawn.** It appeared three times in Chapter 3 and was never supported: the five runs differ in N (24–156), epochs (5/50/60) and class coverage, and the two earliest carry the EVM routing defect. §4.6.7 now records the history honestly. Do not reinstate it.
+- **`tools/ch3_check.py` now gates every chapter's cross-references** (`broken refs, all chapters`). It validates that a `§x.y` target *exists*, not that it says what the citing sentence claims — that still needs a reader.
+- **Chapter 1 states no result.** No figure, ranking or configuration name appears in it, deliberately: the two headline numbers appear exactly once each, in §6.1. §1.1 closes on a qualitative clause only.
+- **Chapter 1 is registered FIRST in `THESIS_ORDER`** (`tools/bibliography.py`), because citation numbers are assigned by first appearance. It cites `yan2014` and `xia2020a`, both of which already appeared early, so no renumbering occurred — but a *new* key cited in Chapter 1 would renumber the whole thesis and every chapter would need rebuilding.
+- **Applications claims are the source papers' motivations, not demonstrated use.** `yan2014` and `xia2020a` support national-safety / interrogation / clinical / lie-detection framings. Write "is motivated by" or "reported as promising for" — never "is used for". The four most quotable application papers in `docs/` are deliberately NOT in the bibliography; citing one is a defect.
+- **Four binary flags give sixteen combinations, twelve of them valid.** Any phrasing that presents twelve as the direct product of independent toggling is wrong (§4.1.3 is titled "Twelve configurations, not sixteen").
 
 ## 5. The headline result
 
