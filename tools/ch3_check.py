@@ -16,7 +16,15 @@ from pathlib import Path
 
 CH3 = Path("Thesis_Chapter3_LiteratureReview/Tech-wise")
 CH2 = Path("Thesis_Chapter2_Background")
+CH4 = Path("Thesis_Chapter4_Methodology")
+CH5 = Path("Thesis_Chapter5_Results")
 SECTION_GLOB = "[0-9][0-9]_3.*.md"
+
+
+def _numbered(d):
+    """Section files of a chapter directory, excluding the generated 00_ bundle."""
+    return [p for p in sorted(d.glob("[0-9][0-9]_*.md"))
+            if not p.name.startswith("00_")] if d.exists() else []
 
 
 # A reference-list entry after renumbering: "[12] Yan, W.-J., ..."
@@ -81,9 +89,14 @@ def load_allowlist():
 
 
 def collect_headings():
-    """Every section number that exists as a heading, in Chapters 2 and 3."""
+    """Every section number that exists as a heading, in Chapters 2 to 5.
+
+    Chapters 4 and 5 are included because Chapter 3 refers forward into them;
+    without those headings a valid forward reference is reported as broken.
+    """
     found = set()
-    for path in list(section_files()) + sorted(CH2.glob("*.md")):
+    for path in (list(section_files()) + sorted(CH2.glob("*.md"))
+                 + _numbered(CH4) + _numbered(CH5)):
         for num in HEADING_RE.findall(path.read_text(encoding="utf-8")):
             found.add(num)
             # A reference to §3.1 is satisfied by the heading "## 3.1".
