@@ -10,7 +10,7 @@ Two constraints recur. The corpus is small enough that its size, rather than any
 
 ## 2.1 The Phenomenon: Micro-Expressions as Involuntary, Brief, Low-Intensity Facial Movement
 
-A micro-expression is a brief facial movement that leaks a felt emotion the person is actively trying to conceal [1]. It is best understood by contrast with an ordinary, or macro-, expression, on three axes rather than one. Macro-expressions typically last upwards of half a second, and may run to several seconds, and can be produced at will [2]; micro-expressions, by contrast, are "characterized by short durations, involuntary generation and low intensity" [2]. The third axis is the one most easily overlooked: a micro-expression cannot be performed on instruction. It is a symptom of concealment rather than a communicative act. That single property governs how such data can be gathered at all, and the consequences for corpus construction are taken up in §3.1.
+A micro-expression is a brief facial movement that leaks a felt emotion the person is actively trying to conceal [1]. It is best understood by contrast with an ordinary, or macro-, expression, on three axes rather than one. Macro-expressions typically last upwards of half a second, and may run to several seconds, and can be produced at will; micro-expressions, by contrast, are "characterized by short durations, involuntary generation and low intensity" [2]. The third axis is the one most easily overlooked: a micro-expression cannot be performed on instruction. It is a symptom of concealment rather than a communicative act. That single property governs how such data can be gathered at all, and the consequences for corpus construction are taken up in §3.1.
 
 ### 2.1.1 Duration: the first constraint
 
@@ -22,7 +22,7 @@ Duration alone would still leave a tractable problem if the movement were large.
 
 ### 2.1.3 Onset, apex and offset
 
-Because a micro-expression is a movement rather than a static configuration, it is conventionally described by three temporal landmarks. The **onset** is the frame at which the face begins to depart from its neutral baseline; the **offset** is the frame at which it returns to neutral; and the **apex** is the frame at which the movement is judged most intense — the point at which, as Ekman puts it, a "snapshot taken at [the] point when the expression is at its apex can easily convey the emotion message" (as reported by Li, Huang & Zhao [3]). All three landmarks are available in the corpus used here. This thesis, however, uses only the onset and offset frames to bound each clip passed into the pipeline; the apex frame is never read. This is a deliberate design choice rather than an oversight, and its consequences — for what information the model can and cannot see, and for how its results relate to apex-frame methods in the literature — are taken up in Chapters 3 and 4.
+Because a micro-expression is a movement rather than a static configuration, it is conventionally described by three temporal landmarks. The **onset** is the frame at which the face begins to depart from its neutral baseline; the **offset** is the frame at which it returns to neutral; and the **apex** is the frame at which the movement is judged most intense — the point at which, as Ekman puts it, a "snapshot taken at an [sic] point when the expression is at its apex can easily convey the emotion message" (as reported by Li, Huang & Zhao [3]). All three landmarks are available in the corpus used here. This thesis, however, uses only the onset and offset frames to bound each clip passed into the pipeline; the apex frame is never read. This is a deliberate design choice rather than an oversight, and its consequences — for what information the model can and cannot see, and for how its results relate to apex-frame methods in the literature — are taken up in Chapters 3 and 4.
 
 ### 2.1.4 Action units, and the label actually used
 
@@ -88,17 +88,17 @@ The magnification factor $\alpha$ trades sensitivity against artefact. A larger 
 
 ### 2.3.5 Departures from the textbook method in this implementation
 
-The magnifier used in this thesis (`Stage1_DataPipeline/evm_magnifier.py`) implements the mechanism above with a genuine four-level Laplacian pyramid — a $[1,4,6,4,1]/16$ blur kernel, downsample-by-two, upsample, subtract — followed by a coarsest Gaussian residual, matching §2.3.2 exactly. It departs from the amplitude-based method as described by Bai et al. [4] in four respects.
+The magnifier used in this thesis (`Stage1_DataPipeline/evm_magnifier.py`) implements the mechanism above with a genuine four-level Laplacian pyramid — a $[1,4,6,4,1]/16$ blur kernel, downsample-by-two, upsample, subtract — followed by a coarsest Gaussian residual, matching §2.3.2 exactly. It departs from amplitude-based magnification as originally formulated — the second and third points below concern properties of that original method rather than of the summary given by Bai et al. [4] in four respects.
 
 First, the temporal band-pass is an **ideal filter**: a hard binary mask applied directly to the discrete Fourier transform of each pixel's time series (via `scipy.fftpack`), rather than a Butterworth (IIR) filter. Frequencies inside $[\omega_{\text{low}}, \omega_{\text{high}}]$ pass with a gain of exactly one and everything else is zeroed, with no smooth roll-off at the band edges.
 
-Second, all four Laplacian bands are amplified by the **same scalar $\alpha$**; the published method reduces $\alpha$ at higher spatial frequencies to limit noise amplification, and no such damping is applied here. The coarsest residual is never filtered or amplified — it only seeds reconstruction.
+Second, all four Laplacian bands are amplified by the **same scalar $\alpha$**; the original formulation reduces $\alpha$ at higher spatial frequencies to limit noise amplification, and no such damping is applied here. The coarsest residual is never filtered or amplified — it only seeds reconstruction.
 
 Third, the implementation works directly on the greyscale intensity tensor, so there is no chromatic attenuation step.
 
 Fourth, and a property of pipeline ordering rather than of the magnifier itself: the calling code (`tensor_pipeline_manager.py`) resamples each clip to a fixed 33 frames *before* invoking the magnifier, and passes the corpus's nominal recording rate (200 fps) as the filter's frame-rate parameter regardless of the resampled sequence's true frame spacing. The consequence — a temporal filter whose frequency axis no longer matches the signal it is filtering — is analysed in §3.5.7, not here.
 
-The default operating point used throughout is $\alpha = 10$, a band of 5–25 Hz, and 4 pyramid levels; the amplified output is clipped to $[0,255]$ and quantised back to 8-bit before being handed to the downstream flow-and-strain extractor.
+The operating point this study runs at is given in §4.2.5; whatever the amplification factor, band and pyramid depth, the amplified output is clipped to $[0,255]$ and quantised back to 8-bit before being handed to the downstream flow-and-strain extractor.
 
 What that extractor does with the amplified sequence — and why motion, rather than appearance, is what the network is given — is the subject of §2.4.
 
