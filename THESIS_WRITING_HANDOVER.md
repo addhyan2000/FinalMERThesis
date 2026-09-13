@@ -2,7 +2,7 @@
 
 **Supersedes `HANDOVER_CH3_REFORMAT.md`**, which covered only the Chapter 3 reformatting and is kept for its detailed record of that task. `HANDOVER.md` remains the project-level document about the experiment itself; this one covers the *writing*.
 
-**Last updated:** 12 September 2026 (Chapter 1 completed; thesis body complete), after Chapter 5's three-way audit (numbers, citations, duplication), its corrections, and the Figure 5.4 / 5.8 regeneration; then Chapter 6, written subagent-driven with a scope check, two writers and a verification pass.
+**Last updated:** 13 September 2026. The thesis body is complete at six chapters. The most recent session verified **all 246 citations against the source PDFs**, thinned Chapter 3's results reporting, and made ~60 corrections; see §8.
 
 ---
 
@@ -10,15 +10,33 @@
 
 | Chapter | Words | State |
 |---|--:|---|
-| 1 — Introduction | 826 | ✅ complete, written last against Ch2–6 |
-| 2 — Background | 9,783 | ✅ complete, restructured into pipeline order |
-| 3 — Literature Review | 28,225 | ✅ complete; protocol-instability claim withdrawn, EVM-defect scope corrected |
-| 4 — Methodology | 9,600 | ✅ complete; §4.6.7 added, documenting the four excluded evaluations |
+| 1 — Introduction | 826 | ✅ complete, written last against Ch2–6; states no result |
+| 2 — Background | 9,593 | ✅ complete, pipeline order; citations verified |
+| 3 — Literature Review | 28,471 | ✅ complete; results reporting removed (§8), citations verified |
+| 4 — Methodology | 9,739 | ✅ complete; §4.6.7 added; preprocessing values moved here from Ch2 |
 | 5 — Results | 7,911 | ✅ complete, 9 figures; audited and corrected |
 | 6 — Conclusion | 2,018 | ✅ complete, 4 sections, zero citations |
-| **Body total** | **58,363** | |
+| **Body total** | **58,558** | |
 
 Single thesis-wide bibliography: 27 entries, all cited, no orphans.
+
+## 1a. How this project uses subagents
+
+`SUBAGENT_WORKFLOW.md` is the method and it works. Three stages: **scope check** (report-only, reads the code or the sources and reports facts) → **writer** (1–2 files, one at a time) → **verify** (scripts first; an agent only for the judgment half). Two files per writer, at most three agents dispatched at once, and never two writers on the same file.
+
+Three things that repeatedly earned their cost, and should stay in every brief:
+
+> Before writing "no concerns", run a check that would disprove it. Name that check in your report.
+
+> If any number in this brief is contradicted by the source data, do not write it — report the discrepancy instead.
+
+> This chapter is already fact-audited. Any factual change is a defect, **including one that looks like a correction**. If you believe a fact is wrong, report it; do not fix it.
+
+**Briefs are not a trusted source.** Across this project's sessions, agents have corrected their own briefs roughly a dozen times — including finding a promise the controller's inventory had missed, a distinct-value count that was off by one, and a premise about what `docs/` supports that was simply wrong. That is the instruction working, not the agents being difficult.
+
+**The controller does not delegate**: deciding what to build, ruling on a conflict, applying fixes after a review, and reading the finished prose.
+
+**On rate limits.** Opus has a weekly cap. When it is exhausted, Sonnet has separate capacity and does this work well — the §3.8/§3.9 citation audit and the whole-thesis coherence read were both done on Sonnet and both found real defects. A dead agent is not necessarily lost work: check the filesystem before re-dispatching.
 
 ## 2. Run these before doing anything
 
@@ -89,14 +107,58 @@ Component effects: transformer **+0.2173** (6/6 pairs positive), magnification *
 - **Chapter 2 was reordered into pipeline order.** Magnification (§2.3) now precedes motion representation (§2.4); it used to follow it, walking the reader through the pipeline backwards. Two sections were added: §2.2 (what the pipeline receives) and §2.5 (neural-network fundamentals, which the chapter entirely lacked before §2.6 opened on `Conv3d`).
 - **Chapter 2 had drifted into stating Chapter 4's decisions.** §2.7.2, §2.7.4, §2.7.7 and §2.8.5 gave specific hyper-parameter values and this study's own outcomes, because they were written before Chapter 4 existed. They now give mechanism only and defer. §2.8.5 was rewritten wholesale.
 - **Chapter 3 was reformatted** to the exemplars: numeric citations, unnumbered framing prose, bold sub-subheads, two figures, bridges, and §3.10 retitled as the chapter conclusion (number unchanged).
+- **Chapter 3 no longer reports Chapter 5's results, and Table 3.20 is gone** (§8). Do not reinstate either: the thesis now tells the reader in §1.2 that Chapter 5 reports the findings, and Chapter 3 keeps that promise.
+- **The preprocessing parameters live in §4.2.5, not Chapter 2** (§8). Chapter 2 explains the mechanism and defers the values, as §2.7 and §2.8 already did.
+- **Chapter 6 cites nothing and states no result beyond 0.7122 / 0.6659, once each in §6.1.** Both exemplar theses have citation-free conclusions. Chapter 1 states no result at all.
+- **Chapter 1 is registered FIRST in `THESIS_ORDER`** (`tools/bibliography.py`), because citation numbers are assigned by first appearance. Its two citations sit in the chapter frame inside `rebuild_complete.sh`, not in a section file — so a key cited *only* in a frame would be invisible to `bibliography.py check`'s orphan test. Worth knowing before writing another frame.
 - **§2.2's most valuable content is a negative** — this project performs no face detection, landmarking or registration. That is the corpus authors' work, described in §3.1.2. A reader who has just read §3.1.2 will otherwise assume otherwise.
 
 ## 7. Remaining work
 
-**Chapter 6 (Conclusion)** is well prepared. §5.8 already gathers the five limitations; `HANDOVER.md` §8 lists the follow-up experiments in priority order — save per-clip predictions to enable McNemar, rerun the CNN arm at 28×28 or 56×56, magnify before subsampling, multi-seed runs.
+**The thesis body is finished.** What is left is not writing:
 
-**Chapter 1 (Introduction)** is conventionally written last, and is now cheap: Chapters 2–5 fix the scope, the gap and the findings.
+- **Front matter has never been discussed**: abstract, acknowledgements, declaration, list of figures, list of tables, table of contents. Both exemplar theses carry all of these.
+- **`liong2019a` author order — needs your decision.** The bibliography lists Liong first, matching the arXiv preprint in `docs/`, but carries the *journal* venue (*Signal Processing: Image Communication*, 74, 129–139). MEGC 2019 (ref [26]) and Zhao et al. (ref [12]) both cite the published version with **Gan first**. If the journal record is authoritative, nine in-text "Liong et al." references in §3.3 become "Gan et al.". Check the actual SPIC record before changing anything.
+- **Other bibliographic details still unconfirmed**: venues and pages for entries whose `docs/` copies are preprints or author manuscripts; the Xu 2016/2017 discrepancy; the Delaunay paper's pagination (the `docs/` filename says 703–716, the running heads say 700–711, the bibliography says 698–711 — the bibliography is right, the filename is wrong).
+- **Deferred minors from the citation audit**, none of which changes a claim: unmarked elisions inside a few quotations in §3.3, §3.5 and §3.7; Table 3.11's caption does not record that Liong et al.'s Table 8 mixes 5×5 and 8×8 block settings across columns; §3.3.7 and §3.3.8 say "full factorial" where twelve of sixteen cells ran; `Table 3.5`'s CAS(ME)² ethnicity cell is an inference, not a figure qu2016 states.
+- **`docs/` housekeeping**: two copies of the Xia et al. STRCN paper (same paper, different file sizes); `liong2018` also appears twice (preprint and typeset).
 
-**Outstanding, needing manual confirmation** (from the Chapter 3 README): publication venues and page numbers for references whose `docs/` copies are preprints or author manuscripts; the Xu et al. 2016/2017 discrepancy; the Delaunay paper's pagination.
+---
 
-**Not recorded anywhere, and deliberately not invented:** GPU model, CPU, RAM, library versions. §4.7.1 states this as a gap in the record.
+## 8. The citation audit of 13 September 2026 — what it found, and why it matters
+
+Every one of the thesis's **246 citation instances** was opened against its source PDF. Nothing was fabricated and no key pointed at the wrong paper; every reproduced table matched cell for cell. But four Critical defects surfaced, and **three were the same shape**:
+
+> **A claim that "no study does X", where the cited paper does X in a named subsection.**
+
+- §3.5 said CAS(ME)²'s baseline "combines TIM with LBP-TOP". Qu et al. normalise to **120 frames by linear interpolation** under LOVO; TIM appears in that paper only in related work.
+- §3.5 said Ben et al. ran "the only controlled experiment" on interpolation length. Li et al. §5.2.1 is titled *"Effect of the interpolation length"*, sweeps 10–80 frames on three datasets under LOSO, and concludes the opposite (TIM10 best).
+- §3.9 said, in bold, "No ablation of focal loss against cross-entropy exists in the corpus." Zhao et al. §5.2 is titled *"The effect of focal loss"* and is exactly that ablation — cited two sentences before and after the claim.
+
+**If you add any gap claim to this thesis, search the cited paper for the thing you say is missing before writing it.** A gap is the one assertion that cannot be checked by reading the sentence.
+
+The fourth Critical: **the √2 strain divergence had no precedent.** §3.4.3 claimed STSTNet uses the three-term form. STSTNet's Eq. (6) is typographically broken — its shear term repeats ∂u, and its ½ sits *outside* the square. Repaired as the surrounding text implies, it is the **four**-term form. The divergence is real and correctly derived; only its claimed precedent was wrong.
+
+### Errors that recurred in more than one place
+
+Each of these was fixed once, then found again elsewhere. **When you fix one of these, sweep the whole thesis for the class, not the instance.**
+
+| Error | Instances found |
+|---|--:|
+| "five successive protocols → four winning configurations" asserted as a result | **5** (§3.10 ×2, §3.1 ×2, one more in §3.10's bullet list) |
+| EVM switch described as inert in "every earlier run" | **4** (it was inert only in the N=39 holdouts and the 5-fold pilot; runs C and D were clean) |
+| Stem compute share written as "97 %" | **4** (the figure is 96.6 %) |
+| Chapter 3 reporting Chapter 5's results | **9 passages + Table 3.20** |
+
+### Structural changes made
+
+- **Chapter 3 no longer reports Chapter 5's results.** Numeric findings were removed from §3.2, §3.3, §3.4, §3.6, §3.7 and §3.8, and **Table 3.20 was deleted** (it duplicated Table 5.9). Each passage now states what the ablation will measure and defers the number. Tables renumbered contiguously to 3.1–3.20. Only the literature's own figures remain.
+- **Preprocessing parameters moved to §4.2.5.** α = 10, the 5–25 Hz band, four pyramid levels and the Farnebäck settings had lived only in Chapter 2, while Table 3.7 assigned them to Chapter 4 and §4.2.5 deferred to Chapter 2 — so the Methodology did not contain the values needed to reproduce the study.
+- **Declared divergences added**: the 5–25 Hz band is the one Bai et al. *rejected* as noisy (they narrowed to 15–25); MEGC's three-class scheme is two per-corpus footnotes, not one rule, and this thesis follows MEGC's **SAMM** Negative mapping rather than its CASME II one.
+
+### Verification discipline that paid off
+
+- **Check a finding before acting on it.** One reported Critical — wrong epochs and wrong winner in §4.6.7's Table 4.4 — was a **false positive**: two different N=52 holdout runs exist, one in the working tree at 5 epochs and one on branch `new_gui_loso_holdout` at 50. The table describes the branch run and is correct. Roughly two findings in twenty-five are wrong in either direction.
+- **A grep is not a check.** Two false negatives this session came from malformed greps: one required a sentence-ending period and so missed a table row, causing a correct cross-reference to be "fixed" into a worse one. Confirm absence by reading.
+- **Render the page when the text layer looks odd.** The STSTNet equation defect was only settled by rendering the PDF page as an image.
+- **`tools/ch3_check.py` gates section-reference *existence*, not content.** A reference can resolve to a real heading and still misdescribe it — that class needs a reader. The tool now covers all six chapters (it originally scanned only Ch2–Ch3; three separate agents found three separate gaps in one fix).
