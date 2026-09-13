@@ -17,9 +17,9 @@ Draft chapter for the MSc thesis *Micro-Expression Recognition on CASME-II*.
 | `08_3.8_Transformer.md` | 3.8 Temporal encoder | D |
 | `09_3.9_Class_Imbalance.md` | 3.9 Training under class imbalance | constant |
 | `10_3.10_Synthesis_and_Gap.md` | 3.10 Synthesis and research gap | — |
-| `11_References.md` | **the chapter's single reference list** (27 entries) | — |
+| *(references)* | the thesis-wide `BIBLIOGRAPHY.md` at the repo root (27 entries) | — |
 
-The section files carry no reference lists of their own — every citation resolves against `11_References.md`, which the rebuild script appends to the assembled chapter.
+The section files carry no reference lists of their own — every citation is written as `[@key]` and resolved against the thesis-wide `BIBLIOGRAPHY.md` by `tools/bibliography.py`, which the rebuild script calls.
 
 ## Editing
 
@@ -33,10 +33,10 @@ The script strips each section's per-file heading and concatenates from `## 3.` 
 
 ## Conventions used throughout
 
-- **Written as one continuous chapter, not ten standalone sections.** A fact is established once, in the section that owns it, and cross-referenced thereafter. The canonical homes are: the corpus and its statistics §3.1.3 and §3.1.7; the always-Negative floor and the LOSO protocol §3.1.4; the metric definition (pooled macro F1 ≡ MEGC's UF1) §3.1.6; flow as an analytical feature extractor §3.3.7; strain as a hand-specified differential operator §3.4.7; the 3D-CNN's −0.031 and its 96.6 % compute share §3.6; the transformer's +0.217 §3.8; the imbalance treatment §3.9.
-- **One reference list.** `11_References.md` holds all 27 sources. Works cited only *inside* those papers are attributed in the text to the reviewed source that reports them and are listed in that file's preamble rather than as entries.
+- **Written as one continuous chapter, not ten standalone sections.** A fact is established once, in the section that owns it, and cross-referenced thereafter. The canonical homes are: the corpus and its statistics §3.1.3 and §3.1.7; the always-Negative floor and the LOSO protocol §3.1.4; the metric definition (pooled macro F1 ≡ MEGC's UF1) §3.1.6; flow as an analytical feature extractor §3.3.7; strain as a hand-specified differential operator §3.4.7; the 3D-CNN's compute dominance §3.6; the temporal encoder §3.8; the imbalance treatment §3.9.
+- **One reference list.** The repo-root `BIBLIOGRAPHY.md` holds all 27 sources. Works cited only *inside* those papers are attributed in the text to the reviewed source that reports them and are listed in that file's preamble rather than as entries.
 - **Structure.** Each section runs: what the technique addresses → how it works → the published evidence → its limitations → implications for this thesis → a closing gap statement. §3.10 consolidates the ten gap statements.
-- **Declared divergences.** Wherever the implemented system departs from the literature it draws on, the section says so. All ten are consolidated in Table 3.20 of §3.10.
+- **Declared divergences.** Wherever the implemented system departs from the literature it draws on, the section says so. All twelve are consolidated in Table 3.20 of §3.10.
 - **Excluded topics.** Grad-CAM++ auditing and adversarial identity disentanglement are in the project's reading list but not in the implemented system, so they are not reviewed (§3.9 scope note).
 
 ## Verification status
