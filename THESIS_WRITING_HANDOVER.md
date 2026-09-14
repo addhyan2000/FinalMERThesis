@@ -75,7 +75,7 @@ Each chapter has `rebuild_complete.sh`. It concatenates the numbered section fil
 ## 4. Facts that are easy to get wrong
 
 - **Pooled macro F1 = mean of the `per_class_f1` array.** The code never stores it. The stored `macro_f1` key is mean-of-folds and is **rejected** — structurally capped at 0.6267 by fold composition. `micro_f1` is pooled accuracy; the `accuracy` key is mean-of-folds and inflates `config_8` by 6.3 points.
-- **Batch size is 4, not 2.** The config defaults to 2; `tools/run_ablation_gpu.py` overrides to 4, and 4 produced every result.
+- **Batch size is 8, not 4 and not 2.** The config defaults to 2 and `tools/run_ablation_gpu.py` hardcodes 4, but neither produced the results. The sweep was launched from the GUI: `gui_settings.json` records `"ablation_batch_size": "8"`, five project documents record the run command with `--batch_size 8`, and that command calls `run_ablation_experiments.py` directly, bypassing the GPU runner entirely. (The runner would not have won anyway — it puts `*sys.argv[1:]` after its own `--batch_size 4`, so a downstream value overrides it.) No result file stores the batch size.
 - **The code builds 16 configurations, not 12.** `is_valid()` rejects SimAM-without-CNN at run time. The "8-cell" and "12-cell" docstrings are both stale.
 - **The 48.9/50.6 GPU-hour figure is an extrapolation**, not a measurement: stored single-fold time × 25, and only the *last* fold's timing survives the loop.
 - **Two model implementations exist.** `Ablation_Study/models.py::AblationMERModel` produced every result. `Stage2_Architecture/models/hybrid_model.py` is an earlier fixed prototype with no toggles.
