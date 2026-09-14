@@ -1,0 +1,280 @@
+% =============================================================================
+% Thesis bibliography — micro-expression recognition on CASME II
+% =============================================================================
+% Generated from BIBLIOGRAPHY.md. Keys match the citation keys used throughout
+% the chapter source, so \cite{yan2014} etc. resolve directly.
+%
+% Every entry here corresponds to a paper held in the project's docs/ folder.
+% Works cited only *inside* those papers (Ekman, FACS, Wu et al. on EVM,
+% Farneback, TV-L1, Pfister TIM, Lin et al. focal loss, SE/CBAM/ECA, Vaswani,
+% VGG/ResNet/DenseNet) are attributed in the text to the reviewed paper that
+% reports them and deliberately carry no entry here.
+%
+% Capitals inside titles are brace-protected so the numeric styles (unsrt)
+% do not lowercase them. Non-ASCII names use LaTeX escapes for BibTeX safety.
+% =============================================================================
+
+
+% ------------------------------------------------------------------------
+%     CORPORA AND BENCHMARKS
+% ------------------------------------------------------------------------
+
+@article{yan2014,
+	author  = "Yan, Wen-Jing and Li, Xiaobai and Wang, Su-Jing and Zhao, Guoying and Liu, Yong-Jin and Chen, Yu-Hsin and Fu, Xiaolan",
+	title   = "{CASME II}: An Improved Spontaneous Micro-Expression Database and the Baseline Evaluation",
+	journal = "PLoS ONE",
+	volume  = "9",
+	number  = "1",
+	pages   = "e86041",
+	year    = "2014"
+}
+
+@inproceedings{liX2013,
+	author    = "Li, Xiaobai and Pfister, Tomas and Huang, Xiaohua and Zhao, Guoying and Pietik{\"a}inen, Matti",
+	title     = "A Spontaneous Micro-Expression Database: Inducement, Collection and Baseline",
+	booktitle = "10th {IEEE} International Conference on Automatic Face and Gesture Recognition ({FG} 2013)",
+	year      = "2013"
+}
+
+@article{davison2018,
+	author  = "Davison, Adrian K. and Lansley, Cliff and Costen, Nicholas and Tan, Kevin and Yap, Moi Hoon",
+	title   = "{SAMM}: A Spontaneous Micro-Facial Movement Dataset",
+	journal = "{IEEE} Transactions on Affective Computing",
+	volume  = "9",
+	number  = "1",
+	pages   = "116--129",
+	year    = "2018"
+}
+
+@inproceedings{qu2016,
+	author    = "Qu, Fangbing and Wang, Su-Jing and Yan, Wen-Jing and Fu, Xiaolan",
+	title     = "{CAS(ME)}$^2$: A Database of Spontaneous Macro-Expressions and Micro-Expressions",
+	booktitle = "Human-Computer Interaction, {HCI} 2016, Part {III}",
+	editor    = "Kurosu, Masaaki",
+	series    = "Lecture Notes in Computer Science",
+	volume    = "9733",
+	pages     = "48--59",
+	publisher = "Springer",
+	year      = "2016"
+}
+
+@inproceedings{see2019,
+	author    = "See, John and Yap, Moi Hoon and Li, Jingting and Hong, Xiaopeng and Wang, Su-Jing",
+	title     = "{MEGC} 2019 --- The Second Facial Micro-Expressions Grand Challenge",
+	booktitle = "14th {IEEE} International Conference on Automatic Face and Gesture Recognition ({FG} 2019)",
+	year      = "2019"
+}
+
+
+% ------------------------------------------------------------------------
+%     SURVEYS AND COMPARATIVE STUDIES
+% ------------------------------------------------------------------------
+
+@article{liX2018,
+	author  = "Li, Xiaobai and Hong, Xiaopeng and Moilanen, Antti and Huang, Xiaohua and Pfister, Tomas and Zhao, Guoying and Pietik{\"a}inen, Matti",
+	title   = "Towards Reading Hidden Emotions: A Comparative Study of Spontaneous Micro-Expression Spotting and Recognition Methods",
+	journal = "{IEEE} Transactions on Affective Computing",
+	volume  = "9",
+	number  = "4",
+	pages   = "563--577",
+	year    = "2018"
+}
+
+@article{ben2021,
+	author  = "Ben, Xianye and Ren, Yi and Zhang, Junping and Wang, Su-Jing and Kpalma, Kidiyo and Meng, Weixiao and Liu, Yong-Jin",
+	title   = "Video-Based Facial Micro-Expression Analysis: A Survey of Datasets, Features and Algorithms",
+	journal = "{IEEE} Transactions on Pattern Analysis and Machine Intelligence",
+	doi     = "10.1109/TPAMI.2021.3067464",
+	year    = "2021"
+}
+
+
+% ------------------------------------------------------------------------
+%     HAND-CRAFTED FEATURES, OPTICAL FLOW AND OPTICAL STRAIN
+% ------------------------------------------------------------------------
+
+@article{zhaoG2007,
+	author  = "Zhao, Guoying and Pietik{\"a}inen, Matti",
+	title   = "Dynamic Texture Recognition Using Local Binary Patterns with an Application to Facial Expressions",
+	journal = "{IEEE} Transactions on Pattern Analysis and Machine Intelligence",
+	volume  = "29",
+	number  = "6",
+	pages   = "915--928",
+	year    = "2007"
+}
+
+@inproceedings{shreve2011,
+	author    = "Shreve, Matthew and Godavarthy, Sridhar and Goldgof, Dmitry and Sarkar, Sudeep",
+	title     = "Macro- and Micro-Expression Spotting in Long Videos Using Spatio-Temporal Strain",
+	booktitle = "{IEEE} International Conference on Automatic Face and Gesture Recognition ({FG} 2011)",
+	pages     = "51--56",
+	year      = "2011"
+}
+
+@inproceedings{liong2014a,
+	author    = "Liong, Sze-Teng and Phan, Raphael C.-W. and See, John and Oh, Yee-Hui and Wong, KokSheik",
+	title     = "Optical Strain Based Recognition of Subtle Emotions",
+	booktitle = "International Symposium on Intelligent Signal Processing and Communication Systems ({ISPACS})",
+	year      = "2014"
+}
+
+@inproceedings{liong2014b,
+	author    = "Liong, Sze-Teng and See, John and Phan, Raphael C.-W. and Le Ngo, Anh Cat and Oh, Yee-Hui and Wong, KokSheik",
+	title     = "Subtle Expression Recognition Using Optical Strain Weighted Features",
+	booktitle = "Asian Conference on Computer Vision ({ACCV}) Workshops",
+	year      = "2014"
+}
+
+@article{liong2016,
+	author  = "Liong, Sze-Teng and See, John and Phan, Raphael C.-W. and Oh, Yee-Hui and Le Ngo, Anh Cat and Wong, KokSheik and Tan, Su-Wei",
+	title   = "Spontaneous Subtle Expression Detection and Recognition Based on Facial Strain",
+	journal = "Signal Processing: Image Communication",
+	volume  = "47",
+	pages   = "170--182",
+	year    = "2016"
+}
+
+@inproceedings{lu2015,
+	author    = "Lu, Zhaoyu and Luo, Ziqi and Zheng, Huicheng and Chen, Jikai and Li, Weihong",
+	title     = "A Delaunay-Based Temporal Coding Model for Micro-Expression Recognition",
+	booktitle = "{ACCV} 2014 Workshops, Part {II}",
+	editor    = "Jawahar, C. V. and Shan, Shiguang",
+	series    = "Lecture Notes in Computer Science",
+	volume    = "9009",
+	pages     = "698--711",
+	publisher = "Springer",
+	year      = "2015"
+}
+
+@article{xu2017,
+	author  = "Xu, Feng and Zhang, Junping and Wang, James Z.",
+	title   = "Microexpression Identification and Categorization Using a Facial Dynamics Map",
+	journal = "{IEEE} Transactions on Affective Computing",
+	volume  = "8",
+	number  = "2",
+	pages   = "254--267",
+	year    = "2017"
+}
+
+
+% ------------------------------------------------------------------------
+%     APEX-FRAME AND MOTION-MAGNIFICATION APPROACHES
+% ------------------------------------------------------------------------
+
+@article{liong2018,
+	author  = "Liong, Sze-Teng and See, John and Wong, KokSheik and Phan, Raphael C.-W.",
+	title   = "Less Is More: Micro-Expression Recognition from Video Using Apex Frame",
+	journal = "Signal Processing: Image Communication",
+	volume  = "62",
+	pages   = "82--92",
+	year    = "2018"
+}
+
+@article{liong2019a,
+	author  = "Liong, Sze-Teng and Gan, Y. S. and Yau, Wei-Chuen and Huang, Yen-Chang and Tan, Lit Ken",
+	title   = "{OFF-ApexNet} on Micro-Expression Recognition System",
+	journal = "Signal Processing: Image Communication",
+	volume  = "74",
+	pages   = "129--139",
+	year    = "2019"
+}
+
+@inproceedings{liY2018,
+	author    = "Li, Yante and Huang, Xiaohua and Zhao, Guoying",
+	title     = "Can Micro-Expression Be Recognized Based on Single Apex Frame?",
+	booktitle = "{IEEE} International Conference on Image Processing ({ICIP} 2018)",
+	year      = "2018"
+}
+
+@article{liY2021,
+	author  = "Li, Yante and Huang, Xiaohua and Zhao, Guoying",
+	title   = "Joint Local and Global Information Learning with Single Apex Frame Detection for Micro-Expression Recognition",
+	journal = "{IEEE} Transactions on Image Processing",
+	volume  = "30",
+	pages   = "249--263",
+	year    = "2021"
+}
+
+@inproceedings{bai2021,
+	author    = "Bai, Mei and Goecke, Roland and Herath, Damith",
+	title     = "Micro-Expression Recognition Based on Video Motion Magnification and Pre-Trained Neural Network",
+	booktitle = "{IEEE} International Conference on Image Processing ({ICIP} 2021)",
+	pages     = "549--553",
+	year      = "2021"
+}
+
+
+% ------------------------------------------------------------------------
+%     DEEP ARCHITECTURES: CNN, RECURRENT AND TRANSFORMER
+% ------------------------------------------------------------------------
+
+@inproceedings{liong2019b,
+	author    = "Liong, Sze-Teng and Gan, Y. S. and See, John and Khor, Huai-Qian and Huang, Yen-Chang",
+	title     = "Shallow Triple Stream Three-Dimensional {CNN} ({STSTNet}) for Micro-Expression Recognition",
+	booktitle = "14th {IEEE} International Conference on Automatic Face and Gesture Recognition ({FG} 2019)",
+	year      = "2019"
+}
+
+@inproceedings{liu2019,
+	author    = "Liu, Yuchi and Du, Heming and Zheng, Liang and Gedeon, Tom",
+	title     = "A Neural Micro-Expression Recognizer",
+	booktitle = "14th {IEEE} International Conference on Automatic Face and Gesture Recognition ({FG} 2019)",
+	year      = "2019"
+}
+
+@article{zhaoS2021,
+	author  = "Zhao, Sirui and Tao, Hanqing and Zhang, Yangsong and Xu, Tong and Zhang, Kun and Hao, Zhongkai and Chen, Enhong",
+	title   = "A Two-Stage {3D} {CNN} Based Learning Method for Spontaneous Micro-Expression Recognition",
+	journal = "Neurocomputing",
+	volume  = "448",
+	pages   = "276--289",
+	year    = "2021"
+}
+
+@article{xia2020a,
+	author  = "Xia, Zhaoqiang and Hong, Xiaopeng and Gao, Xingyu and Feng, Xiaoyi and Zhao, Guoying",
+	title   = "Spatiotemporal Recurrent Convolutional Networks for Recognizing Spontaneous Micro-Expressions",
+	journal = "{IEEE} Transactions on Multimedia",
+	volume  = "22",
+	number  = "3",
+	pages   = "626--640",
+	year    = "2020"
+}
+
+@article{xia2020b,
+	author  = "Xia, Zhaoqiang and Peng, Wei and Khor, Huai-Qian and Feng, Xiaoyi and Zhao, Guoying",
+	title   = "Revealing the Invisible with Model and Data Shrinking for Composite-Database Micro-Expression Recognition",
+	journal = "{IEEE} Transactions on Image Processing",
+	volume  = "29",
+	pages   = "8590--8605",
+	year    = "2020"
+}
+
+@article{zhang2022,
+	author  = "Zhang, Liangfei and Hong, Xiaopeng and Arandjelovi{\'c}, Ognjen and Zhao, Guoying",
+	title   = "Short and Long Range Relation Based Spatio-Temporal Transformer for Micro-Expression Recognition",
+	journal = "{IEEE} Transactions on Affective Computing",
+	volume  = "13",
+	number  = "4",
+	pages   = "1973--1985",
+	year    = "2022"
+}
+
+@inproceedings{dosovitskiy2021,
+	author    = "Dosovitskiy, Alexey and Beyer, Lucas and Kolesnikov, Alexander and Weissenborn, Dirk and Zhai, Xiaohua and Unterthiner, Thomas and Dehghani, Mostafa and Minderer, Matthias and Heigold, Georg and Gelly, Sylvain and Uszkoreit, Jakob and Houlsby, Neil",
+	title     = "An Image Is Worth {16} $\times$ {16} Words: Transformers for Image Recognition at Scale",
+	booktitle = "International Conference on Learning Representations ({ICLR})",
+	year      = "2021"
+}
+
+
+% ------------------------------------------------------------------------
+%     ATTENTION
+% ------------------------------------------------------------------------
+
+@inproceedings{yang2021,
+	author    = "Yang, Lingxiao and Zhang, Ru-Yuan and Li, Lida and Xie, Xiaohua",
+	title     = "{SimAM}: A Simple, Parameter-Free Attention Module for Convolutional Neural Networks",
+	booktitle = "38th International Conference on Machine Learning ({ICML})",
+	year      = "2021"
+}
