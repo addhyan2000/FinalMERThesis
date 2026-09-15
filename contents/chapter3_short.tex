@@ -1,0 +1,364 @@
+% =============================================================================
+% Chapter 3 - Literature Review  (CONDENSED REWRITE)
+% =============================================================================
+% Replaces contents/chapter3.tex. Targets ~50% of that file's length while
+% preserving every load-bearing fact, every citation key, and the subsection
+% numbering Chapter 2 refers to by number (Sections 3.1.2, 3.1.6, 3.1.8, 3.9).
+%
+% Conventions:
+%   * No sentence points the reader at another chapter. Facts previously
+%     delivered as "Chapter N will ..." are stated as commitments or declared
+%     limitations of the study in their own right.
+%   * Enumerated prose has been moved into tables, so a skimming examiner can
+%     read the argument off the tables.
+%   * Every float carries a short \caption[...] form for the List of Figures
+%     and List of Tables.
+%
+% Parts completed: 1 (S3.1), 2 (S3.2).
+% =============================================================================
+
+\chapter{Literature Review}
+\label{ch:literature}
+
+This chapter reviews the literature bearing on each component of the recognition pipeline evaluated in this thesis: the corpus on which every experiment is run, the four techniques placed under ablation, the three input transformations they operate on, and the training regime held constant across all of them.
+
+It is organised as a single continuous argument rather than as ten independent surveys: a fact is established once, in the section that owns it, and cross-referenced thereafter. Each section runs from what the technique addresses, through how it works and what the published evidence shows, to its limitations and the implications for this thesis, closing with the gap and how this work differs. Two claims recur --- that on a corpus of 156 clips several decisions usually presented as modelling choices are in fact forced by properties of the data, and that several results usually attributed to architecture are attributable to the evaluation protocol. \autoref{sec:synthesis-and-gap} consolidates the nine closing statements into a single research gap and collects every declared departure from the reviewed methods.
+
+
+% =============================================================================
+\section{The Evaluation Corpus: CASME II and the Spontaneous Micro-Expression Benchmark Family}
+\label{sec:corpus}
+% =============================================================================
+
+This section covers the corpus literature only --- the papers that introduce, specify or standardise evaluation on the database used throughout this thesis. It is treated first because on a database of this size several design decisions usually presented as modelling choices are \textit{forced} by properties of the data.
+
+\subsection{Why a dedicated spontaneous corpus was necessary}
+\label{sec:why-spontaneous}
+
+Automatic facial expression recognition matured on large corpora of \textit{posed} expressions --- CK+, MUG, MMI, JAFFE and Multi-PIE --- reporting accuracies above 90\,\% on the six basic posed emotions by the early 2010s~\cite{yan2014}. Micro-expression research could not follow that path: as \autoref{sec:phenomenon} establishes, a micro-expression is involuntary and cannot be \textit{performed} on instruction. Yan et al.~\cite{yan2014} review a pre-2013 landscape of only four micro-expression databases, of which only two were spontaneous (\autoref{tab:spontaneous-corpora}). Two problems in it motivated CASME II directly.
+
+The first is \textbf{construct validity}. Yan et al.~\cite{yan2014} and Li et al.~\cite{liX2013} both note that posed ``micro-expressions'', produced deliberately on instruction, differ systematically from spontaneous ones --- Li et al.~\cite{liX2013} further observing that USF-HD adopted a 2/3-second duration criterion longer than the definitional upper bound of \autoref{sec:phenomenon}. A system trained on posed data is therefore not demonstrably a micro-expression recogniser; it may be a recogniser of fast deliberate movement.
+
+The second is \textbf{acquisition quality}. Defined jointly by very short duration and very low intensity, the phenomenon sits close to the noise floor of ordinary video: Yan et al.~\cite{yan2014} argue that CASME's 60~fps coarsely samples a movement lasting a fraction of a second --- while marking the benefit of higher rates as unresolved --- and that flicker under alternating-current lighting contaminated earlier recordings. Elicitation was a third difficulty: high-stakes deception paradigms produced samples heavily contaminated by conversational and other emotion-irrelevant movement~\cite{yan2014}, and the paradigm that proved workable, which CASME II adopts, is to have participants watch high-arousal video episodes while attempting to keep the face neutral~\cite{liX2013}.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{l c c c c c c c}
+		\hline
+		\textbf{Corpus} & \textbf{Subj.} & \textbf{Micro samples} & \textbf{fps} & \textbf{Facial res.} & \textbf{Spont.} & \textbf{FACS} & \textbf{Classes} \\
+		\hline
+		\multicolumn{8}{l}{\textit{The pre-CASME II landscape, reproduced from Yan et al.~\cite{yan2014} (Table 1)}} \\
+		USF-HD~\cite{shreve2011}                       & ---      & 100 & 30  & ---              & No  & No  & 6 \\
+		Polikovsky et al.\textsuperscript{\textdagger} & 10       & 42  & 200 & ---              & No  & No  & 6 \\
+		SMIC~\cite{liX2013}                            & 16 valid & 164 & 100 & 190 $\times$ 230 & Yes & No  & 3 \\
+		CASME (2013)\textsuperscript{\textdagger}      & 19 valid & 195 & 60  & 150 $\times$ 190 & Yes & Yes & 7 \\
+		\hline
+		\multicolumn{8}{l}{\textit{The spontaneous corpora that define the current context}} \\
+		\textbf{CASME II}~\cite{yan2014} & \textbf{26 valid} & \textbf{247 / 255} & \textbf{200} & \textbf{280 $\times$ 340} & \textbf{Yes} & \textbf{Yes} & \textbf{5 (7 raw)} \\
+		SAMM~\cite{davison2018}          & 32 & 159             & 200 & 400 $\times$ 400 & Yes & Yes & 7 \\
+		CAS(ME)$^2$~\cite{qu2016}        & 22 & 53 (+250 macro) & 30  & ---              & Yes & Yes & 4 \\
+		\hline
+		\multicolumn{8}{l}{\textit{Ethnicities / mean age (SD):} SMIC 3 / 26.7 \quad CASME 1 / 22.03 (1.60) \quad \textbf{CASME II 1 / 22.03 (1.60)}} \\
+		\multicolumn{8}{l}{\quad SAMM 13 / 33.24 (11.32) \quad CAS(ME)$^2$ 1\textsuperscript{*} / 22.59 (2.20)} \\
+		\hline
+	\end{tabular}
+	\caption[Posed and spontaneous micro-expression corpora]{Posed and spontaneous micro-expression corpora, compiled from Yan et al.~\cite{yan2014} (Table 1), Davison et al.~\cite{davison2018} (Table 1), Li et al.~\cite{liX2013} and Qu et al.~\cite{qu2016}. \textdagger{}~Described in Yan et al.; the primary papers lie outside the review corpus and are not cited separately. \textsuperscript{*}~Inferred from the recruitment description; Qu et al. do not state it. SMIC's demographic figures are those of all 20 recruited participants; the 16 who produced usable clips have a mean age of 28.1 and span two ethnicities.}
+	\label{tab:spontaneous-corpora}
+\end{table}
+
+\subsection{CASME II: construction, apparatus, and annotation}
+\label{sec:casme2-construction}
+
+CASME II~\cite{yan2014} is the corpus on which every experiment in this thesis is performed, and several of its specifics propagate into the data pipeline used here.
+
+\textbf{Participants and apparatus.} Thirty-five participants were recruited, mean age 22.03 years (SD = 1.60), and watched high-valence video episodes pre-rated by an independent panel of twenty raters, under instruction to suppress all facial movement. Recording sustained \textbf{200 fps} at 640~$\times$~480 with no inter-frame compression, under four LED lamps with umbrella reflectors giving steady flicker-free illumination --- a deliberate correction of the artefacts observed in SMIC. The facial region is approximately \textbf{280 $\times$ 340 pixels}, over three times CASME's facial area and roughly double SMIC's.
+
+\textbf{Selection and annotation.} From nearly 3,000 elicited movements a small subset was retained, very subtle movements being discarded because their onset and offset frames could not be reliably located. Each retained sample carries onset and offset frame indices, Facial Action Coding System (FACS) action-unit labels from two independent coders with disagreements arbitrated by discussion, and an emotion label. Yan et al.~\cite{yan2014} argue against forcing spontaneous micro-expressions into the six basic categories, since a single action unit is frequently ambiguous --- AU4 (brow lowerer) may indicate disgust, anger, attention or tension --- and assign the emotion label from a \textit{combination} of the coded AUs, the participant's self-report, and the emotional content of the eliciting episode.
+
+\textbf{Preprocessing in the original release.} The baseline applies a three-step normalisation from which this thesis departs: a frontal neutral model face is chosen; 68 Active Shape Model landmarks are detected on the \textit{first frame only} of each clip and registered to the model face by a Local Weighted Mean transform; that transform is applied unchanged to every frame, and the face is cropped by eye position. Yan et al.~\cite{yan2014} justify landmarking only the first frame on two grounds --- that rigid head motion within so short a window is negligible, and that per-frame ASM landmarks are unstable enough to introduce jitter where the face did not in fact move.
+
+\textbf{A note on sample count.} The published paper reports \textbf{247} micro-expressions from 26 valid participants; the coding file distributed with the released database contains \textbf{255}. This discrepancy, a consequence of post-publication revision of the coding, is rarely acknowledged and is one reason sample counts reported for ``CASME II'' vary between papers. The present work uses the released 255-sample coding.
+
+\subsection{The label taxonomy, and the sparsity problem it creates}
+\label{sec:label-taxonomy}
+
+Yan et al.~\cite{yan2014} provide five main emotion categories with AU-based criteria, and are candid about the resulting imbalance: ``some types of facial expressions are difficult to elicit in laboratory situations, thus the samples in different categories distributed unequally.'' The released coding is finer-grained still, exposing seven raw labels; counting directly from the label table used in this thesis (\texttt{Processed\_Data/master\_thesis\_labels.csv}, 255 rows) gives the middle columns of \autoref{tab:casme2-labels}.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{l l c c l c}
+		\hline
+		\multicolumn{3}{c}{\textbf{Five categories, as published}} & \multicolumn{2}{c}{\textbf{Released coding (255)}} & \textbf{Grouped} \\
+		\textbf{Emotion} & \textbf{AU criterion} & \textbf{N} & \textbf{N} & \textbf{Raw label} & \textbf{class} \\
+		\hline
+		Happiness  & AU6 or AU12                           & 33  & 32 & happiness  & Positive \\
+		Disgust    & AU9, AU10, or AU4+AU7                 & 60  & 63 & disgust    & Negative \\
+		Surprise   & AU1+2, AU25, or AU2                   & 25  & 25 & surprise   & Surprise \\
+		Repression & AU15 or AU17, alone or combined       & 27  & 27 & repression & Negative \\
+		Others     & other emotion-related facial movement & 102 & 99 & others     & \textit{discarded} \\
+		---        & ---                                   & --- & 7  & sadness    & Negative \\
+		---        & ---                                   & --- & 2  & fear       & Negative \\
+		\hline
+		\multicolumn{6}{l}{\textbf{Working set:} Negative $63+27+7+2 = $ \textbf{99}; Positive \textbf{32}; Surprise \textbf{25}; \textbf{N = 156}} \\
+		\hline
+	\end{tabular}
+	\caption[CASME II label taxonomy and the three-class working set]{The CASME II label taxonomy at three granularities: the five published categories with their AU criteria and frequencies, after Yan et al.~\cite{yan2014} (Table 3); the seven raw labels of the released coding as parsed for this thesis; and the three-class valence grouping that yields the 156-clip working set used throughout.}
+	\label{tab:casme2-labels}
+\end{table}
+
+\textbf{Seven-class classification is not viable on this corpus.} Fear is represented by two clips in the entire database and sadness by seven. Under any subject-disjoint protocol --- and \autoref{sec:original-baseline} shows subject-disjointness has been the norm for this benchmark since its introduction --- a two-clip class cannot be meaningfully trained or tested: a fold either contains the class or does not, and per-class metrics degenerate.
+
+The field's response has been to group by affective valence. The convention originates with SMIC, released with exactly three classes --- positive, negative, surprise~\cite{liX2013} --- and was carried into cross-corpus work by the Second Facial Micro-Expression Grand Challenge (MEGC 2019)~\cite{see2019}. MEGC states the scheme twice and not identically: as a challenge-wide rule in prose, with Negative covering Repression, Anger, Contempt, Disgust, Fear and Sadness, and again as per-corpus footnotes under its sample table, where CASME II's Negative narrows to Disgust and Repression alone. \autoref{tab:casme2-labels} follows the challenge-wide rule.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{fig3_1_dataset.png}
+	\caption[Composition of CASME II]{Composition of CASME II. Left: all 255 released clips by raw label, with the excluded ``others'' category in grey. Right: the three-class pool of 156 clips used throughout this thesis, in the ratio 99 : 32 : 25; the grey ``others'' bar is shown again for scale and is not part of the pool.}
+	\label{fig:dataset-composition}
+\end{figure}
+
+\textbf{A declared divergence from the MEGC convention.} MEGC 2019 reports the CASME II portion of its composite database as \textbf{145} samples and footnotes that ``Negative class of CASME II: Disgust and Repression''~\cite{see2019} --- building its subset from the paper's \textit{five-category} release, in which sadness and fear are absorbed into ``others''. This thesis uses the released seven-label coding and assigns sadness and fear to Negative, following the mapping MEGC gives for \textbf{SAMM} rather than the one it gives for CASME II. The consequence is an \textbf{eleven-clip} difference: N = 156 against N = 145, with a Negative class of 99 rather than 88. Nine of the eleven are the sadness (7) and fear (2) clips the seven-label coding exposes; the remaining two are unaccounted for, since disgust and repression together number 90 in the released coding against the 88 the challenge reports --- a residual noted rather than resolved. The direction is mild: the nine added clips are all in the majority class and drawn from the categories the coders found hardest to assign, so if anything they make the present task marginally harder than the challenge's.
+
+The residual imbalance is severe in either case --- 99 : 32 : 25, roughly 4 : 1.3 : 1 --- and everything in \autoref{sec:corpus-threats} concerning metric choice, sampling and loss follows from it.
+
+\subsection{The original baseline, and what it does and does not establish}
+\label{sec:original-baseline}
+
+Yan et al.~\cite{yan2014} provide a baseline using Local Binary Patterns from Three Orthogonal Planes (LBP-TOP)~\cite{zhaoG2007} with a Support Vector Machine. LBP-TOP extends the static LBP operator by extracting codes on the XY, XT and YT planes of the video volume and concatenating the three histograms, so that the XT and YT planes encode dynamic rather than static texture. The baseline divides the face into 5~$\times$~5 blocks, sets $P = 4$ neighbouring points, and sweeps the spatial radii $R_X, R_Y \in \{1,2,3,4\}$ and temporal radius $R_T \in \{2,3,4\}$; $R_T = 1$ is deliberately excluded because at 200~fps the change between adjacent frames is negligible --- an early acknowledgement that a high sampling rate is not automatically an advantage. Five-class accuracies under \textbf{leave-one-subject-out cross-validation} cluster in the high fifties to low sixties, the best configuration ($R_X = R_Y = 1$, $R_T = 4$) reaching \textbf{63.41\,\%}.
+
+Three observations matter here.
+
+\textbf{First, leave-one-subject-out is native to this benchmark.} It is not a stricter protocol adopted later by cautious authors; it is the protocol of the paper that released the corpus. Any evaluation reporting a single random train/test split departs from the benchmark's own convention.
+
+\textbf{Second, the baseline is reported as accuracy alone}, with no per-class or macro-averaged score. On a five-class problem in which ``others'' accounts for 102 of 247 samples, accuracy is a weak instrument: the majority-class-constant classifier scores 41\,\% without modelling anything. In the three-class working set the floor is higher still --- always predicting Negative yields \textbf{0.6346 accuracy} at a macro F1 of only \textbf{0.2588}. A headline accuracy near 63.41\,\% is therefore not, on its own, evidence of a working system.
+
+\textbf{A caution on this figure.} Yan et al.~\cite{yan2014} state in both their abstract and their results prose that leave-one-subject-out was applied to obtain 63.41\,\% --- but the caption of the very table reporting it reads ``leave-one-out cross-validation'', without the subject qualifier. Li et al.~\cite{liX2018}, reproducing the same figure in their comparison table, mark it with an asterisk denoting ``results achieved using leave-one-sample-out cross validation'' --- a materially easier protocol. The sources therefore disagree on the protocol behind the most widely quoted number on this benchmark, and the originating paper disagrees with itself. This thesis follows that paper's prose, but records the discrepancy rather than resolving it, because it affects how the figure should be read in any comparison.
+
+\textbf{Third, the baseline's sensitivity to a purely descriptive hyper-parameter is itself informative.} Accuracy moves by several points across the radius sweep with no change to the data, the split or the classifier. Where effect sizes of that magnitude arise from descriptor settings, differences of similar magnitude between architectures cannot be interpreted without a variance estimate --- a limitation this thesis inherits and declares.
+
+\subsection{Sibling corpora, and why this study remains single-corpus}
+\label{sec:sibling-corpora}
+
+Three further databases define the context in which CASME II is used; \autoref{tab:spontaneous-corpora} gives their properties, and each isolates a specific limitation of CASME II.
+
+\textbf{SMIC~\cite{liX2013}}, the first spontaneous micro-expression database, is the origin of the three-class taxonomy. Its high-speed subset of 164 clips is distributed 51 positive, 70 negative, 43 surprise, and its baseline --- LBP-TOP with a temporal interpolation model (TIM) normalising each clip to ten frames, under leave-one-subject-out --- reaches \textbf{48.78\,\%}. Two elements of its design are inherited directly here: the three-class valence grouping, and temporal interpolation to normalise clips of unequal length. It is not used as a corpus because it is neither FACS-coded nor apex-annotated.
+
+\textbf{SAMM~\cite{davison2018}} addresses the demographic narrowness of the CASME family, contributing 13 ethnicities and a mean age of 33.24 years against CASME II's single ethnicity and 22.03. Davison et al.~\cite{davison2018} observe that a corpus drawn from one ethnicity and one narrow age band restricts analysis to ``similar looking participants'', and tailor stimulus selection to each participant in advance rather than relying on post-hoc self-report. The design is stronger than CASME II's on both counts, but the corpus is smaller in usable samples and spreads them across seven categories with the same sparsity difficulty.
+
+\textbf{CAS(ME)$^2$~\cite{qu2016}} provides 250 macro-expression and 53 micro-expression samples from the same participants under identical conditions, which makes it the natural resource for studying macro-to-micro domain transfer. That strategy produced the strongest entry in MEGC 2019 --- Liu et al.'s EMR~\cite{liu2019}, the only reported submission to use macro-expression data, though it drew that data from CK+ rather than from CAS(ME)$^2$~\cite{see2019}. Two properties limit its use here: 30~fps is an order of magnitude below CASME II's and poorly matched to sub-200-ms movements, and only 53 micro-expression samples exist. Its baseline is also evaluated leave-\textit{one-video}-out, which does not enforce subject-disjointness and is therefore not comparable to the protocol used here.
+
+\textbf{Why this thesis uses CASME II alone.} It has the highest temporal resolution of any spontaneous corpus of comparable size, a precondition for magnification in a defined frequency band and for dense frame-to-frame flow; it is FACS-coded with onset, apex and offset annotation, which makes temporal normalisation to a fixed length well-defined rather than heuristic; and it remains the most widely reported single-corpus benchmark, which makes comparison against published results meaningful. The cost --- that no claim here extends to other populations, capture conditions or corpora --- is stated as a declared limitation rather than argued away.
+
+\subsection{How CASME II is evaluated in the field: MEGC 2019 and the metric convention}
+\label{sec:megc-metrics}
+
+The most consequential development in how CASME II is \textit{used}, as opposed to how it was built, is the Composite Database Evaluation (CDE) protocol of the Second Facial Micro-Expression Grand Challenge~\cite{see2019}. This thesis adopts the challenge's metric definitions while declining its composite training regime, so the protocol warrants precise description.
+
+CDE merges SMIC, CASME II and SAMM into one composite database under the three-class grouping of \autoref{sec:label-taxonomy}, giving \textbf{442 samples} --- Negative 250, Positive 109, Surprise 83 --- of which CASME II contributes 145. Leave-one-subject-out is run across the composite, which the organisers note ``ensures subject-independent evaluation''. Plain accuracy is rejected explicitly on grounds of class imbalance, and two balanced metrics mandated: \textbf{Unweighted F1 (UF1)}, the macro-averaged F1-score, which \textit{accumulates} true positives, false positives and false negatives per class \textbf{over all $k$ folds}, computes a per-class F1 from those pooled counts and averages without weighting; and \textbf{Unweighted Average Recall (UAR)}, the balanced accuracy, obtained by averaging per-class recall.
+
+\[
+	F1_c = \frac{2 \cdot TP_c}{2 \cdot TP_c + FP_c + FN_c}, \qquad \text{UF1} = \frac{1}{C}\sum_c F1_c
+\]
+
+UF1 is a \textbf{pooled} quantity: counts accumulate across folds \textit{before} any F1 is computed, which \autoref{sec:pooled-vs-fold} establishes is a different estimator from the average of per-fold macro F1 scores. The distinction is not cosmetic here. Because clips are distributed very unequally across subjects, and many single-subject folds contain only one of the three classes, a per-fold macro F1 is bounded well below 1 by fold composition alone and its average across folds bounded correspondingly (\autoref{fig:fold-composition}). The primary metric of this thesis, \textit{pooled macro F1}, is therefore identical in construction to MEGC's UF1; the per-fold average appearing in the raw experimental logs is not a metric the field uses at all.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{fig3_2_fold_composition.png}
+	\caption[Class composition of the 25 leave-one-subject-out folds]{Class composition of the 25 leave-one-subject-out folds, and the per-fold macro-F1 ceiling it implies.}
+	\label{fig:fold-composition}
+\end{figure}
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l c c}
+		\hline
+		\textbf{Method} & \textbf{Full composite UF1 / UAR} & \textbf{CASME II subset UF1 / UAR} \\
+		\hline
+		LBP-TOP~\cite{zhaoG2007}                  & 0.5882 / 0.5785 & 0.7026 / 0.7429 \\
+		Bi-WOOF~\cite{liong2018}                  & 0.6296 / 0.6227 & 0.7805 / 0.8026 \\
+		OFF-ApexNet~\cite{liong2019a}             & 0.7196 / 0.7096 & 0.8764 / 0.8681 \\
+		Quang et al.\textsuperscript{\textdagger} & 0.6520 / 0.6506 & 0.7068 / 0.7018 \\
+		Zhou et al.\textsuperscript{\textdagger}  & 0.7322 / 0.7278 & 0.8621 / 0.8560 \\
+		Liong et al.~\cite{liong2019b}, STSTNet   & 0.7353 / 0.7605 & 0.8382 / 0.8686 \\
+		Liu et al.~\cite{liu2019}, EMR            & \textbf{0.7885 / 0.7824} & 0.8293 / 0.8209 \\
+		\hline
+	\end{tabular}
+	\caption[MEGC 2019 Composite Database Evaluation results]{MEGC 2019 CDE results, reproduced from See et al.~\cite{see2019} (Table IV). \textdagger{} outside the review corpus; reported here only as it appears in that table.}
+	\label{tab:megc-cde-results}
+\end{table}
+
+\textbf{One structural caveat governs these numbers.} Every row of \autoref{tab:megc-cde-results} comes from a model trained on the \textit{composite} database --- roughly 442 samples across three corpora and 68 subjects --- then scored on the CASME II portion of the pooled predictions. The CASME II column is therefore not a CASME II-only result: it reports how a cross-corpus model performs on CASME II clips, with approximately \textbf{2.8 times the training data} available in any single-corpus fold, where a single-corpus LOSO experiment of the kind conducted here trains each fold on roughly 150 clips. The two regimes are not interchangeable, and single-corpus results should not be compared directly against \autoref{tab:megc-cde-results} without stating the difference.
+
+Two further observations from the challenge bear on this thesis's design. The top three submissions all chose \textbf{optical flow} as their feature representation, a convergence that supports the motion-based input used here; and one submission substituted mid-position frames for annotated apex frames with little loss, suggesting that precise apex localisation may be less critical than assumed and that methods consuming the full onset-to-offset sequence are not obviously disadvantaged.
+
+\subsection{Threats to validity carried by the corpus}
+\label{sec:corpus-threats}
+
+The properties in \autoref{tab:corpus-threats} are not criticisms of CASME II, which remains the best available resource for this task. They are constraints any study built on it inherits, and each is answered by a specific design decision --- which is the sense in which, on a corpus of this size, several choices usually presented as modelling decisions are determined by the data. Fold and duration statistics are computed directly from the 156-clip label table used in this thesis.
+
+\begin{table}[htbp]
+	\centering
+	\scriptsize
+	\begin{tabular}{@{}p{0.3cm} p{2.0cm} p{5.3cm} p{5.6cm}@{}}
+		\hline
+		& \textbf{Threat} & \textbf{What the corpus contains} & \textbf{Design decision it forces} \\
+		\hline
+		(a) & Scale
+		& 156 usable clips across three classes --- small enough that parameter count is itself a risk factor.
+		& \textbf{Parameter-free or low-parameter components} wherever a choice exists, motivating SimAM~\cite{yang2021}, which adds zero learnable parameters; shallow rather than deep spatial backbones, extending the model-shrinking argument of Xia et al.~\cite{xia2020b}, which they establish for the composite-database setting rather than a single small corpus. \\
+		(b) & Class imbalance
+		& 99 : 32 : 25. The majority-class-constant classifier attains 0.6346 accuracy at a macro F1 of 0.2588.
+		& Minority oversampling via a balanced sampler with focal loss, inverse-frequency class weighting \textbf{disabled}, since both corrections together induced single-class collapse. Accuracy is never reported alone, and the always-Negative floor is quoted alongside every result. \\
+		(c) & Subject-level non-uniformity
+		& \textbf{Subject 17 alone contributes 33 clips, 21\,\% of the working set}; subjects 8, 10 and 21 contribute one each, so fold sizes vary by a factor of 33. \textbf{Ten of the 25 folds contain a single class}, eight contain two, only seven all three.
+		& \textbf{Full 25-fold leave-one-subject-out}, every subject held out exactly once, no clip untested, subject-disjointness guaranteed by construction. Primary metric is \textbf{pooled macro F1}, identical in construction to MEGC's UF1~\cite{see2019}; per-fold averaged macro F1 is rejected, since fold composition bounds it below the study's own target. \\
+		(d) & A subject that disappears
+		& Of the 26 participants, subject 18's three clips are all ``others'' and are removed by the three-class filter.
+		& The LOSO run has \textbf{25 folds, not 26} --- stated explicitly for reproducibility, since fold counts differ between papers using this corpus. \\
+		(e) & Demographic homogeneity
+		& All participants Chinese, mean age 22.03 (SD 1.60) --- named by Davison et al.~\cite{davison2018} as a principal motivation for SAMM. The MEGC organisers saw the effect in reverse: adaptation from CK+ helped on SMIC and SAMM but ``not so for CASME II, which contain predominantly Chinese subjects''~\cite{see2019}.
+		& Input is a \textbf{motion representation} --- dense optical flow $(u,v)$ plus optical strain --- rather than raw pixels, since motion is invariant to identity and illumination whereas appearance is exactly what a 26-subject corpus would let a network memorise. \\
+		(f) & Laboratory ecology
+		& Frontal recording, fixed flicker-free lamps, participants told not to move and not speaking; Yan et al.~\cite{yan2014} flag ``natural conversation and interaction'' as future work. Almost none of the head motion, illumination variation, occlusion or speech-related movement a deployed system would face is present.
+		& No cross-dataset or in-the-wild claim is made anywhere in this thesis; generalisation is declared as further work. \\
+		(g) & Annotation dependence
+		& Labels derive from coded AUs, self-report and stimulus content --- a construct produced by trained coders under a rubric, with disagreements arbitrated by discussion rather than reported as residual uncertainty.
+		& The coding is taken as given; its construct status is recorded as a declared limitation rather than treated as measurement error. \\
+		(h) & Duration heterogeneity
+		& Onset-to-offset lengths range from \textbf{31 to 126 frames}, median 66 --- at 200~fps, \textbf{0.155\,s to 0.63\,s}, median 0.33\,s. The upper end exceeds the 1/2-second criterion of \autoref{sec:phenomenon}.
+		& Every clip temporally resampled to a fixed \textbf{T = 32} frames, following the TIM precedent of SMIC's baseline~\cite{liX2013}. \\
+		(i) & Version ambiguity
+		& Three sample counts circulate under the name ``CASME II'' --- 247 (the paper), 255 (the released coding), 145 (the MEGC subset) --- and both five- and seven-class label sets are in use, rarely stated.
+		& The released 255-clip coding is used, N is reported explicitly alongside every figure, and the eleven-clip divergence from the MEGC subset is declared in \autoref{sec:label-taxonomy}. \\
+		\hline
+	\end{tabular}
+	\caption[Threats to validity carried by CASME II and the decisions they force]{Threats to validity carried by CASME II, and the design decision each forces.}
+	\label{tab:corpus-threats}
+\end{table}
+
+\subsection{Implications for this research}
+\label{sec:corpus-implications}
+
+Three further corpus properties are not threats but still determine settings. The \textbf{200 fps} capture rate fixes the Eulerian magnification pass-band at \textbf{5--25 Hz}, matched to the recording rate. The \textbf{seven raw labels}, with fear at two clips and sadness at seven, force the three-class valence grouping of \autoref{sec:label-taxonomy}. And the baseline's \textbf{sensitivity to a descriptive hyper-parameter} (\autoref{sec:original-baseline}) sets the standard of evidence: effect sizes below the resolution of a 156-clip corpus are reported as unresolved rather than as findings, and no confidence interval is available, since the single-seed design and unretained per-clip predictions preclude one.
+
+Three consequences then shape the interpretation of the results rather than merely the construction of the pipeline. \textbf{First, the corpus determines the metric, and the metric determines the conclusion:} the fold composition of \autoref{tab:corpus-threats}(c) caps a macro F1 averaged over folds by arithmetic alone, before any classifier is considered, so reporting the pooled quantity is not a stylistic preference but the correction MEGC 2019 already standardised. \textbf{Second, a single held-out split is not a reliable measuring instrument here:} with 25 subjects distributed as unevenly as \autoref{tab:corpus-threats}(c) describes, which subjects fall in the test set can move the result by more than any architectural change under study, so only a complete leave-one-subject-out run is reported and the incomplete evaluations that preceded it are set out with their exclusion reasons rather than suppressed. \textbf{Third, the small-sample regime predicts which components should help:} 156 clips cannot supply the data needed to learn a general spatio-temporal feature extractor from scratch, particularly once the input has been reduced to flow and strain --- that is, once much of that extraction has been performed analytically before the network sees the data --- whereas a component modelling the temporal arc of an expression exploits exactly the structure the corpus's onset/apex/offset annotation guarantees is present and correctly delimited.
+
+\subsection{Limitations of the existing corpus literature, and how this work differs}
+\label{sec:corpus-lit-limitations}
+
+The corpus literature establishes three things well and one thing poorly. It establishes the phenomenon's definitional boundaries, an elicitation methodology producing genuinely spontaneous samples, and a capture standard --- 200 fps, flicker-free illumination, FACS coding with onset/apex/offset annotation --- that makes fine-grained motion analysis feasible. What it does not establish is a stable basis for comparing methods. The original baseline reports accuracy only, on a five-class problem whose majority class is 41\,\% of the data, and its own hyper-parameter sweep moves the headline figure by several points with no change to the model. Sample counts, label granularity and class groupings differ across papers using the same database --- 247, 255 and 145 all appear under the name ``CASME II'' --- and are frequently not stated. MEGC 2019's CDE protocol fixed the metric problem convincingly, but within a composite training regime that makes its per-database columns non-comparable to single-corpus work, a distinction subsequent papers routinely elide. Above all, only one study in this group quantifies how much of a reported difference between methods is attributable to the evaluation protocol rather than the methods themselves --- Li et al.~\cite{liX2018} add a single matched row of their own method under both protocols --- and none does so across methods, despite a subject distribution that makes the question unavoidable.
+
+This thesis differs in three respects. It runs the \textbf{complete} 25-fold leave-one-subject-out protocol over \textbf{every} valid cell of a four-component ablation matrix rather than reporting a single proposed configuration, so each component's contribution is measured from matched pairs differing in exactly one factor. It adopts MEGC's pooled macro F1 as its primary metric while explicitly declining the composite training regime, so its numbers describe single-corpus performance and are labelled as such. And it reports one complete protocol rather than the strongest of several, setting out which earlier evaluations were run and why each is excluded rather than suppressing that history. The intended contribution is therefore not a recognition result on CASME II, but a measurement of how much of such a result is attributable to each stage of the pipeline that produces it.
+
+The 200 fps capture rate established here is what lets Eulerian Video Magnification, reviewed next, target a matched temporal band.
+
+
+% =============================================================================
+\section{Motion Magnification: Eulerian Video Magnification as a Pre-Processing Stage}
+\label{sec:evm-review}
+% =============================================================================
+
+This section reviews Eulerian Video Magnification (EVM) through the four review-corpus papers that apply it: Bai et al.~\cite{bai2021}, Li et al.~\cite{liX2018}, and Li, Huang and Zhao~\cite{liY2018,liY2021}. The original formulations they build on --- Wu et al.'s amplitude-based method and Wadhwa et al.'s phase-based method --- lie outside the corpus and are described only as attributed through those four papers.
+
+\subsection{The problem magnification addresses}
+\label{sec:evm-problem}
+
+The corpus design of \autoref{sec:why-spontaneous} responds to the \textit{short-duration} half of the micro-expression definition but not to the \textit{low-intensity} half. CASME II's 200~fps sampling spreads a movement completing in under 200~ms across dozens of frames~\cite{yan2014}, yet that movement may still occupy only a few grey levels of change across a small patch of skin --- and Yan et al.~\cite{yan2014} report discarding samples outright because the movement was too faint for coders to place an onset or offset. Li et al.~\cite{liX2018} state the difficulty directly: ``the intensity levels of facial movements are too low to be distinguishable.'' Their remedy is to amplify the motion itself before any descriptor is computed, so that the \textit{difference between expression categories is enlarged} rather than the classifier being made more sensitive. This is a data-level intervention: the model is untouched and the modification is entirely upstream, which is what makes EVM cleanly separable as an ablation factor in this thesis.
+
+\subsection{How Eulerian magnification works, and the two variants}
+\label{sec:evm-how}
+
+\textbf{Amplitude-based magnification (AMM)} is the formulation set out in \autoref{sec:motion-magnification} --- Laplacian pyramid, temporal band-pass, multiplication by $\alpha$, reconstruction --- realising its band-pass step with a \textbf{Butterworth} filter. It is the variant implemented in this thesis. \textbf{Phase-based magnification (PMM)}, of which Bai et al.~\cite{bai2021} give the clearest account in the corpus, decomposes each frame with \textbf{octave complex steerable pyramids} over four orientations and applies the temporal filter to the \textit{local phase} rather than the amplitude. Bai et al.~\cite{bai2021} explain the advantage in signal terms: the steerable pyramid ``has impulse response with spatial support,'' which makes it easier to isolate the intended temporal frequencies while suppressing the remainder. The practical consequences they report are that the phase-based method \textbf{supports larger amplification factors} and is \textbf{notably less sensitive to noise}.
+
+Three parameters are therefore free in any EVM application, and all three recur below: the \textbf{temporal pass-band}, which decides \textit{which} motions are amplified; the \textbf{magnification factor $\alpha$}, which decides \textit{how much}; and the \textbf{pyramid depth}, which decides at which spatial scales amplification occurs.
+
+\textbf{Setting the temporal band.} Bai et al.~\cite{bai2021} report the rule given by the original EVM authors: the pass-band should correspond to the duration of the phenomenon being amplified --- for micro-expressions, 1/5\,s to 1/25\,s, equivalently \textbf{5 Hz to 25 Hz}. They also report that applying this full band produced ``noticeable noise'' in their setting, and that they narrowed it to 15--25 Hz accordingly. This is the only explicit guidance on band selection anywhere in the review corpus, and it is the basis for the band used in this thesis.
+
+\subsection{Evidence that magnification improves recognition}
+\label{sec:evm-evidence}
+
+The strongest empirical case in the review corpus is Li et al.~\cite{liX2018}, who sweep the magnification factor systematically rather than fixing it. Clips are magnified at what the paper describes as ten levels while listing nine values, $\alpha \in \{1, 2, 4, 8, 12, 16, 20, 24, 30\}$ --- an inconsistency in the source rather than in this account --- where $\alpha = 1$ denotes no magnification. Each magnified clip is temporally interpolated to ten frames (TIM10), and LBP, HOG and HIGO descriptors are extracted and classified, on both SMIC and CASME II under leave-one-subject-out. Two findings emerge.
+
+\textbf{Magnification helps, consistently}, ``for all three kinds of features on all four testing datasets''. On CASME II the effect is substantial (\autoref{tab:evm-effect}), and the best configuration of their full framework --- magnification, TIM10 and HIGO --- reaches 67.21\,\% on CASME II and 68.29\,\% on SMIC-HS under LOSO, competitive with or better than the contemporaneous state of the art.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l c c c}
+		\hline
+		\textbf{Descriptor} & \textbf{No magnification} & \textbf{With magnification} & \textbf{$\Delta$} \\
+		\hline
+		LBP  & 55.87\,\% & 60.73\,\% & \textbf{+4.86} \\
+		HOG  & 57.49\,\% & 63.97\,\% & \textbf{+6.48} \\
+		HIGO & 57.09\,\% & 67.21\,\% & \textbf{+10.12} \\
+		\hline
+	\end{tabular}
+	\caption[Effect of Eulerian motion magnification on CASME II]{Effect of Eulerian motion magnification on CASME II under leave-one-subject-out, after Li et al.~\cite{liX2018} (Table 6).}
+	\label{tab:evm-effect}
+\end{table}
+
+\textbf{The relationship between $\alpha$ and accuracy is non-monotonic.} Li et al.~\cite{liX2018} describe the resulting curves as ``rainbow-shaped,'' with best performance ``generally achieved when the motion is magnified in the range of $[8, 16]$,'' and give a mechanistic account of both failure modes: ``magnification at lower levels might not be enough to reveal the ME motion progress; on the other hand, magnification at higher levels degrades the performance because too many artifacts are induced.'' Magnification is therefore not a monotone improvement to be maximised but a parameter with an interior optimum that must be selected.
+
+Bai et al.~\cite{bai2021} provide the second quantitative demonstration using a fundamentally different downstream model --- a pre-trained VGGFace2 (ResNet-50) spatial encoder feeding a bidirectional LSTM. On SMIC they reach \textbf{75.76\,\% with phase-based magnification against a 60.60\,\% baseline} drawn from an earlier VGGFace2 + Bi-LSTM publication rather than from a magnification-off arm of their own, and the phase-based variant outperforms the amplitude-based one. Because the pipeline shares nothing with Li et al.'s hand-crafted descriptors, the two results together establish that the benefit is not an artefact of a particular feature family --- at least when the downstream representation is appearance-based.
+
+\subsection{Magnification in apex-frame pipelines, and the $\alpha$ discrepancy}
+\label{sec:evm-apex}
+
+Two further papers use EVM in a different regime, and the contrast is informative. Li, Huang and Zhao~\cite{liY2018} address whether a micro-expression can be recognised from a \textit{single} apex frame, arguing for magnification specifically in that setting: the apex frame carries the most emotional information, but ``the intensity level of apex frame is not distinguished due to subtle change, especially for deep model that describes high-layer abstract information.'' They magnify the spotted apex frame with \textbf{$\alpha = 30$} and fine-tune a VGG-Face descriptor on the result; because a single frame per clip is too little data to train on, they exploit the high frame rate to augment, retaining the apex frame plus its two preceding and two following frames and so expanding the training set fivefold. They restate the trade-off Li et al.~\cite{liX2018} quantified --- ``bigger values of motion amplification level lead to larger scale of motion amplification, but also can cause bigger displacement and artifacts.'' Li, Huang and Zhao~\cite{liY2021} extend this into a joint local--global learning framework with frequency-domain apex detection, carrying the same setting forward --- magnification level ``set as 30 in our framework'' --- with the same $\pm$2-frame augmentation producing what they name the Extended Magnified ME (EMME) database.
+
+\textbf{The $\alpha$ discrepancy is easy to misread as a contradiction.} Li et al.~\cite{liX2018} find the optimum at $\alpha \in [8, 16]$ and observe degradation beyond it; Li, Huang and Zhao~\cite{liY2018,liY2021} adopt $\alpha = 30$, at the extreme end of that same sweep. The regimes differ in a way that plausibly explains the gap. The $[8, 16]$ optimum is measured on \textbf{full magnified sequences} described by spatio-temporal descriptors, where inter-frame artefacts accumulate along the temporal axis and corrupt exactly the dynamic texture the descriptor encodes. The $\alpha = 30$ setting is applied to a \textbf{narrow five-frame window around the apex}, consumed by a deep face encoder as largely static appearance, where temporal artefacts have far less opportunity to express themselves --- and where the encoder needs a strong appearance signal to distinguish categories at all. The implication for any new system is that $\alpha$ cannot be transferred between pipelines: it is a parameter of the \textit{combination} of magnification and downstream representation, not of the corpus.
+
+\subsection{Known limitations of magnification}
+\label{sec:evm-limitations}
+
+The review corpus is unusually candid about EVM's failure modes, and four are documented.
+
+\textbf{It amplifies everything in band, not only expressions.} This is the most important limitation and the most easily overlooked. Li et al.~\cite{liX2018} decline to use magnification for micro-expression \textit{spotting} at all, ``because it magnifies unwanted motions (e.g. head movements) at the same time.'' EVM has no notion of which motion is of interest: a rigid head translation whose temporal frequency falls inside the pass-band is amplified exactly as a brow raise is. In a recognition pipeline this is mitigated by prior face alignment and cropping --- Li et al.~\cite{liX2018} magnify only after normalising and cropping to the eye-defined rectangle --- but mitigated, not eliminated.
+
+\textbf{Artefacts grow with $\alpha$.} All four papers report this: Li et al.~\cite{liX2018} as the descending limb of the rainbow curve, Li, Huang and Zhao~\cite{liY2018,liY2021} as a design caution, and Bai et al.~\cite{bai2021} directly, as noise that forced them to narrow their temporal band.
+
+\textbf{There is no principled procedure for choosing $\alpha$.} One value in the corpus is obtained by exhaustive sweep~\cite{liX2018}; the apex-frame papers assert theirs --- Li et al.~\cite{liY2018} state $\alpha = 30$ without support, and Li et al.~\cite{liY2021} carry the value forward by citing them. No paper offers a way to select $\alpha$ from properties of the data.
+
+\textbf{Evaluation is confined to appearance-based downstream representations:} LBP, HOG and HIGO in Li et al.~\cite{liX2018}, VGGFace2 features in Bai et al.~\cite{bai2021}, VGG-Face in both Li, Huang and Zhao papers. Every one of these descriptors is computed on \textbf{magnified pixel intensities}. No study in the review corpus measures what magnification contributes when the representation handed to the classifier is itself an explicit motion field rather than an appearance signal.
+
+\subsection{Implications for this research}
+\label{sec:evm-implications}
+% sec:evm-motion-hypothesis is referenced from Chapter 5 (chapter5.tex:236). The
+% hypothesis it names now opens this subsection instead of having one of its own,
+% so the label is kept here and resolves to this subsection.
+\label{sec:evm-motion-hypothesis}
+
+\autoref{tab:evm-settings} sets out the settings the review determines. Behind them lies a hypothesis the review corpus does not test, stated here because it frames the interpretation of the measurement. EVM amplifies the \textit{amplitude} of intensity variation in a temporal band, and an appearance descriptor computed on magnified frames sees a directly stronger signal. An optical flow field is a different object: flow estimates \textit{displacement}, and amplifying the underlying intensity change by $\alpha$ does not simply scale the recovered displacement by $\alpha$ --- it changes the conditioning of the estimation problem, potentially making faint motion recoverable where it previously was not, while introducing displacement artefacts of the kind all four reviewed papers warn about. Any residual global scaling of flow magnitude is further attenuated by the per-channel normalisation a learned pipeline applies before training. The plausible outcome is that magnification in front of a flow-and-strain representation retains the part of its benefit that consists of \textit{making otherwise-unrecoverable motion recoverable} while losing the part that consists of \textit{increasing contrast for an appearance descriptor} --- so its measured contribution should be smaller on average than the roughly +5 to +10 percentage points of \autoref{tab:evm-effect}, and concentrated in configurations whose downstream model can exploit finer spatial deformation. EVM is measured across six matched pairs of configurations differing in nothing but the tensor directory, which is what allows that prediction to be tested.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{@{}p{6.4cm} p{7.4cm}@{}}
+		\hline
+		\textbf{Finding from the review} & \textbf{Decision taken in this thesis} \\
+		\hline
+		Pass-band should match the phenomenon's duration, 1/5--1/25\,s $\equiv$ 5--25 Hz~\cite{bai2021}, though Bai et al. found that band noisy and narrowed it to 15--25 Hz & Temporal band-pass set to \textbf{5--25 Hz}, the unnarrowed duration rule; Bai et al.'s narrowing was not followed, and this is a declared divergence \\
+		Accuracy against $\alpha$ is rainbow-shaped, optimum in \textbf{$[8, 16]$} for full-sequence pipelines~\cite{liX2018} & \textbf{$\alpha = 10$}, inside the reported optimum; the $\alpha = 30$ of the apex-frame papers is explicitly \textit{not} adopted, since this thesis consumes full sequences \\
+		Amplitude-based magnification uses a Laplacian pyramid plus temporal band-pass~\cite{bai2021} & Amplitude-based EVM over a \textbf{4-level Laplacian pyramid}, temporal filtering by FFT band-pass \\
+		Magnification amplifies head motion as well as expression~\cite{liX2018} & Magnification applied only after the clip has been trimmed onset-to-offset; the risk is acknowledged as a residual threat rather than claimed to be eliminated \\
+		Magnification is a purely upstream, data-level operation & Stage 1 is run \textbf{twice}, producing a magnified and a non-magnified tensor set; the EVM switch selects a directory and leaves the network unchanged, making it a clean ablation factor \\
+		Magnification is part of the proposed data pipeline, not of the network & EVM is treated as the \textbf{baseline condition} (\texttt{config\_4}), not as a component to be added; the non-magnified arm (\texttt{config\_1}) is the control that isolates it \\
+		\hline
+	\end{tabular}
+	\caption[Review findings and the magnification settings they determine]{Review findings and the magnification settings they determine.}
+	\label{tab:evm-settings}
+\end{table}
+
+\textbf{A defect found and repaired, which the review made detectable.} In this project's earliest evaluations, each magnification-enabled configuration produced results \textit{bit-identical} to its magnification-disabled counterpart --- identical accuracies, macro F1 scores and confusion matrices. Given that all four reviewed papers report clear and repeatable effects from magnification, an effect of exactly zero across six independent pairs is not a plausible null result but a symptom: both arms were reading the same tensor directory, so half of the ablation matrix was duplicated and the magnification hypothesis had never in fact been exercised. The defect was repaired before the reported run, and wiring the existing verification helper in as a start-up assertion is a declared item of further work.
+
+\subsection{Limitations of the existing work, and how this study differs}
+\label{sec:evm-gap}
+
+What the reviewed literature does not establish is threefold. First, every evaluation in the corpus places magnification in front of an \textbf{appearance-based} representation, so the reported gains conflate two distinct mechanisms --- making faint motion recoverable, and increasing contrast for a texture or gradient descriptor --- and no experiment separates them. Second, the magnification factor is selected empirically in every case and transferred between studies without re-validation, despite the $\alpha$ discrepancy of \autoref{sec:evm-apex}. Third, and most consequentially, magnification is always evaluated as an \textit{addition to a fixed pipeline} --- a two-cell comparison, with and without --- so its interaction with the other components of a system is never measured.
+
+This thesis differs on all three counts. It places magnification in front of an explicit \textbf{motion} representation --- dense optical flow and optical strain --- rather than an appearance representation, isolating the recoverable-motion mechanism from the appearance-contrast one. It selects $\alpha$ from the full-sequence optimum rather than the apex-frame value, with the choice justified rather than inherited. And it evaluates magnification as one factor in a \textbf{full factorial ablation}, so its effect is reported not as a single delta but as six matched-pair measurements whose spread across architectures is itself the finding.
+
+What magnification is placed in front of therefore matters as much as its own parameters, and \autoref{sec:flow-review} turns to that motion representation.

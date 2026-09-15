@@ -46,7 +46,7 @@ Liong, S.-T., See, J., Wong, K., & Phan, R. C.-W. (2018). Less is more: Micro-ex
 
 ### liong2019a
 
-Liong, S.-T., Gan, Y. S., Yau, W.-C., Huang, Y.-C., & Tan, L. K. (2019a). OFF-ApexNet on micro-expression recognition system. *Signal Processing: Image Communication*, 74, 129–139.
+Gan, Y. S., Liong, S.-T., Yau, W.-C., Huang, Y.-C., & Tan, L. K. (2019). OFF-ApexNet on micro-expression recognition system. *Signal Processing: Image Communication*, 74, 129–139. https://doi.org/10.1016/j.image.2019.02.005
 
 ### liong2019b
 
@@ -90,7 +90,7 @@ Liong, S.-T., Phan, R. C.-W., See, J., Oh, Y.-H., & Wong, K. (2014a). Optical st
 
 ### liong2014b
 
-Liong, S.-T., See, J., Phan, R. C.-W., Le Ngo, A. C., Oh, Y.-H., & Wong, K. (2014b). Subtle expression recognition using optical strain weighted features. *Asian Conference on Computer Vision (ACCV) Workshops*.
+Liong, S.-T., See, J., Phan, R. C.-W., Le Ngo, A. C., Oh, Y.-H., & Wong, K. (2015). Subtle expression recognition using optical strain weighted features. *Computer Vision — ACCV 2014 Workshops*, LNCS 9009, 644–657. Springer. https://doi.org/10.1007/978-3-319-16631-5_47
 
 ### liong2016
 

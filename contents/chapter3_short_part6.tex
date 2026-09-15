@@ -1,0 +1,87 @@
+% Shortened Chapter 3, part 6 of 10: section 3.6.
+% Include after section 3.5; do not include alongside the original section 3.6.
+% Existing subsection labels and their order are retained for thesis references.
+
+\section{The Learned Spatial Backbone: Shallow 3D Convolutional Networks}
+\label{sec:cnn-review}
+
+This section covers the convolutional backbone, switched on and off as Variable C of this thesis's ablation, through four review-corpus papers.
+
+\subsection{The case for, and against, a learned spatial stem}
+\label{sec:cnn-case}
+
+By 2019 the field had converged on optical flow as the input representation (\autoref{sec:why-flow}); the open question was what should consume it. A learned backbone promises what hand-crafted descriptors cannot give~\cite{liong2019b}, but runs into the small-data constraint (\autoref{sec:capacity}, \autoref{sec:corpus-threats}). Xia et al.~\cite{xia2020b} describe a related failure mode from a different cause --- ``the important subtle dynamics are prone to disappearing in the domain shift \ldots especially for deep models'' --- where the mechanism is the domain shift induced by mixing corpora rather than sample count alone, and where they report deeper, higher-resolution models doing better on the individual-database task. Applying their shrinking argument to a single small corpus therefore extends it beyond the setting they establish.
+
+\subsection{What ``3D CNN'' means in this literature}
+\label{sec:cnn-meaning}
+
+The term covers three materially different architectures.
+
+\textbf{A convolution over spatial and modality axes, with no temporal axis.} STSTNet~\cite{liong2019b}, the canonical shallow model in this field, calls itself a ``Shallow Triple Stream Three-dimensional CNN''. Its input is a single \textbf{28 $\times$ 28 $\times$ 3} tensor from the onset and apex frames, whose third dimension holds horizontal flow, vertical flow and optical strain --- not time. Three parallel streams, each a single convolutional layer with 3, 5 and 8 kernels respectively, supplement ``the small scale input data \ldots to avoid the problem of underfitting''. \textbf{There is no time dimension in this network}; the clip was collapsed to a single frame pair upstream (\autoref{sec:flow-what-between}).
+
+\textbf{A convolution genuinely extended across time.} STRCN~\cite{xia2020a} extends convolutional connectivity ``across temporal domain'' with recurrent convolutional layers, modelling appearance and geometry separately.
+
+\textbf{A convolution over a short flow sequence.} Zhao et al.~\cite{zhaoS2021} apply a C3D-style network to the ten-frame flow sequence built from their eleven key-frames (\autoref{sec:tim-keyframe}), so the temporal axis is present but short.
+
+\subsection{The central finding: shrink the model \textit{and} the input}
+\label{sec:cnn-shrink}
+
+Xia et al.~\cite{xia2020b} treat depth and input resolution as controlled variables. They build four models of increasing depth --- from a single convolutional layer (Model 1) to one convolutional plus three recurrent convolutional layers (Model 4) --- and evaluate each at nine input resolutions, \textbf{20, 40, 60, 80, 100, 150, 200, 250 and 300 pixels}, on optical flow with UAR as the metric. Two results follow.
+
+\textbf{Deeper is worse.} Models 3 and 4 ``have worse recognition performances compared to shallower \ldots models'', even though all four are far shallower than ResNet-101 or DenseNet-169.
+
+\textbf{Higher resolution is worse, with a threshold.} Performance ``will be degraded with larger input resolutions (Model 2, Model 3 and Model 4)'' --- the two-layer model they go on to adopt included --- and for the deeper models ``begins to decrease dramatically when the resolution is bigger than \textbf{100 $\times$ 100}''. Shallow models are nonetheless ``basically robust to the change of input resolution'', improving toward lower resolution above a floor of about 40 $\times$ 40.
+
+STSTNet takes the same argument to its limit and remains competitive on the CASME II subset (\autoref{sec:megc-metrics}): Liong et al.~\cite{liong2019b} report \textbf{0.00167 M parameters across 2 layers at 28 $\times$ 28 $\times$ 3 input}, against OFF-ApexNet's 2.77 M across 5 layers and GoogLeNet's 7 M across 22.
+
+\subsection{Coping with limited and imbalanced training data}
+\label{sec:cnn-limited-data}
+
+Two strategies in the corpus have counterparts in this thesis's training configuration. Xia et al.~\cite{xia2020a} pair temporal augmentation with a balanced loss (\autoref{sec:imbalance-balanced-loss}, \autoref{sec:imbalance-double-correction}); a two-stage few-shot scheme~\cite{zhaoS2021} is the one route not taken. Xia et al.~\cite{xia2020b} take a third --- adding capability without capacity --- by developing ``three parameter-free modules \ldots integrate with RCN without increasing any learnable parameters'', so representational power grows while the parameter count, and therefore the overfitting risk, does not.
+
+\subsection{Limitations}
+\label{sec:cnn-limitations}
+
+\textbf{The terminology obscures what is being compared.} Papers titled as three-dimensional CNNs include networks with no temporal axis at all, so ``3D-CNN'' results across the corpus are not like with like.
+
+\textbf{Input resolution is almost never controlled.} Xia et al.~\cite{xia2020b} are the exception; elsewhere resolution is an implementation detail --- 28 $\times$ 28 in STSTNet and OFF-ApexNet --- with no indication of sensitivity, despite the substantial sensitivity Xia et al. measure.
+
+\textbf{The evidence base is composite-database.} Xia et al.'s shrinking study~\cite{xia2020b} and STSTNet~\cite{liong2019b} are developed for the MEGC composite setting, which supplies substantially more training data per fold than a single-corpus study (\autoref{sec:megc-metrics}); only the earlier recurrent-convolutional work~\cite{xia2020a} is evaluated per database. Conclusions about affordable capacity therefore understate the constraint here.
+
+\textbf{No study isolates the backbone in a matched pair.} The corpus does compare descriptor-only methods against learned ones on the same folds, so it is not silent on whether a learned stem helps at all. What it does not contain is a comparison in which the stem is the \textit{only} thing that changes: each paper proposes a backbone and evaluates the whole system around it, so a reported gain cannot be attributed to the stem rather than to the representation, training schedule or corpus subset that changed with it.
+
+\subsection{Implications for this research}
+\label{sec:cnn-implications}
+
+The component ablated as Variable C is a \textbf{three-stream shallow convolutional backbone}: one unshared two-layer stream per input channel --- flow-$u$, flow-$v$, optical strain.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{@{}p{5.6cm} p{8.0cm}@{}}
+		\hline
+		\textbf{Finding from the review} & \textbf{Decision taken in this thesis} \\
+		\hline
+		Shallow beats deep on small micro-expression data~\cite{xia2020b}; STSTNet uses 2 layers and $\sim$1,670 parameters~\cite{liong2019b} & Two convolutional layers per stream, \textbf{14,544 parameters} in the backbone (15,027 including the classifier head) --- shallow by the corpus's standards, though roughly nine times STSTNet's \\
+		Triple-stream design supplements small-scale input~\cite{liong2019b} & Three unshared streams, one per input modality. STSTNet's streams differ in \textit{filter count} over the same input; these differ in \textit{input channel} \\
+		Parameter-free modules add capability without capacity~\cite{xia2020b} & Motivates the parameter-free attention evaluated as Variable B (\autoref{sec:simam-review}) \\
+		Limited and imbalanced data require augmentation plus loss correction~\cite{xia2020a} & Balanced sampling with focal loss; loss class-weighting deliberately disabled after single-class collapse (\autoref{sec:corpus-implications}) \\
+		\textbf{Performance degrades above 100 $\times$ 100 input, dramatically for deeper models~\cite{xia2020b}} & \textbf{Not followed.} The backbone is fed at \textbf{224 $\times$ 224}, more than twice that threshold, though the same resolution as Bai et al.~\cite{bai2021} and Li, Huang and Zhao~\cite{liY2021} use --- see below \\
+		\hline
+	\end{tabular}
+	\caption[Review findings and the backbone decisions they determine]{Review findings and the backbone decisions they determine.}
+	\label{tab:cnn-decisions}
+\end{table}
+
+\textbf{A declaration about what this component is.} Every kernel in this backbone is spatial only: no filter spans two time steps, so despite the \texttt{Conv3d} implementation it is a \textbf{purely spatial} feature extractor (\autoref{sec:conv3d}). The ablation therefore does not test spatio-temporal convolution; it tests a \textbf{learned spatial stem}, and whatever it measures for Variable C is evidence about \textit{this} stem --- spatial-only, at 224 $\times$ 224, on flow and strain input --- and \textbf{not} evidence that 3D convolution over time is unhelpful for micro-expression recognition, which this study never evaluated.
+
+Two observations mitigate that, and one aggravates it. In the field's own terms the choice is defensible: STSTNet, one of the two strongest shallow baselines on the CASME II subset, likewise performs no temporal convolution (\autoref{sec:cnn-meaning}). The stem also competes against a representation that already performs spatio-temporal extraction analytically (\autoref{sec:flow-implications}, \autoref{sec:strain-implications}).
+
+Against both, \textbf{input resolution is the clearest departure from Xia et al.'s guidance}. It is not a departure from the corpus as a whole: Bai et al.~\cite{bai2021} resize frames to 224 $\times$ 224, and without alignment or cropping, as here; Li, Huang and Zhao~\cite{liY2021} resize faces to the same; and Xia et al.'s own earlier work~\cite{xia2020a} runs one stream at 300 $\times$ 245. What 224 $\times$ 224 departs from is the specific threshold of \autoref{sec:cnn-shrink}, which is a composite-database result and which bites hardest on models deeper than this one. Since this stem is shallow, the reviewed evidence predicts a smaller resolution effect than the deep-model figures suggest, so re-running the backbone arm at a lower resolution is worth doing because it is cheap and would settle the question, not because the corpus implies a large gain. The choice is also the expensive one: a 224 $\times$ 224 map carries sixty-four times the spatial elements of STSTNet's 28 $\times$ 28, and the backbone convolves it at every one of the 32 time steps. Whatever this study measures for the stem is therefore a resolution result as much as an architecture result, and the re-run is the first item of declared further work.
+
+\subsection{Limitations of the existing work, and how this study differs}
+\label{sec:cnn-gap}
+
+The four gaps of \autoref{sec:cnn-limitations} define what the reviewed literature does not establish.
+
+This thesis differs on the third, which is what its research question requires: it removes the convolutional backbone entirely in four of its twelve configurations, and measures the difference under complete leave-one-subject-out with every other factor held constant. On the first gap it answers the field's terminological ambiguity by declaring precisely what its own component is (\autoref{sec:cnn-implications}); on the second it knowingly departs from the literature's guidance, at the 224 $\times$ 224 resolution flagged above.

@@ -1,0 +1,92 @@
+% Shortened Chapter 3, part 5 of 10: section 3.5.
+% Include after section 3.4; do not include alongside the original section 3.5.
+% Existing subsection labels and their order are retained for thesis references.
+
+\section{Temporal Normalisation: The Temporal Interpolation Model}
+\label{sec:tim-review}
+
+Flow and strain fix \textit{what} is computed from each frame pair; temporal normalisation fixes \textit{which} frame pairs, and how many. The Temporal Interpolation Model (TIM) is credited in this corpus to Zhou et al. by Li et al.~\cite{liX2013,liX2018} and to Pfister et al. by Lu et al.~\cite{lu2015}, who applied it to micro-expressions outside the review corpus. It is described here only through the reviewed papers that implement and evaluate it.
+
+\subsection{The problem: sequences of unequal length}
+\label{sec:tim-problem}
+
+Micro-expressions vary in duration, and the three-class CASME II working set spans roughly a four-fold range of sequence length (\autoref{sec:corpus-threats}h). Three difficulties follow. Any batched network requires a fixed input shape, and the corpus supplies no constant. A descriptor with a temporal radius cannot be applied to a sequence shorter than that radius, so the shortest clips constrain the descriptor for the whole dataset: Li et al.~\cite{liX2018} note that at 25~fps some micro-expressions last four to five frames, restricting LBP-TOP to radius $r = 1$. And duration is itself a nuisance variable --- Lu et al.~\cite{lu2015} normalise to remove ``temporal fluctuations of micro-expressions, which may introduce noise irrelevant to classification''.
+
+\subsection{What TIM is}
+\label{sec:tim-what}
+
+Lu et al.~\cite{lu2015} give the corpus's most compact description: ``TIM is a manifold-based interpolation method, which builds a low-dimensional embedding of an image sequence, and then interpolates a curve in the low-dimensional space. The interpolated frames are mapped back to the original high-dimensional space.''
+
+The property that matters downstream is that TIM \textbf{synthesises frames that were never recorded}: Lu et al.~\cite{lu2015} note that Pfister et al. proposed it ``to generate sufficient frames from an image sequence'', that is, as an upsampler rather than only a length-standardiser.
+
+\subsection{TIM in practice: the convergence on ten frames}
+\label{sec:tim-ten-frames}
+
+TIM appears throughout the corpus as an unremarked preprocessing step, almost always at ten frames: SMIC's baseline~\cite{liX2013} normalises to ten before LBP-TOP; Li et al.~\cite{liX2018} apply TIM10 after magnification; and Lu et al.~\cite{lu2015} apply TIM before their Delaunay-based coding model, following Pfister et al.'s protocol so as to compare against TIM10 baselines. CAS(ME)$^2$'s baseline~\cite{qu2016} is the exception, normalising to \textbf{120 frames by linear interpolation} and evaluating leave-one-video-out.
+
+One study tests the setting on its own terms. Li et al.~\cite{liX2018} sweep interpolation length from 10 to 80 frames on all three SMIC variants under leave-one-subject-out, holding the descriptor fixed and skipping magnification so only length varies, and report that ``the best performance for all three datasets is achieved with interpolation to 10 frames'', because ``in longer sequences, changes along the time-dimension are diluted''.
+
+\subsection{How many frames? The remaining systematic comparisons}
+\label{sec:tim-how-many}
+
+Ben et al.~\cite{ben2021} run a second controlled experiment and reach the opposite conclusion. Holding alignment, descriptor and classifier fixed --- JCFDA alignment, LBP-TOP, and an SVM with an RBF kernel --- they interpolate sequences to 10, 20, 30 and so on up to 110 frames by two algorithms, \textbf{Newton interpolation} and \textbf{TIM}, recording the best recognition rate at each length on MMEW.
+
+Newton peaks at \textbf{33.3\,\%} at 60 frames; TIM peaks at \textbf{38.9\,\%} ``when the micro-expression sequence is respectively interpolated to 30 or 60 frames'', and Ben et al. adopt TIM at 60 accordingly. Accuracy is non-monotonic in length: rates ``increase initially and then decrease towards the end''.
+
+Two caveats limit the transfer. The experiment uses MMEW with LBP-TOP, not CASME II and not a learned model; and it runs largely in the \textit{upsampling} regime, since Ben et al.~\cite{ben2021} interpolate ``to the maximal value of 110 frames'', so the longer settings add frames for most clips rather than discarding them. This thesis operates in the opposite regime (\autoref{sec:tim-implications}), and an optimum measured while synthesising frames need not hold when discarding them.
+
+A third comparison is the only multi-corpus one. Xu et al.~\cite{xu2017} interpolate every sequence to 10, 15 and 20 frames for both their facial dynamics map and LBP-TOP, ``on all four datasets'' --- CASME, CASME II and SMIC's high-speed and visual subsets. They also depart from the convention in a way the others do not, using \textbf{linear} interpolation ``instead of Temporal Interpolation Model because in a high frame-rate scenario, linear interpolation suffices to characterize the motion pattern with less error''.
+
+\subsection{Alternatives to uniform interpolation}
+\label{sec:tim-keyframe}
+
+Zhao et al.~\cite{zhaoS2021} do not interpolate uniformly. They build an eleven-frame key-frame sequence from the annotated onset, apex and offset by generating eight transition frames allocated between the onset--apex and apex--offset intervals \textbf{in proportion to each sub-interval's duration}, so sampling density follows the expression's own phase structure and the apex is emphasised. Optical flow between adjacent key-frames then gives a ten-frame flow sequence. OFF-ApexNet~\cite{liong2019a} and STSTNet~\cite{liong2019b} take the limit, keeping the onset--apex pair alone (\autoref{sec:flow-what-between}).
+
+The corpus therefore contains temporal representations of length 2, 10, 11, 15, 20, 30, 60, 110 and 120 frames, chosen variously by convention, by sweep and by architecture. There is no consensus, and only Xu et al.'s~\cite{xu2017} sweep spans more than one corpus.
+
+\subsection{Limitations}
+\label{sec:tim-limitations}
+
+\textbf{Ten frames is a convention, not a finding.} The most-used setting traces to one baseline paper's choice, and the three studies that test it do not agree: ten frames for Li et al.~\cite{liX2018}, 30 to 60 for Ben et al.~\cite{ben2021}, and a 10--20 frame range for Xu et al.~\cite{xu2017} (\autoref{sec:tim-how-many}). Interpolation length interacts with the temporal receptive field of whatever consumes it, and in all three that consumer is a hand-crafted descriptor.
+
+\textbf{Frame synthesis and motion analysis are in tension.} TIM generates frames that were not recorded. Where the downstream representation is appearance-based this is benign; where it is \textit{motion}, synthesised frames yield synthesised displacements. One reviewed paper recognises this: Xu et al.~\cite{xu2017} choose linear interpolation over TIM precisely on the grounds that it ``suffices to characterize the motion pattern with less error'' at a high frame rate. But they assert the point rather than measure it --- TIM appears once in their paper, in that sentence --- and no reviewed study compares the two interpolators against a motion representation. The rest of the corpus does not raise the question, because those using TIM extract appearance descriptors, while those extracting flow either use two frames or, as Zhao et al.~\cite{zhaoS2021} do, generate transition frames without discussing the consequence.
+
+\textbf{Downsampling forfeits part of the corpus's advantage.} \autoref{sec:corpus} establishes why CASME II was recorded at 200~fps rather than its predecessor's 60~fps; reducing a clip to a few tens of frames gives part of that back. Only Xu et al.~\cite{xu2017} tie the interpolation choice to the acquisition rate at all, and then only to justify the simpler interpolator. The rest apply TIM10 to 100~fps SMIC data as readily as to 200~fps CASME II data, without weighing what the higher rate bought.
+
+\subsection{Implications for this research}
+\label{sec:tim-implications}
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{@{}p{5.6cm} p{8.0cm}@{}}
+		\hline
+		\textbf{Finding from the review} & \textbf{Decision taken in this thesis} \\
+		\hline
+		Fixed-length input is required, and unequal duration is nuisance variance~\cite{lu2015} & Every clip is normalised to a fixed temporal length before training \\
+		TIM beats Newton interpolation by 5.6 points, with a joint optimum at 30 or 60 frames~\cite{ben2021} & \textbf{L = 33 frames sampled, giving T = 32 flow pairs} --- the lower of the two reported optima rather than the field-conventional 10 \\
+		Sequence length has an interior optimum found only by sweep~\cite{ben2021} & T = 32 is fixed throughout and is \textbf{not} swept; a sweep is declared as further work \\
+		Onset and offset are annotated in CASME II (\autoref{sec:casme2-construction}) & Sampling is bounded by the annotated onset and offset, so the window spans the expression rather than surrounding neutral frames. This holds on the image-folder path used for CASME II; the loader's \texttt{.avi} branch samples across a whole file and is not exercised here \\
+		TIM synthesises frames, and flow between synthesised frames is synthesised motion (\autoref{sec:tim-limitations}) & \textbf{No frames are synthesised} --- see the declaration below \\
+		\hline
+	\end{tabular}
+	\caption[Review findings and the temporal-normalisation decisions they determine]{Review findings and the temporal-normalisation decisions they determine.}
+	\label{tab:tim-decisions}
+\end{table}
+
+\textbf{A declaration about what this pipeline implements.} The module performing this step is named for the Temporal Interpolation Model, but what it computes is \textbf{uniform index sampling} of existing frames (\autoref{sec:three-channel-tensor}). No embedding is built, no curve is interpolated, no frame is synthesised. That is a materially different operation from the TIM of \autoref{sec:tim-what}, and it is named accurately here rather than in the pipeline's own terms. It is also defensible: because the downstream representation is flow between adjacent sampled frames, interpolation would manufacture displacement fields for motion that never occurred, whereas subsampling discards temporal resolution without fabricating it. What is given up is TIM's ability to \textit{lengthen} short clips.
+
+Three quantitative consequences follow.
+
+\textit{Effective temporal resolution falls by a clip-dependent factor.} Sampling 33 frames from a clip of $N$ frames recorded at 200~fps gives an effective rate of $6600/N$ fps: \textbf{100 fps} at the median ($N = 66$), which is SMIC's recording rate and half what CASME II was built to provide, and roughly \textbf{52 fps} for the longest ($N = 126$), below the original CASME database's 60~fps~\cite{yan2014}. Eighty-one of the 156 clips are downsampled by a factor of two or more.
+
+\textit{Magnification is applied after subsampling, which shifts the realised pass-band.} Magnification runs on the 33 sampled frames at the nominal 200~fps (utoref{sec:evm-departures}), but those frames span the clip's full duration, so the true inter-frame interval is $N/(200 \times 32)$ seconds rather than $1/200$. At the median a band specified as 5--25 Hz therefore corresponds to roughly 2.5--12.5 Hz physically, and the discrepancy grows with clip length. The realised band is thus neither the 5--25 Hz \autoref{sec:evm-implications} derives from the duration rule of Bai et al.~\cite{bai2021} nor constant across clips. This is a declared divergence; magnifying before subsampling is declared as further work.
+
+\textit{Three clips are shorter than the sampling window.} \textbf{Three of the 156 clips} contain 31 frames against a target of 33, so sampling repeats indices and yields near-zero flow at those positions.
+
+\subsection{Research gap and scope}
+\label{sec:tim-gap}
+
+The unresolved question is what temporal normalisation costs a representation made of motion rather than appearance. Three studies sweep interpolation length and give three answers, none on CASME II and none with a learned temporal model; and although Xu et al.~\cite{xu2017} raise both the synthesis-versus-motion tension and the acquisition-rate trade-off, they settle neither by measurement (\autoref{sec:tim-limitations}). This thesis takes the position that follows from its own representation --- sampling only recorded frames --- and quantifies what that costs in effective frame rate (\autoref{sec:tim-implications}), which no reviewed paper reports.
+
+The design does not sweep T, nor compare interpolators, nor separate the effect of sequence length from the effect of the sampling regime. Those remain limitations rather than gaps claimed as solved, and the resulting conclusions apply to the implemented sampling scheme at T = 32.

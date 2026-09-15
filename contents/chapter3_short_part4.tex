@@ -1,0 +1,133 @@
+% Shortened Chapter 3, part 4 of 10: section 3.4.
+% Include after chapter3_short_part3.tex, replacing the original section 3.4.
+% Existing subsection labels and their order are retained for thesis references.
+
+\section{Deformation Representation: The Optical Strain Tensor}
+\label{sec:strain-review}
+
+Optical strain supplies the third input channel. Its literature establishes a deformation descriptor derived from flow, two ways to use that descriptor, and limitations relevant to interpreting the architectural ablation. Shreve et al.~\cite{shreve2011}, the Liong strain series~\cite{liong2014a,liong2014b,liong2016}, and STSTNet~\cite{liong2019b} provide the principal evidence.
+
+\subsection{What strain contributes}
+\label{sec:strain-what-adds}
+
+Flow describes displacement; strain describes its local spatial variation. A spatially uniform translation has zero displacement gradient, whereas neighbouring skin regions moving differently produce deformation. Shreve et al.~\cite{shreve2011} use this distinction to detect facial activity and describe robustness to moderate head translation. It does not imply immunity to arbitrary head movement or registration error.
+
+Their illumination- and make-up-robustness statements are attributed to earlier studies rather than measured anew. They should therefore be read as reported motivation, not as evidence that the present pipeline is robust under those conditions. Strain can suppress a uniform displacement while still inheriting errors from the estimated flow.
+
+\subsection{Tensor components and magnitude}
+\label{sec:strain-tensor}
+
+The relevant representation is the symmetric displacement-gradient tensor, with normal components $\varepsilon_{xx}$ and $\varepsilon_{yy}$ and shear components $\varepsilon_{xy}=\varepsilon_{yx}$. Shreve et al.~\cite{shreve2011} approximate spatial derivatives by central differences with offsets of approximately two to three pixels; Liong et al.~\cite{liong2014a} use one-pixel offsets. This discretisation is a modelling choice because it sets the scale at which local variation is measured.
+
+Liong et al.~\cite{liong2014a,liong2014b,liong2016} use the four-component magnitude
+\[
+    \varepsilon_{\mathrm{F}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +\varepsilon_{xy}^{2}+\varepsilon_{yx}^{2}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +2\varepsilon_{xy}^{2}}.
+\]
+The scalar describes deformation intensity and discards its sign and direction. Supplying it together with $u$ and $v$ retains the displacement fields from which those spatial relations were calculated.
+
+\subsection{The implemented magnitude and its divergence}
+\label{sec:strain-divergence}
+
+The implementation instead computes
+\[
+    \varepsilon_{\mathrm{os}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +\varepsilon_{xy}^{2}},
+    \qquad
+    \varepsilon_{xy}=\tfrac{1}{2}
+        \left(\frac{\partial u}{\partial y}
+             +\frac{\partial v}{\partial x}\right).
+\]
+It counts shear once rather than twice. NumPy's \texttt{gradient} supplies spatial differences at one-pixel spacing, using central differences in the array interior. The spacing follows Liong et al.~\cite{liong2014a}, but the scalar reduction differs from their convention.
+
+STSTNet~\cite{liong2019b} cannot establish a clear precedent for the three-term form. Its printed magnitude equation repeats $\partial u$ in the mixed derivative where the symmetric tensor calls for $\partial v/\partial x$ alongside $\partial u/\partial y$. It also places the factor $\tfrac{1}{2}$ \emph{outside} the squared derivative sum. Correcting the repeated derivative while retaining that placement gives
+\[
+    \tfrac{1}{2}
+       \left(\frac{\partial u}{\partial y}
+            +\frac{\partial v}{\partial x}\right)^2
+       =2\varepsilon_{xy}^{2},
+\]
+which agrees with the four-term convention. Moving the factor inside the square would instead give the implemented three-term form, but that is a further change to the printed expression. The intended implementation cannot be settled from this equation alone; the thesis therefore declares a departure from the unambiguous four-term convention rather than claiming to reproduce STSTNet's magnitude.
+
+The four-term form weights pure shear by $\sqrt{2}$ relative to the implemented form. Independent min--max normalisation removes a uniform scale factor, but does not generally remove this difference when normal and shear contributions vary across pixels and time. Neither convention was compared experimentally here, so their practical equivalence is not assumed.
+
+\subsection{Strain as a feature, a weight, or an input channel}
+\label{sec:strain-feature-weight}
+
+\textbf{Optical strain features (OSF)} use a temporally pooled strain map as a descriptor~\cite{liong2014a,liong2014b,liong2016}. Averaging accounts for sequence length: the early method already divides its accumulated map by the number of frame pairs~\cite{liong2014a}. The maps are filtered and normalised before classification. The early work explicitly applies Wiener and Gaussian filters to suppress noise~\cite{liong2014a}.
+
+\textbf{Optical strain weighted features (OSW)} use pooled strain to weight the regional XY-plane histograms of local binary patterns on three orthogonal planes (LBP-TOP), emphasising active facial regions~\cite{liong2014b}. Liong et al.~\cite{liong2016} perform spatial mean pooling followed by temporal mean pooling and concatenate OSF and OSW for a combined descriptor. Strain then serves both as a feature and as a spatial weighting signal.
+
+\textbf{STSTNet} supplies strain directly alongside horizontal and vertical onset--apex flow~\cite{liong2019b}. This is the precedent for the thesis's three-channel input structure, independently of the magnitude ambiguity. The present study retains all three channels across successive frame pairs rather than reducing each clip to one map.
+
+\subsection{Recognition evidence and protocol limits}
+\label{sec:strain-evidence}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \hline
+        \textbf{Method} & \multicolumn{2}{c}{\textbf{SMIC accuracy (\%)}} & \textbf{CASME II (\%)} \\
+        & Micro-average & Macro-average & Accuracy \\
+        \hline
+        Baseline & 45.73 & 47.76 & 61.94 \\
+        OSF & 41.46 & 46.00 & 51.01 \\
+        OSW & 49.39 & 50.71 & 61.94 \\
+        OSF + OSW & 52.44 & 58.15 & 63.16 \\
+        OFF + OFW & 40.24 & 41.94 & 55.87 \\
+        \hline
+    \end{tabular}
+    \caption[Recognition results for strain-based descriptors]{Recognition results reproduced from Liong et al.~\cite{liong2016}, Table 8. SMIC uses LOSO; CASME II uses leave-one-video-out. The summary combines block settings, so equal entries are not a matched-setting comparison. Macro-average here denotes subject-averaged accuracy, not macro F1.}
+    \label{tab:strain-performance}
+\end{table}
+
+The CASME II evidence depends on how strain is used and on the comparator. OSF alone falls below the texture baseline. The equal baseline and OSW entries in \autoref{tab:strain-performance} reflect different block settings: under matched settings OSW improves accuracy by 0.81 percentage points. The combined OSF + OSW descriptor improves on the texture baseline by 0.41--1.22 points across block settings~\cite{liong2016}. These accuracy gains are not directly comparable with pooled macro F1, and leave-one-video-out does not enforce subject-disjoint testing.
+
+Crucially, Liong et al.~\cite{liong2016} also test optical-flow features and weights (OFF + OFW) in the same descriptor framework. Their CASME II accuracy is 55.87\,\%, against 63.16\,\% for OSF + OSW, a 7.29-point difference. This is a matched flow-based control, so it would be incorrect to claim that the literature never isolates strain against flow. It concerns hand-crafted descriptors; it does not establish the gain from adding a strain channel to the learned sequence model used here.
+
+\subsection{Limitations}
+\label{sec:strain-limitations}
+
+Spatial differentiation can amplify flow-estimation noise. The filtering used by Liong et al.~\cite{liong2014a,liong2016} is therefore relevant to a pipeline without a dedicated strain post-filter. A deterministic transformation of $u$ and $v$ adds no independent observation: its potential value lies in making deformation directly accessible to the classifier. Whether this representation helps must be measured rather than inferred from its construction.
+
+The reviewed recognition methods also simplify time. OSF and OSW pool their sequences; STSTNet uses one onset--apex pair. Shreve et al.~\cite{shreve2011} retain temporal strain activity for spotting, which localises expressions rather than classifying their emotion. The temporal-collapse limitation thus concerns these recognition representations, not every use of strain in the literature.
+
+\subsection{Implications for this research}
+\label{sec:strain-implications}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.29\linewidth} p{0.65\linewidth}@{}}
+        \hline
+        \textbf{Design choice} & \textbf{Interpretation or unresolved test} \\
+        \hline
+        Strain accompanies $u$ and $v$
+        & Follows STSTNet's channel structure~\cite{liong2019b}; does not establish that its ambiguous magnitude equation was reproduced. \\
+        Three-term magnitude
+        & Differs from the four-term convention~\cite{liong2014a,liong2014b,liong2016}. Relative shear weighting remains an untested choice. \\
+        Per-pair strain sequence
+        & Preserves deformation over time instead of pooling it into one descriptor. Each channel is independently min--max normalised across the sequence. \\
+        No dedicated strain post-filter
+        & Departs from the explicit filtering of Liong et al.~\cite{liong2014a}. Farneb\"ack's internal smoothing is not a separately evaluated strain filter. \\
+        Strain held constant
+        & Present in all twelve evaluated configurations; its marginal contribution is not measured. \\
+        \hline
+    \end{tabular}
+    \caption[Strain representation and unresolved choices]{The implemented strain representation and the limits it places on interpretation.}
+    \label{tab:strain-decisions}
+\end{table}
+
+A strain-on/strain-off comparison is the natural next ablation. Neither published gains from a different descriptor nor the performance of the complete system substitutes for that measurement. Comparing magnitude conventions and adding a dedicated post-filter are separate follow-ups.
+
+Strain also extends the analytical-feature argument: the input contains a \textit{hand-specified differential operator}, exposing local deformation without learning that operator from the training clips. A spatial stem may still learn useful combinations of those features, but it is operating after both motion estimation and deformation extraction. This motivates testing its incremental contribution; it does not establish the cause of any observed architectural effect.
+
+\subsection{Research gap and scope}
+\label{sec:strain-gap}
+
+The study preserves the temporal evolution of strain for learned sequence processing. Its contribution is an architectural comparison on that representation, not an isolated demonstration of strain's benefit. The independent value of the third channel, the choice of shear weighting and the omitted post-filter remain unresolved. These boundaries preserve the distinction between evidence for a component, a reason to include it, and a result that the experimental design can actually establish.

@@ -1,0 +1,87 @@
+% Shortened Chapter 3, part 3 of 10: section 3.3.
+% Include after section 3.2; do not include alongside the original section 3.3.
+% Existing subsection labels and their order are retained for thesis references.
+
+\section{Motion Representation: Dense Optical Flow}
+\label{sec:flow-review}
+
+Dense optical flow supplies the horizontal and vertical displacement channels used in this thesis. The relevant literature concerns three choices: the estimator, the frame pairs it processes, and whether flow serves as a recognition feature or an alignment tool. These choices determine what information remains available to the learned model.
+
+\subsection{Why motion rather than appearance}
+\label{sec:why-flow}
+
+Xu et al.~\cite{xu2017} motivate facial-dynamics descriptors by the difficulty of interpreting micro-expressions through texture alone. Flow describes apparent movement directly, whereas image intensity also records appearance and illumination. This makes displacement a useful representation of subtle facial activity, although it does not guarantee independence from identity or recording conditions: facial geometry, alignment and brightness changes still affect its estimation.
+
+The benchmark evidence supports this choice. The MEGC 2019 organisers report that their three highest-ranked submissions used optical flow~\cite{see2019}. OFF-ApexNet~\cite{liong2019a} uses horizontal and vertical flow as neural-network inputs; STSTNet~\cite{liong2019b} adds strain; Zhao et al.~\cite{zhaoS2021} retain a sequence of flow fields. Their convergence motivates a motion-based input, but is not a controlled demonstration that it always outperforms appearance-based representations.
+
+\subsection{Estimation assumptions}
+\label{sec:brightness-constancy}
+
+OFF-ApexNet~\cite{liong2019a} formulates flow using brightness constancy and small-motion assumptions. A local brightness constraint supplies one equation for two displacement components, so estimation also needs spatial regularisation or a local motion model. The output is a pair of fields, $u(x,y)$ and $v(x,y)$; Zhao et al.~\cite{zhaoS2021} additionally describe their magnitude, $\sqrt{u^2+v^2}$.
+
+These assumptions matter more than repeating the derivation. Illumination changes can resemble movement, while smoothing can suppress a weak local contraction together with noise. Magnification can make subtle motion easier to estimate but can also amplify unwanted movement. Flow therefore transforms the measurement problem; it does not remove uncertainty in the source frames.
+
+\subsection{Choice of estimator}
+\label{sec:flow-estimator}
+
+The reviewed methods use three estimators. Zhao et al.~\cite{zhaoS2021} adopt Farneb\"ack through its OpenCV implementation, citing its established availability. It estimates displacement through local polynomial approximations. OFF-ApexNet~\cite{liong2019a} instead uses total-variation regularisation with an L1 data term (TV-L1), citing preservation of motion discontinuities and robustness. Xu et al.~\cite{xu2017} use the method of Sun, Roth and Black. These algorithm attributions are taken from the reviewed papers; the original estimator publications are outside the supplied reference corpus.
+
+STSTNet~\cite{liong2019b} specifies onset--apex optical flow but does not name its estimator. Its similarity to OFF-ApexNet is therefore insufficient to attribute TV-L1 to it. Likewise, the advantages given for TV-L1 should not be read as a measured recognition gain over Farneb\"ack on CASME II. The cited studies do not provide a controlled three-estimator comparison supporting such a ranking. This thesis adopts Farneb\"ack as a fixed preprocessing choice and leaves that comparison open.
+
+\subsection{Onset--apex flow or a temporal sequence}
+\label{sec:flow-what-between}
+
+OFF-ApexNet~\cite{liong2019a} represents each clip by flow from onset to apex, where expression intensity is greatest, and resizes the two component maps to $28\times28$. STSTNet~\cite{liong2019b} uses the same frame-pair construction. This is an economical representation of the displacement from neutral to peak expression, suitable for a small training set. It omits the intermediate trajectory and the relaxation after the apex.
+
+Zhao et al.~\cite{zhaoS2021} instead construct an eleven-frame sequence using onset, apex and offset annotations, then calculate ten adjacent-pair flow fields. This retains changes in motion across the expression. The distinction is between one displacement summary and a sequence whose order a temporal model can exploit; it is not simply a difference in input size.
+
+The present study follows the sequence approach but uses uniform sampling of existing frames rather than Zhao et al.'s key-frame construction. This preserves a temporal input for the transformer ablation. It does not, by itself, measure the recognition cost of replacing a sequence with an onset--apex pair: that representation comparison is not an experimental arm.
+
+\subsection{Flow for fine alignment}
+\label{sec:flow-alignment}
+
+Xu et al.~\cite{xu2017} also use flow to refine alignment. Their pipeline first locates landmarks and coarsely aligns the face, then performs fine in-sequence alignment using pixel-level movement. The motivation is specific to micro-expressions: a small registration error can be comparable to the facial displacement being recognised.
+
+This use differs from supplying flow to a classifier. An uncorrected displacement field contains residual head movement as well as expression. Magnifying the frames beforehand can increase both. The present pipeline performs no flow-based fine alignment, so corpus preprocessing must not be treated as proof that this source of error has been eliminated.
+
+\subsection{Limitations of the representation}
+\label{sec:flow-limitations}
+
+Flow remains sensitive to brightness-constancy violations, alignment errors and estimator settings. Apex-based systems additionally depend on selecting an informative frame. OFF-ApexNet~\cite{liong2019a} attributes weaker performance on SMIC to imprecise apex selection and cites an earlier apex-spotting study reporting an average discrepancy of thirteen frames. That reported average is neither a maximum error nor a measurement made by this thesis.
+
+Using an onset--offset sequence avoids dependence on one selected apex, but still relies on clip boundaries and temporal sampling. Repeated sampled frames can yield zero-flow pairs, and large sampling intervals can make the small-motion approximation less appropriate. These limitations constrain the representation before any network component is compared.
+
+\subsection{Implications for this research}
+\label{sec:flow-implications}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.29\linewidth} p{0.65\linewidth}@{}}
+        \hline
+        \textbf{Review finding} & \textbf{Consequence for this study} \\
+        \hline
+        Flow is a recognition input~\cite{liong2019a,see2019}
+        & Horizontal and vertical displacement form the first two channels; the classifier receives motion tensors rather than raw frames. \\
+        Sequence flow preserves temporal variation~\cite{zhaoS2021}
+        & Adjacent-pair fields are retained across the sampled clip, allowing the temporal encoder to operate on an ordered sequence. \\
+        Estimator choices differ~\cite{liong2019a,zhaoS2021,xu2017}
+        & Farneb\"ack remains fixed; a matched comparison with TV-L1 is an untested extension. \\
+        Fine alignment matters~\cite{xu2017}
+        & No flow-based fine alignment is performed. It remains a priority for improving preprocessing. \\
+        \hline
+    \end{tabular}
+    \caption[Optical-flow evidence and study decisions]{Optical-flow evidence and the decisions it motivates. Fixed preprocessing choices constrain the interpretation of the architectural ablation.}
+    \label{tab:flow-decisions}
+\end{table}
+
+The central interpretive point is that optical flow is an \textit{analytical spatio-temporal feature extractor}: it estimates motion from paired frames before the network is trained. A learned spatial stem therefore acts on a representation that already makes displacement explicit. With only 156 clips, learning additional spatial filters may offer limited benefit or duplicate structure already exposed by preprocessing. This is a hypothesis about the stem's marginal value, not proof that learned spatial processing is unnecessary.
+
+A temporal encoder addresses a different task: modelling relations among the successive displacement fields. Pairwise flow estimation does not itself learn those sequence-level relations. Keeping these roles distinct is necessary when attributing performance to the stem and transformer.
+
+\subsection{Research gap and scope}
+\label{sec:flow-gap}
+
+The relevant unresolved question is what learned spatial and temporal processing contributes \textit{after} motion has been extracted analytically. The thesis addresses this through matched architectural comparisons under complete leave-one-subject-out (LOSO) evaluation, retaining the same flow construction while switching the learned components. Magnification is varied separately through the paired preprocessing conditions.
+
+The design neither ranks optical-flow estimators nor isolates alignment quality or onset--apex versus sequence representations. Those remain limitations rather than gaps claimed as solved. The resulting architectural conclusions apply to the implemented motion representation and evaluation setting; they do not establish a universal ordering of network families.
