@@ -1,0 +1,99 @@
+% Shortened Chapter 3, part 8 of 10: section 3.8.
+% Include after part 7, replacing the original section 3.8.
+% Preserve seven subsection positions, both table labels and six divergences.
+
+\section{The Temporal Encoder: Transformers for Micro-Expression Recognition}
+\label{sec:transformer-review}
+
+The temporal encoder is motivated by Zhang et al.'s Short and Long Range Relation Based Spatio-Temporal Transformer (SLSTT)~\cite{zhang2022} and its Vision Transformer (ViT) foundation~\cite{dosovitskiy2021}. The component evaluated here differs substantially from published SLSTT, particularly in the axis over which self-attention operates.
+
+\subsection{Why temporal self-attention}
+\label{sec:transformer-why}
+
+A micro-expression evolves through onset, peak and relaxation. Retaining a motion sequence permits a model to relate separated stages rather than compressing them immediately into one descriptor. Zhang et al.~\cite{zhang2022} motivate their design through the need to capture both local and global patterns.
+
+This thesis compares a temporal transformer with mean pooling over the same input sequence. Mean pooling discards order, whereas positional information and self-attention allow the encoder to model relations among frame-pair features. This motivates the comparison without establishing in advance which representation will generalise better.
+
+\subsection{The Vision Transformer foundation}
+\label{sec:transformer-vit}
+
+ViT splits an image into patches, projects them into token vectors, adds learned positional embeddings and processes them with transformer encoder layers~\cite{dosovitskiy2021}. Attention then relates spatial patches. Dosovitskiy et al. also show that data scale and training regime matter: without the locality and translation-equivariance biases of convolution, image transformers can perform poorly when trained with insufficient data, while large-scale pre-training improves their performance.
+
+That evidence is a caution for a 156-clip study, not a universal requirement that every transformer must be pre-trained. A short sequence of motion features presents a different learning problem from image patches, but remains subject to limited data and overfitting.
+
+\subsection{Published SLSTT}
+\label{sec:slstt-architecture}
+
+Zhang et al.~\cite{zhang2022} combine three stages. First, \textbf{onset-referenced optical flow} describes sampled frames relative to the onset rather than to their immediate predecessors. They argue that this gives a more structured trajectory towards and away from the apex. Their experiments use this representation throughout; they do not provide a matched short-term-flow ablation establishing its independent gain.
+
+Second, a \textbf{spatial ViT encoder} processes each flow field as patches. The implementation uses ImageNet-pre-trained ViT-B/16, twelve encoder layers and $384\times384$ input. Third, an \textbf{LSTM temporal aggregator} combines the per-frame features. A mean aggregator supplies the comparison variant. Self-attention is spatial in this architecture; recurrence handles time.
+
+\subsection{Published results and the aggregation comparison}
+\label{sec:slstt-results}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \hline
+        \textbf{Method} & \textbf{Composite UF1} & \textbf{CASME II UF1} & \textbf{CASME II UAR} \\
+        \hline
+        LBP-TOP & 0.588 & 0.703 & 0.743 \\
+        Bi-WOOF & 0.630 & 0.781 & 0.803 \\
+        OFF-ApexNet~\cite{liong2019a} & 0.720 & 0.876 & 0.868 \\
+        STSTNet~\cite{liong2019b} & 0.735 & 0.838 & 0.869 \\
+        EMR~\cite{liu2019} & 0.789 & 0.829 & 0.821 \\
+        RCN~\cite{xia2020b} & 0.705 & 0.809 & 0.856 \\
+        SLSTT-Mean & 0.788 & 0.844 & 0.830 \\
+        SLSTT-LSTM & 0.816 & 0.901 & 0.885 \\
+        \hline
+    \end{tabular}
+    \caption[SLSTT and comparison results]{Selected results from Zhang et al.~\cite{zhang2022}, Table 2, reported under their three-class Composite Database Evaluation heading. Columns retain the source's dataset labels. The listed methods are not all arms of one controlled architectural comparison.}
+    \label{tab:slstt-results}
+\end{table}
+
+The SLSTT variants compare temporal aggregation with the spatial transformer retained in both. CASME II UF1 increases from 0.844 to 0.901, a difference of 0.057, or 5.7 UF1 percentage points~\cite{zhang2022}. This supports evaluating aggregation choices within that framework. It is not an estimate of what an LSTM would add to this thesis, where mean pooling follows \emph{temporal} self-attention rather than independent spatial encoding.
+
+Protocol labels need care. The source describes three-class LOSO evaluations on the databases separately and together under its Composite Database Evaluation heading. That heading alone therefore does not establish that every CASME II column entry uses pooled cross-database training. It also reports a distinct Sole Database Evaluation using original labels, including five CASME II classes~\cite{zhang2022}. Neither setting should be equated automatically with this thesis's 156-clip three-class pool.
+
+\subsection{Limitations of the evidence}
+\label{sec:transformer-limitations}
+
+Published SLSTT retains a pre-trained spatial encoder. Its results do not isolate the benefit of a transformer trained from scratch on this study's motion representation. The Mean--LSTM comparison isolates an aggregator, not the presence of a transformer, since both variants contain one.
+
+Label interpretation also limits comparison. Zhang et al.~\cite{zhang2022} note that facial action units do not map uniquely to emotion labels, so visual evidence alone need not determine the annotation. This is a limitation of the recognition task, not a numerical upper bound measured by the present experiments.
+
+\subsection{Implementation and six declared divergences}
+\label{sec:transformer-implications}
+
+The evaluated component receives 32 tokens of width 96. They come either from the convolutional stem or from $4\times4$ spatial pooling followed by a \emph{learned linear projection}. The encoder uses four pre-norm layers, eight heads, feed-forward width 256 and dropout 0.1. Fixed sinusoidal positions precede attention; mean pooling follows it. With the encoder disabled, the input tokens are averaged directly.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.23\linewidth} p{0.34\linewidth} p{0.35\linewidth}@{}}
+        \hline
+        \textbf{Property} & \textbf{Published SLSTT~\cite{zhang2022}} & \textbf{This thesis} \\
+        \hline
+        Attention axis & Spatial patches within a frame & Temporal tokens within a clip \\
+        Aggregation & LSTM over spatially encoded frames & Mean after temporal self-attention \\
+        Initialisation & ImageNet-pre-trained ViT-B/16 & Trained from scratch \\
+        Capacity & Twelve layers, width 768; $384\times384$ inputs & Four layers, width 96; 32 tokens \\
+        Positions & Learned spatial embeddings & Fixed sinusoidal temporal encoding \\
+        Input flow & Relative to onset & Relative to the preceding sampled frame \\
+        \hline
+    \end{tabular}
+    \caption[Divergences from published SLSTT]{Six material divergences from published SLSTT. The component evaluated here is a small temporal transformer encoder, not a reproduction of the published architecture.}
+    \label{tab:slstt-divergences}
+\end{table}
+
+Six matched pairs evaluate the temporal encoder with the other component choices fixed within each pair. They test the whole encoder, including positional encoding, feed-forward layers and normalisation, against direct mean pooling. They do not isolate self-attention from those accompanying operations or compare it with another learned temporal model.
+
+Three follow-ups follow from the divergences: testing an LSTM aggregator, comparing onset-referenced with consecutive-frame flow, and replacing fixed positions with learned embeddings. The last would add $32\times96=3{,}072$ embedding parameters for this sequence length. All three remain untested; changing the input representation also requires re-training and evaluation before any recognition benefit can be claimed.
+
+\subsection{Research gap and scope}
+\label{sec:transformer-gap}
+
+The study asks what a small temporal encoder contributes after motion extraction, using a single corpus without pre-training. This differs from SLSTT's spatial transformer and recurrent aggregation while retaining its motivation to model relations beyond isolated frames.
+
+The contribution is a matched comparison of the implemented encoder and an order-blind baseline within this pipeline. It neither validates published SLSTT nor establishes a general ranking of attention, recurrence and convolution. The six declared divergences and the limited training regime define the scope of the architectural conclusions.

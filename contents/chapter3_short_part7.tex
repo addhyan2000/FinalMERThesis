@@ -1,0 +1,109 @@
+% Shortened Chapter 3, part 7 of 10: section 3.7.
+% Include after part 6, replacing the original section 3.7.
+% Preserve eight subsection positions and existing labels for thesis references.
+
+\section{Parameter-Free Attention: SimAM}
+\label{sec:simam-review}
+
+SimAM re-weights the convolutional feature maps without adding learned parameters. Yang et al.~\cite{yang2021} provide the mechanism and its image-recognition evidence; Xia et al.~\cite{xia2020b} motivate parameter-free modules in composite-database micro-expression recognition. The latter support the design principle, rather than validating SimAM itself on this task.
+
+\subsection{Why parameter-free attention}
+\label{sec:simam-why}
+
+Local facial activity occupies a small part of a motion tensor. Attention offers a way to emphasise informative activations, but its parameter and computational costs must be justified on a 156-clip corpus. Yang et al.'s~\cite{yang2021} comparison illustrates the range of parameter costs.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}lc@{}}
+        \hline
+        \textbf{Module} & \textbf{Additional learnable parameters} \\
+        \hline
+        SE & $2C^2/r$ \\
+        CBAM & $2C^2/r+2k^2$ \\
+        GC & $2C^2/r+C$ \\
+        ECA & $k$ \\
+        SRM & $6C$ \\
+        SimAM & $0$ \\
+        \hline
+    \end{tabular}
+    \caption[Parameter costs of attention modules]{Parameter costs reported by Yang et al.~\cite{yang2021}, Table 1. $C$ denotes channels, $r$ the reduction ratio and $k$ the relevant kernel size. The competing modules are attributed through this source.}
+    \label{tab:attention-modules}
+\end{table}
+
+Zero additional parameters makes SimAM a plausible candidate, not the only defensible one: alternatives such as ECA are also small. Xia et al.~\cite{xia2020b} demonstrate a related strategy of adding parameter-free modules to a recurrent convolutional model. Neither argument establishes that a parameter-free module has zero runtime cost or cannot worsen generalisation.
+
+\subsection{The distinctiveness premise}
+\label{sec:simam-premise}
+
+Yang et al.~\cite{yang2021} motivate attention through spatial suppression: neurons distinguishable from their surroundings are assigned greater importance. They express this as the linear separability of one target activation from the other activations in its channel. The resulting weights scale the feature map rather than being added to it.
+
+This is a prior about activation statistics, not a detector of facial action units or minority classes. A distinctive response may encode useful deformation, noise or an artefact. Its suitability for flow-derived features therefore requires evaluation rather than following automatically from the neuroscience motivation.
+
+\subsection{Energy and implemented refinement}
+\label{sec:simam-energy}
+
+The paper minimises a regularised separation energy and obtains a closed-form importance score. Its reference implementation can be written compactly as
+\[
+    d_i=(x_i-\mu)^2,\qquad
+    s^2=\frac{1}{M-1}\sum_{i=1}^{M}d_i,\qquad
+    E_i^{-1}=\frac{d_i}{4(s^2+\lambda)}+\frac{1}{2},
+\]
+\[
+    \widetilde{x}_i=x_i\,\operatorname{sigmoid}(E_i^{-1}),
+    \qquad \mu=\frac{1}{M}\sum_{i=1}^{M}x_i.
+\]
+Here $M$ is the number of positions in one channel's statistical context and $\lambda$ is a positive regularisation constant. The $+\tfrac12$ follows from the reciprocal-energy expression rather than an arbitrary offset.
+
+An implementation distinction matters: the shared variance printed with Yang et al.'s equation (5) divides by $M$, whereas their Figure 3 code divides by $M-1$~\cite{yang2021}. The equations above follow the reference \emph{code}, as does this thesis. The sigmoid preserves the ordering of the scores while bounding the multiplicative weights; it does not create a hard mask of inactive regions.
+
+\subsection{What three-dimensional weights mean}
+\label{sec:simam-3d-weights}
+
+The original module produces a separate weight at each channel--height--width position~\cite{yang2021}. Its three-dimensional weights therefore describe $C\times H\times W$, not a temporal volume. Statistics are computed separately within each channel's spatial plane, with $M=HW$. Extending the context across video frames is an additional design decision, not part of the original image formulation.
+
+\subsection{Evidence and hyper-parameter selection}
+\label{sec:simam-evidence}
+
+Yang et al.~\cite{yang2021} evaluate SimAM with several network families on CIFAR and ImageNet, reporting competitive classification performance against learned attention modules. Their timing results also show that unchanged parameter totals do not imply unchanged inference speed. The evidence supports testing SimAM, but does not establish its value on micro-expression motion tensors.
+
+For CIFAR, they sweep $\lambda$ from $10^{-1}$ to $10^{-6}$ and select $10^{-4}$ as a balance between accuracy and variability. They repeat selection for ImageNet and choose $0.1$~\cite{yang2021}. Thus $10^{-4}$ is a dataset-selected operating point, not a universal setting justified by the formula.
+
+\subsection{Limits of transfer to this task}
+\label{sec:simam-limitations}
+
+The source classification experiments concern natural images, different training-set sizes and learned feature distributions. In this thesis the input is flow and strain, so distinctiveness need not have the same relationship to useful evidence. The statistics are calculated from each feature map, not estimated by pooling the entire training corpus; the small dataset instead constrains how the surrounding network is learned.
+
+The image experiments also do not decide whether video statistics should be computed per frame or over a clip. Nor does the lack of learned attention weights establish that runtime, memory or overfitting concerns disappear. These are empirical limits on transferring the source result, rather than reasons to assume either success or failure.
+
+\subsection{Implications for this research}
+\label{sec:simam-implications}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.29\linewidth} p{0.65\linewidth}@{}}
+        \hline
+        \textbf{Choice} & \textbf{Implementation and interpretation} \\
+        \hline
+        Placement & Applied separately to each convolutional stream before concatenation; no trainable weights or biases are introduced. \\
+        Refinement & Uses the reference-code reciprocal energy and sigmoid gate~\cite{yang2021}. \\
+        Statistical context & Mean and variance span $(T,H,W)$ within each channel, with divisor $THW-1$, rather than one $(H,W)$ plane. \\
+        Regularisation & $\lambda=10^{-4}$ is retained without re-tuning on CASME II. \\
+        Architectural dependency & SimAM is enabled only with the CNN stem in this model. Four of sixteen candidate configurations are excluded, leaving twelve evaluated configurations and four SimAM matched pairs. \\
+        \hline
+    \end{tabular}
+    \caption[SimAM implementation choices]{SimAM implementation choices and their relation to the reviewed image formulation. The dependency on the CNN is a rule of this architecture.}
+    \label{tab:simam-decisions}
+\end{table}
+
+The five-dimensional input includes batch, channel, time, height and width. Pooling statistics across time makes an activation distinctive relative to its whole clip rather than its own frame. This could emphasise a brief contraction, but does not guarantee low weights at onset or high weights at the apex: the score depends on squared deviation, not expression labels. The two context choices are not compared experimentally.
+
+The CNN dependency similarly describes this implementation, not a mathematical prohibition on applying SimAM to other tensors. Its measured effect is conditional on the stem being present. Retention should be judged against both recognition performance and computational cost; parameter count alone cannot settle that decision.
+
+\subsection{Research gap and scope}
+\label{sec:simam-gap}
+
+The study evaluates SimAM in a motion-input, small-corpus setting through four matched comparisons under complete leave-one-subject-out evaluation. It tests the implemented module as a whole, rather than separately establishing the benefit of each design choice.
+
+Three follow-ups remain: testing whether the distinctiveness prior suits flow-derived features, re-tuning $\lambda$, and comparing per-frame with whole-clip statistics. Each requires new evaluations despite introducing no learned attention weights. Per-class changes may also be examined, but a rare class benefiting most is a hypothesis of this study, not a prediction established by Yang et al.~\cite{yang2021}.
