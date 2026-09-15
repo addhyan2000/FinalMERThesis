@@ -1,5 +1,12 @@
 % Include once in the thesis front matter, unless the master already calls
 % \listoftables. LaTeX collects numbered captions from ALL included chapters.
 % Compile to convergence to populate/update the .lot file and page numbers.
+%
+% Chapter 2 originally had no table floats. The shortened chapter adds two,
+% both with short \caption[...] entries for this list:
+%   tab:ch2-evm-departures --- EVM implementation departures
+%   tab:ch2-component-controls --- Enabled components and their controls
+% They appear here only if the master includes chapter2_shortened.tex (or the
+% two halves) in place of the original chapter2.tex.
 \clearpage
 \listoftables
