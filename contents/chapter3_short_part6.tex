@@ -48,7 +48,7 @@ Two strategies in the corpus have counterparts in this thesis's training configu
 
 \textbf{The evidence base is composite-database.} Xia et al.'s shrinking study~\cite{xia2020b} and STSTNet~\cite{liong2019b} are developed for the MEGC composite setting, which supplies substantially more training data per fold than a single-corpus study (\autoref{sec:megc-metrics}); only the earlier recurrent-convolutional work~\cite{xia2020a} is evaluated per database. Conclusions about affordable capacity therefore understate the constraint here.
 
-\textbf{No study isolates the backbone in a matched pair.} The corpus does compare descriptor-only methods against learned ones on the same folds, so it is not silent on whether a learned stem helps at all. What it does not contain is a comparison in which the stem is the \textit{only} thing that changes: each paper proposes a backbone and evaluates the whole system around it, so a reported gain cannot be attributed to the stem rather than to the representation, training schedule or corpus subset that changed with it.
+\textbf{No study isolates the backbone itself.} The corpus is not short of matched comparisons: it sets descriptor-only methods against learned ones on the same folds, and Xia et al.~\cite{xia2020b} vary individual architectural modules against a common baseline with every other parameter held constant. But those comparisons all \textit{add} to a backbone that stays in place. None removes the learned spatial stem entirely and passes the motion representation straight to a classifier or temporal model, so what the stem itself contributes, set against what it costs, is nowhere measured.
 
 \subsection{Implications for this research}
 \label{sec:cnn-implications}

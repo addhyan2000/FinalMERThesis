@@ -1,0 +1,95 @@
+% Shortened Chapter 3, part 9 of 10: section 3.9.
+% Include after section 3.8; do not include alongside the original section 3.9.
+% Subsection order is load-bearing: chapter2.tex cites Section 3.9.5 (metrics)
+% and Section 3.9.7 (implications) by number. All eight slots are retained.
+
+\section{Training Under Severe Class Imbalance}
+\label{sec:imbalance-review}
+
+This section covers the training configuration held constant across all twelve ablated configurations, and which \autoref{sec:corpus-implications} identified as forced by the corpus rather than chosen freely: the handling of a 4 : 1.3 : 1 class imbalance.
+
+\textbf{A deliberate exclusion.} Two topics the project's reading list groups here --- Grad-CAM++ visual auditing and adversarial identity disentanglement --- are \textbf{not reviewed}, because neither is part of the implemented system. The loss module records that ``the Cross-Batch Memory (XBM) queue, and the adversarial identity loss --- are intentionally removed'', and no gradient-based visualisation exists anywhere in the codebase. Both are declared as proposed further work.
+
+\subsection{The imbalance is a property of the phenomenon, not of the sampling}
+\label{sec:imbalance-property}
+
+\autoref{sec:label-taxonomy} and \autoref{sec:original-baseline} established the class counts and the always-Negative floor; what matters here is why the skew exists. It is not an artefact of careless collection. Yan et al.~\cite{yan2014} are explicit that it follows from what can be elicited in a laboratory: ``some types of facial expressions are difficult to elicit in laboratory situations, thus the samples in different categories distributed unequally, e.g., there are 60 disgust samples but only 7 sadness samples.'' Nor is it specific to CASME II --- the MEGC composite shows the same pattern (\autoref{sec:megc-metrics}). Skew must be coped with; it cannot be collected away.
+
+\subsection{Three places to intervene}
+\label{sec:imbalance-three-places}
+
+The reviewed corpus corrects for imbalance at three distinct points, worth separating because this thesis intervenes at all three and the interaction between two of them turned out to matter.
+
+\begin{enumerate}
+	\item \textbf{At the data}, by changing how often each class is presented during training --- resampling or augmentation.
+	\item \textbf{At the loss}, by changing how much each example contributes to the gradient --- class weighting or focal re-weighting.
+	\item \textbf{At the metric}, by changing how performance is scored --- macro-averaged rather than sample-averaged measures.
+\end{enumerate}
+
+\subsection{Loss-level correction: focal loss}
+\label{sec:imbalance-focal}
+
+Zhao et al.~\cite{zhaoS2021} bring focal loss into micro-expression recognition ``to alleviate the inefficient model training caused by the class imbalance in the MEs Datasets'', since cross-entropy ``could be biased toward particular emotions that constitute a larger portion of the training set''. They adopt the formulation developed for one-stage object detection, where the imbalance is between foreground and background regions:
+
+\[
+	\text{FL}(p_t) = -\alpha_t (1 - p_t)^{\gamma}\log p_t
+\]
+
+where $p_t$ is the model's probability for the true class, $\gamma$ ``the balance factor for loss'' and $\alpha_t$ ``the weight balance factor for samples'' (\autoref{sec:focal-loss}); under skew, the examples it up-weights are disproportionately the minority classes. Adapting it to multi-class classification, Zhao et al. report that ``$\gamma$ is set as 2 in practice, and $\alpha$ is treated as a hyper-parameter to set by cross validation.''
+
+The division of labour there matters: $\gamma$ re-weights by \textit{difficulty} and is treated as a constant, $\alpha$ by \textit{class frequency} and is treated as dataset-specific. Conflating them is where this project went wrong (\autoref{sec:imbalance-double-correction}).
+
+\subsection{Data-level correction: resampling and augmentation}
+\label{sec:imbalance-balanced-loss}
+
+Xia et al.~\cite{xia2020a} address the same problem at the data end and pair the two interventions, using ``temporal data augmentation strategies as well as a balanced loss \ldots jointly'' to overcome ``limited and imbalanced training samples''. The pairing is not left unexamined: their subsection \textit{``The Impact of Data Augmentation and Balanced Loss''} removes each correction in turn from the joint system and reports the balanced loss improving performance ``slightly'', with one leave-one-subject-out cell on SMIC where removing it scores higher. This is the corpus's only controlled look at composing two corrections, and \autoref{sec:imbalance-double-correction} records a far larger effect in the same direction.
+
+\subsection{Metric-level correction}
+\label{sec:imbalance-metrics}
+
+\autoref{sec:megc-metrics} defines UF1 and the case for macro-averaged metrics. Liong et al.~\cite{liong2016} add the argument from the subject side rather than the class side, reporting F1, precision and recall because these ``provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples.'' The two arguments compound on CASME II, where classes are skewed \textbf{and} per-subject clip counts range from 1 to 33 (\autoref{tab:corpus-threats}c).
+
+\subsection{Limitations}
+\label{sec:imbalance-limitations}
+
+\textbf{The interaction between corrections is examined once, and only at small magnitude.} Xia et al.~\cite{xia2020a} ablate augmentation and balanced loss out of the joint system and report the balanced loss helping only ``slightly'' --- at most about two points across their twelve cells, and in one cell costing accuracy; Zhao et al.~\cite{zhaoS2021} apply focal loss alongside a large per-sample augmentation, but without class-proportional resampling and without ablating the pairing. What no reviewed paper reports is the pairing failing outright.
+
+\textbf{$\gamma$ is inherited rather than tuned.} Zhao et al.~\cite{zhaoS2021} take the value from the object-detection literature ``in practice''. They do compare focal loss against cross-entropy across a sweep of $\alpha$, but that experiment holds $\gamma$ fixed, so the focusing exponent remains unvalidated on this task.
+
+\textbf{Label smoothing is named in the corpus but never examined on this task.} Dosovitskiy et al.~\cite{dosovitskiy2021} list it among the regularisation parameters they tune, but no reviewed micro-expression paper uses or discusses it, or reports what it does under class skew. It is used here and declared as a choice this corpus supports neither way.
+
+\subsection{Implications for this research}
+\label{sec:imbalance-double-correction}
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{@{}p{5.6cm} p{8.0cm}@{}}
+		\hline
+		\textbf{Finding from the review} & \textbf{Decision taken in this thesis} \\
+		\hline
+		Focal loss addresses class-frequency bias in micro-expression recognition~\cite{zhaoS2021} & Focal loss adopted as the training objective, with \textbf{$\gamma = 2.0$}, matching Zhao et al.'s reported setting \\
+		$\alpha$ is a dataset-specific class-weight term~\cite{zhaoS2021} & Implemented as an optional per-class $\alpha$ vector, \textbf{switched off at run time} --- see the declaration below \\
+		Correct at the data end as well as the loss end~\cite{xia2020a} & Minority oversampling via a weighted sampler, active in every configuration --- a sampler, where Xia et al. use uniform augmentation plus a balanced loss \\
+		Imbalance-aware metrics are mandatory~\cite{see2019,liong2016} & Pooled macro F1 --- identical in construction to MEGC's UF1 --- as the primary metric, with accuracy quoted only alongside the always-Negative floor \\
+		\textit{(no micro-expression source)} & Label smoothing of 0.05 applied inside the focal loss; named among the regularisers tuned by Dosovitskiy et al.~\cite{dosovitskiy2021}, but declared as unsupported either way by this corpus \\
+		\hline
+	\end{tabular}
+	\caption[Review findings and the imbalance-handling decisions they determine]{Review findings and the imbalance-handling decisions they determine.}
+	\label{tab:imbalance-decisions}
+\end{table}
+
+\textbf{The finding this project contributes: correct at exactly one point, and know which.} The configuration is resolved at run time by a single rule --- class weighting in the loss is enabled only when the balanced sampler is \textit{not} active --- and the run log records the decision each fold: \textit{``Class weights in loss disabled (balanced sampler already active).''}
+
+That rule exists because of two failures in opposite directions, both recoverable from this project's own run history. In the earliest code era the loss carried inverse-frequency class weights and no balanced sampler existed; under that single correction the proposed configuration abandoned the \textbf{Positive} class outright, predicting none of its clips --- a failure initially misdiagnosed as over-capacity overfitting. A later era added the sampler while leaving the loss weights unconditional, so both corrections ran at once; the collapse then inverted, and configurations abandoned the \textbf{Negative} majority class instead, one of them predicting a single class for every clip in the corpus. Correcting once at the loss starved the minority; correcting twice over-served it. With the guard in place and exactly one correction active, no configuration in the reported study abandons any class.
+
+This is a contribution rather than an incident, because of how little guidance the corpus offers (\autoref{sec:imbalance-limitations}): no reviewed paper warns that combining corrections can invert the intended effect rather than merely blunt it. On a 156-clip corpus with a 4 : 1 skew, correcting twice is as damaging as correcting once in the wrong place --- the two failures differ only in which class is abandoned.
+
+\textbf{A second declaration.} The severity of the imbalance also constrains what the ablation can conclude. Because every configuration shares the same sampler, loss and $\gamma$, this thesis measures \textbf{no} effect attributable to the imbalance treatment itself: it is a constant, not a factor. The claim supported is that the four architectural components were compared under a training regime that does not abandon minority classes, not that this regime is optimal.
+
+\subsection{Research gap and scope}
+\label{sec:imbalance-gap}
+
+The corrections themselves are well established; what the corpus does not settle are the three gaps of \autoref{sec:imbalance-limitations} --- how two corrections compose, what $\gamma$ should be on this task, and what over-correction looks like when it fails.
+
+This thesis contributes to the first and third, documenting two opposite class-collapse failures and the run-time rule that resolved them (\autoref{sec:imbalance-double-correction}): a negative result the corpus does not contain and one directly actionable for anyone reproducing this class of pipeline. On the second it offers no improvement, since $\gamma = 2.0$ and label smoothing of 0.05 are held constant across all twelve configurations. Sweeping either, and the Grad-CAM++ auditing and identity-disentanglement work this project's earlier stages removed, are declared as further work.
