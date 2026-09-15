@@ -1,0 +1,193 @@
+% Shortened Chapter 2, second half: sections 2.6--2.9.
+% Editing unit for tools/assemble_short_chapter2.py; no chapter declaration here.
+% Original subsection order and labels are preserved.
+
+\section{Network Building Blocks}
+\label{sec:building-blocks}
+
+The model combines a spatial stem, optional activation re-weighting, an optional temporal encoder and a common classification head. The stem has three streams with separate learned weights, one each for horizontal flow, vertical flow and strain. Disabling a component changes a specified operation while preserving compatible input and output shapes.
+
+\subsection{Three-dimensional convolution and kernel shape}
+\label{sec:conv3d}
+
+A three-dimensional convolution accepts $(B,C,T,H,W)$ tensors: batch, channels, time, height and width. A kernel $(k_T,k_H,k_W)$ mixes time only when $k_T>1$. The implemented streams use $(1,3,3)$ kernels and $(0,1,1)$ padding, followed by $(1,2,2)$ max-pooling. Thus the convolutions preserve the temporal length and learn spatial filters; pooling halves height and width.
+
+The use of \texttt{Conv3d} does not establish that temporal convolution was tested. The complete stream can nevertheless depend on multiple frames: BatchNorm during training and SimAM whenever enabled use statistics spanning time. This distinction separates temporal convolution from other forms of whole-clip dependence.
+
+\subsection{Normalisation and regularisation}
+\label{sec:normalisation}
+
+Batch normalisation rescales each channel using a mean and variance, followed by learned scale and shift:
+\[
+    \widehat x=\frac{x-\mu_c}{\sqrt{\sigma_c^2+\epsilon}},
+    \qquad y=\gamma_c\widehat x+\beta_c.
+\]
+\texttt{BatchNorm3d} computes training statistics over $(B,T,H,W)$ for each channel; evaluation uses running estimates from training. These activation statistics differ from the per-sample input standardisation performed by the dataset loader.
+
+\texttt{Dropout3d} randomly removes entire feature channels for a sample during training, rather than masking individual spatial values. Retained channels are rescaled; evaluation disables the random mask. Layer normalisation instead standardises a token's feature dimension independently of other samples. It appears inside the transformer and in the classifier head, followed there by dropout and a linear projection to class logits.
+
+\subsection{Parameter-free attention: SimAM}
+\label{sec:simam}
+
+SimAM assigns larger scores to activations that differ from their channel context~\cite{yang2021}. Following the source's reference code, let $M$ be the number of positions in that context:
+\[
+    \mu=\frac1M\sum_i x_i,\qquad
+    v=\frac1{M-1}\sum_i(x_i-\mu)^2,
+\]
+\[
+    E_i^{-1}=\frac{(x_i-\mu)^2}{4(v+\lambda)}+\frac12,
+    \qquad \widetilde x_i=x_i\operatorname{sigmoid}(E_i^{-1}).
+\]
+The reciprocal energy measures distinctiveness; the sigmoid bounds its multiplicative weight while preserving score order. The paper's printed shared-variance definition uses $M$, whereas its Figure 3 code uses $M-1$. The implementation follows the latter.
+
+Here $M=THW$ within each channel, rather than the original image formulation's $HW$, and $\lambda=10^{-4}$. SimAM acts on each convolutional stream before concatenation. It adds no learned parameters, but still performs reductions and element-wise computations. Whole-clip statistics do not guarantee that apex frames receive the highest weights: unusual activation values may also reflect noise.
+
+\subsection{Self-attention}
+\label{sec:self-attention}
+
+Each input token is projected into a query, key and value. Scaled dot-product attention computes
+\[
+    \operatorname{Attention}(Q,K,V)
+      =\operatorname{softmax}\left(\frac{QK^{\mathsf T}}{\sqrt{d_k}}\right)V.
+\]
+Queries and keys determine which values contribute to each output. Scaling moderates dot-product magnitude as key dimension $d_k$ grows. Multiple heads learn projections into different subspaces, whose outputs are concatenated and linearly mixed.
+
+Without position information, self-attention is permutation-equivariant: permuting input tokens permutes their outputs correspondingly. It does not identify their temporal order. Fixed sinusoidal position vectors provide that information here. Although the sinusoidal functions can be evaluated at other positions, successful generalisation to unseen sequence lengths is not guaranteed; the implementation uses a finite precomputed buffer.
+
+The temporal encoder alternates attention and position-wise feed-forward sublayers with residual additions. It uses pre-norm placement, applying LayerNorm before each sublayer. Its output is averaged over time before classification. This mean summarises already contextualised temporal features and is therefore different from averaging the input tokens without an encoder.
+
+\subsection{The component controls}
+\label{sec:fallbacks}
+
+Table~\ref{tab:ch2-component-controls} defines the replacement used for each disabled component.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.22\linewidth} p{0.35\linewidth} p{0.35\linewidth}@{}}
+        \hline
+        \textbf{Component} & \textbf{Enabled} & \textbf{Disabled} \\
+        \hline
+        Spatial stem & Three learned convolutional streams & Per-frame $4\times4$ average pooling and a learned $48\rightarrow96$ linear projection \\
+        SimAM & Per-stream activation re-weighting & Unmodified stream outputs; this model enables SimAM only with its CNN stem \\
+        Temporal encoder & Position encoding, transformer layers, then temporal mean & Direct mean of the input sequence \\
+        \hline
+    \end{tabular}
+    \caption[Enabled components and their controls]{Operations compared by the model switches. The classifier head is shared in structure; compatible feature dimensions do not imply equal parameter counts.}
+    \label{tab:ch2-component-controls}
+\end{table}
+
+Pooling and direct temporal averaging have no learned weights. The no-CNN projection does: with its bias it contains $48\times96+96=4{,}704$ parameters. The controls preserve the interfaces needed for the experiment while changing the operations and capacity. They do not isolate architecture independently of parameter count or computational cost.
+
+\section{Learning Under Scarcity and Skew}
+\label{sec:scarcity-skew}
+
+Training uses a shared objective, sampling scheme and optimisation procedure across the architectural configurations. Class-frequency correction, difficulty weighting and regularisation serve different purposes and must be distinguished.
+
+\subsection{What skew does to cross-entropy}
+\label{sec:skew-cross-entropy}
+
+Cross-entropy contributes $-\log p_t$ for an example whose true-class probability is $p_t$. Under natural sampling, a frequent class supplies more terms to the training objective. This can favour majority-class performance, although total gradient magnitude also depends on individual errors and features, not class counts alone. Lower overall loss need not mean that rare classes are handled well.
+
+\subsection{Focal loss: weighting by difficulty}
+\label{sec:focal-loss}
+
+Zhao et al.~\cite{zhaoS2021} apply focal loss to micro-expression recognition:
+\[
+    \operatorname{FL}(p_t)=-\alpha_t(1-p_t)^\gamma\log p_t.
+\]
+For $\gamma>0$, the modulating factor reduces the contribution of confident, correct examples relative to difficult ones. It does not inspect class frequency, so a difficult example from any class can retain a large contribution. The separate $\alpha_t$ multiplier can apply class-specific weights; it need not be determined solely by frequency.
+
+The implementation computes $p_t$ from the hard target label using log-softmax. It then multiplies a label-smoothed cross-entropy term by $(1-p_t)^\gamma$, followed by the optional class weight. The experiment fixes $\gamma=2$, matching Zhao et al.'s reported exponent; this is an inherited setting rather than a measured optimum for the present corpus.
+
+\subsection{Balanced sampling}
+\label{sec:balanced-sampling}
+
+The training loader assigns an example from class $c$ weight $1/n_c$, using counts from that fold's training split only. Drawing with replacement makes each represented class equally likely in expectation, while individual batches can remain uneven. Each epoch draws as many indices as there are training clips. This changes exposure, not the number of distinct recorded expressions.
+
+The held-out loader uses no balanced sampler or augmentation and does not shuffle. Its predictions therefore reflect the held-out subject's actual class distribution rather than a rebalanced evaluation set.
+
+\subsection{Combining frequency corrections}
+\label{sec:combining-both}
+
+Inverse-frequency loss weights and balanced sampling both change the relative influence of classes. Combining them can emphasise rare classes beyond the effect of either alone. The study assigns frequency correction to the sampler: when balanced sampling is active, the runtime guard disables loss-side class weights. Focal difficulty weighting remains active. This is a specific training choice, not a general proof that data-level and loss-level interventions should never be combined.
+
+\subsection{Label smoothing}
+\label{sec:label-smoothing}
+
+For $C$ classes, label smoothing blends the one-hot target with uniform mass, giving $q_c=(1-\epsilon)\mathbf{1}[c=t]+\epsilon/C$. Its cross-entropy term is
+\[
+    L_{\mathrm{smooth}}
+      =-(1-\epsilon)\log p_t
+        -\frac{\epsilon}{C}\sum_{c=1}^{C}\log p_c.
+\]
+The implementation uses $\epsilon=0.05$ before focal modulation. This discourages extreme confidence rather than preferentially weighting a rare class. The focal factor still uses the unsmoothed true-class probability. Neither smoothing strength nor focal exponent is varied in the architectural comparisons.
+
+\subsection{Augmentation under scarcity}
+\label{sec:augmentation}
+
+Xia et al.~\cite{xia2020a} motivate augmentation together with balanced loss for limited, skewed micro-expression data. The particular transformations here are a separate implementation choice. Temporal cropping is available only when a saved tensor is longer than the requested window; because both lengths are 32 in this study, that branch is inactive. Shorter tensors can be padded by repeating the last time step.
+
+The active training augmentation is a horizontal flip with probability one half, accompanied by negation of the horizontal-flow channel $u$. A mirror reverses horizontal displacement, so mirroring alone would give inconsistent motion direction. Subsequent per-channel standardisation preserves the intended sign reversal in the normalised representation. Validation receives neither the random flip nor a random temporal crop.
+
+\subsection{Optimisation}
+\label{sec:optimisation}
+
+AdamW updates parameters with decoupled weight decay, applied here without separate exemptions for biases or normalisation parameters. Linear warmup increases the learning rate to its target, followed by cosine annealing to a small floor; the scheduler advances once per epoch. Zhang et al.~\cite{zhang2022} also describe cosine annealing, providing a scheduling precedent rather than evidence that the present settings are optimal.
+
+Mixed precision uses gradient scaling where supported. Before clipping, scaled gradients are unscaled. In that clipping branch, the trainer also checks for non-finite gradients and skips invalid updates. This explicit check is conditional on clipping being enabled. Training runs the full epoch budget without early stopping; checkpoint selection maximises held-out macro F1, with ties selecting the later epoch.
+
+The implemented objective is emotion classification. Adversarial identity loss, gradient-based visual auditing, quantisation, pruning and distillation are not components of the reported system. Optimiser and numerical-stability routines are standard implementation practice, not additional architectural contributions.
+
+\section{Evaluating on a Small Corpus}
+\label{sec:evaluation}
+
+The evaluation must distinguish class balance, subject separation and the data used to select a model. An aggregate score is interpretable only when its computation and selection procedure are explicit.
+
+\subsection{Confusion counts, precision, recall and F1}
+\label{sec:confusion-matrix}
+
+In a confusion matrix, entry $(i,j)$ counts examples whose true class is $i$ and predicted class is $j$. The diagonal contains correct predictions. For class $c$, true positives $TP_c$ count correct predictions of $c$, false positives $FP_c$ count incorrect predictions of $c$, and false negatives $FN_c$ count missed examples of $c$.
+\[
+    P_c=\frac{TP_c}{TP_c+FP_c},\qquad
+    R_c=\frac{TP_c}{TP_c+FN_c},\qquad
+    F1_c=\frac{2TP_c}{2TP_c+FP_c+FN_c}.
+\]
+Precision penalises false alarms and recall penalises misses. F1 is their harmonic mean; a high value requires both to be reasonably high. Degenerate denominators require an explicit convention; this implementation assigns zero rather than omitting the class from the score.
+
+\subsection{Macro versus micro averaging}
+\label{sec:macro-micro}
+
+Macro F1 gives each class equal weight:
+\[
+    F1_{\mathrm{macro}}=\frac1C\sum_{c=1}^{C}F1_c.
+\]
+Micro F1 first sums true positives, false positives and false negatives across classes. In single-label multiclass classification, each error supplies one false positive and one false negative, so micro F1 equals accuracy. It can therefore be dominated by a frequent class. Macro F1 and accuracy describe different aspects of performance; reporting both does not remove the need to inspect per-class errors.
+
+\subsection{Pooled versus per-fold averaging}
+\label{sec:pooled-vs-fold}
+
+Pooling confusion matrices across folds before calculating class F1 is different from calculating macro F1 separately in every fold and then averaging. See et al.~\cite{see2019} define MEGC's Unweighted F1 (UF1) through the pooled counts followed by an unweighted class average. This is the primary construction used here.
+
+F1 is non-linear, so the two procedures need not agree. If a held-out subject has no examples of a class, that fold's score for the absent class is zero under the fixed-class convention even when every available example is classified correctly. Averaging these fold scores mixes classifier behaviour with fold composition. Pooled scores instead use all held-out predictions together; pooled accuracy is also distinct from an unweighted mean of subject accuracies when subjects contribute different numbers of clips.
+
+\subsection{Cross-validation and subject-disjointness}
+\label{sec:cross-validation}
+
+Cross-validation repeatedly fits a model to a training partition and evaluates it on held-out examples. Leave-one-subject-out (LOSO) assigns all clips from one subject to a fold's held-out set and trains on the other subjects. This prevents that subject's clips appearing in both partitions and reduces the opportunity to exploit familiar identity or recording conditions.
+
+The study covers all 25 usable subjects. Subject separation does not, however, make the final score independent of model selection: choosing an epoch using the held-out subject's labels also uses information from that subject, even though those labels never enter a gradient update.
+
+\subsection{What the evaluation apparatus must retain}
+\label{sec:apparatus-gaps}
+
+Three distinctions constrain the evidence. First, stored field names are insufficient to identify a metric. Here the stored \texttt{macro\_f1} is a mean of fold scores; the thesis's pooled macro F1 is derived from pooled per-class results. The stored \texttt{micro\_f1} supplies pooled accuracy, while the stored \texttt{accuracy} is an unweighted fold mean.
+
+Second, a nested evaluation separates fitting, checkpoint selection and final testing. The present procedure chooses the best checkpoint on the same held-out subject later used for reporting, without an inner validation split. This can make scores optimistic; complete LOSO coverage does not repair that selection bias.
+
+Third, aggregate metrics do not preserve which clips two models disagree on. Per-clip predictions are needed for paired prediction-based comparisons such as McNemar's test. They are not persisted by the reported evaluation, and the sweep uses one seed. The available results therefore support point estimates and observed matched differences, not uncertainty estimates from repeated runs or a claim of statistical significance.
+
+\section{Conclusion}
+\label{sec:ch2-conclusion}
+
+The pipeline converts brief facial movement into analytical motion and deformation features, then evaluates learned spatial and temporal processing on those features. Its interpretation depends on the actual preprocessing order, spatial-only convolutional kernels, explicit component controls and fixed training regime. Pooled metrics and subject-disjoint evaluation address class skew and identity overlap, while checkpoint selection and limited retained predictions still constrain the strength of the conclusions. These mechanisms establish what the architectural experiment can measure without assuming that every named technique is a reproduction of its published form.

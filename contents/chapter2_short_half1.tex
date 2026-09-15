@@ -1,0 +1,210 @@
+% Shortened Chapter 2, first half: sections 2.1--2.5.
+% Editing unit for tools/assemble_short_chapter2.py; no chapter declaration here.
+% Original subsection order and labels are preserved.
+
+\section{The Phenomenon: Micro-Expressions as Brief, Low-Intensity Facial Movement}
+\label{sec:phenomenon}
+
+Micro-expressions are brief, low-intensity facial movements commonly studied when people attempt to suppress emotional expression~\cite{yan2014}. Their involuntary character distinguishes them from expressions deliberately posed for a camera~\cite{qu2016}. An observed movement is not, by itself, proof of deception or an unambiguous indicator of emotion; the recognition task depends on the corpus's annotations.
+
+\subsection{Duration: the first constraint}
+\label{sec:duration}
+
+Yan et al.~\cite{yan2014} describe half a second as the generally accepted upper duration limit. This is a working definition, rather than an upper-length filter applied by this pipeline. A brief event provides few observations at ordinary video rates, making capture frequency and temporal sampling important to the evidence available for recognition.
+
+\subsection{Low intensity: the second constraint}
+\label{sec:low-intensity}
+
+Suppressed facial movements may be difficult to see even when enough frames are recorded~\cite{yan2014}. A small contraction can affect only a local region around a brow or mouth while most of the image remains unchanged. Duration limits the number of observations; low intensity limits how clearly movement can be separated from noise within them. This motivates magnification and explicit motion features.
+
+\subsection{Onset, apex and offset}
+\label{sec:onset-apex-offset}
+
+The \textbf{onset} marks the beginning of the movement, the \textbf{apex} its greatest annotated intensity, and the \textbf{offset} its end. Apex-frame methods exploit that peak as a compact description~\cite{liY2018}. This pipeline instead uses the annotated onset and offset to bound a sequence. The apex annotation is not read by the model or used to select frames, so temporal features must be learned from the sampled sequence rather than supplied through a selected peak.
+
+\subsection{Action units and the prediction target}
+\label{sec:action-units}
+
+The Facial Action Coding System (FACS) describes movements through Action Units (AUs), not emotion categories. CASME II assigns emotion labels using coded movements together with other annotation evidence~\cite{yan2014}; the mapping is not one-to-one. This thesis predicts the resulting emotion category only. AU metadata is retained in the coding table but is neither an input nor a training target, and the system does not perform AU recognition.
+
+\section{From Recording to Pipeline Input}
+\label{sec:recording-to-input}
+
+The input preparation determines which recorded information reaches every subsequent component. In particular, image resizing must not be confused with face alignment or temporal interpolation.
+
+\subsection{High-speed capture}
+\label{sec:high-speed-capture}
+
+For an event lasting $0.3$ seconds, the number of frame intervals is approximately $0.3f_s$, where $f_s$ is the recording rate: roughly eight to nine intervals at 25--30 frames per second (fps), against sixty at 200 fps. CASME II uses 200 fps~\cite{yan2014}. The pipeline takes this rate from configuration rather than reading it independently from each clip. After temporal subsampling, the physical spacing between selected frames need not match that nominal rate.
+
+\subsection{What the corpus supplies and what the project uses}
+\label{sec:corpus-supplies}
+
+CASME II provides original recorded frames and a registered, cropped release. The recorded study manifest identifies folders of the original $640\times480$ frames, rather than the normalised release. The preprocessing performs no face detection, landmark localisation, registration, alignment or cropping of its own. Consequently, this input includes the full recorded field of view, and neither facial position nor scale has been geometrically standardised. Registration described in the corpus paper~\cite{yan2014} must not be attributed to this pipeline.
+
+\subsection{Frame selection and preparation}
+\label{sec:frame-preparation}
+
+Frames are loaded in greyscale and resized by bilinear interpolation to $224\times224$. Resizing the whole rectangular frame to a square changes its aspect ratio; the result is not a cropped face region. The image-folder path selects frames between the annotated onset and offset and then samples a fixed-length sequence. No apex localisation is performed.
+
+\subsection{Which clips enter the pipeline}
+\label{sec:clip-selection}
+
+Preprocessing selects CASME II rows coded as micro-expressions, marked as having frames, and with an inclusive onset-to-offset length greater than two frames. The loader must still find readable frames; the metadata flag alone does not guarantee successful extraction. The recognition dataset also requires a matching saved tensor and a label in the selected three-class mapping; the residual ``others'' category is excluded. Preprocessing eligibility and final classification membership are therefore separate filters.
+
+\section{Motion Magnification}
+\label{sec:motion-magnification}
+
+\subsection{The Eulerian idea}
+\label{sec:eulerian-idea}
+
+Eulerian video magnification (EVM) examines intensity changes at fixed image locations rather than explicitly tracking moving points. At each pixel it isolates temporal variation in a selected band, scales that variation and adds it back. Bai et al.~\cite{bai2021} describe the amplitude-based mechanism through the small-motion approximation
+\[
+    I(x,t)=f(x+\delta(t))
+       \approx f(x)+\delta(t)\frac{\partial f}{\partial x}.
+\]
+Adding $\alpha$ times the motion-related variation gives approximately
+\[
+    \widetilde I(x,t)\approx
+       f(x)+(1+\alpha)\delta(t)\frac{\partial f}{\partial x}.
+\]
+For sufficiently small displacement, intensity amplification therefore resembles a larger displacement. The approximation does not imply that arbitrary intensity changes represent facial movement, or that larger amplification always improves recognition.
+
+\subsection{Spatial decomposition: the Laplacian pyramid}
+\label{sec:laplacian-pyramid}
+
+A Laplacian pyramid separates spatial scales. At each level the image is blurred and downsampled; an upsampled reconstruction is subtracted from the current image to retain detail at that scale. Repeating this produces Laplacian detail bands and a final coarse Gaussian residual. Reconstruction starts with the residual, upsamples it and adds the detail bands successively. The implementation uses the separable blur kernel $[1,4,6,4,1]/16$ and factor-two downsampling.
+
+\subsection{Temporal filtering}
+\label{sec:temporal-filtering}
+
+Each pixel in a spatial band supplies a time series. A band-pass filter retains variation within the selected temporal-frequency interval; the retained signal is amplified before reconstruction. Bai et al.~\cite{bai2021} describe a Butterworth filter for amplitude-based magnification. The present implementation instead masks Fourier coefficients outside the selected band, then applies the inverse transform.
+
+\subsection{The amplification trade-off}
+\label{sec:amplification-tradeoff}
+
+The filter distinguishes frequencies, not causes. In-band head movement, illumination variation and noise may be amplified together with a wanted contraction. Larger $\alpha$ can also invalidate the small-displacement approximation and produce artefacts. Magnification consequently changes the signal presented to flow estimation without guaranteeing a cleaner or more discriminative representation.
+
+\subsection{Implementation departures}
+\label{sec:evm-departures}
+
+Table~\ref{tab:ch2-evm-departures} summarises the choices that affect interpretation of the magnified input.
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \begin{tabular}{@{}p{0.26\linewidth} p{0.68\linewidth}@{}}
+        \hline
+        \textbf{Property} & \textbf{Implemented behaviour and consequence} \\
+        \hline
+        Temporal filter & Hard Fourier mask rather than the Butterworth filter described by Bai et al.~\cite{bai2021}; the pass-band has no smooth roll-off. \\
+        Spatial amplification & The same $\alpha$ is used for every Laplacian band, without spatial-frequency damping. The Gaussian residual is neither filtered nor amplified. \\
+        Colour treatment & Processing operates on greyscale intensity, with no separate chromatic attenuation. \\
+        Pipeline ordering & Each clip is sampled to 33 frames before magnification, but the filter still uses nominal 200 fps. Its physical pass-band is therefore clip-dependent. \\
+        \hline
+    \end{tabular}
+    \caption[EVM implementation departures]{Implementation choices that distinguish the magnifier and its pipeline ordering from the reference formulation. These choices are shared by the magnification-enabled configurations.}
+    \label{tab:ch2-evm-departures}
+\end{table}
+
+The Laplacian pyramid itself is retained. After reconstruction, values are clipped to $[0,255]$ and converted to 8-bit greyscale before motion extraction. Because subsampling changes frame spacing, the nominal band must not be interpreted as the same physical-frequency interval for every clip.
+
+\section{From Video to Motion: Optical Flow and Optical Strain}
+\label{sec:video-to-motion}
+
+\subsection{Why motion rather than pixels}
+\label{sec:why-motion}
+
+Flow makes displacement explicit instead of asking the network to infer it from appearance alone. This can reduce reliance on raw image intensity, but does not guarantee invariance to identity or illumination: facial geometry, registration errors and brightness changes still affect the estimated field. The resulting representation remains conditioned on capture and preprocessing.
+
+\subsection{Optical flow and brightness constancy}
+\label{sec:optical-flow}
+
+Optical flow estimates apparent displacement between frames. OFF-ApexNet~\cite{liong2019a} describes the brightness-constancy assumption that a moving point retains its intensity:
+\[
+    I(x,y,t)=I(x+u\Delta t,y+v\Delta t,t+\Delta t).
+\]
+Here $u,v$ denote local velocity for the continuous derivation. A first-order expansion gives
+\[
+    I_xu+I_yv+I_t=0.
+\]
+This is one equation for two unknown components. The \textbf{aperture problem} means a local edge constrains motion normal to the edge, along the intensity gradient, but does not determine motion parallel to it. Estimators therefore add neighbourhood assumptions or regularisation. In the discrete pipeline, $u$ and $v$ denote displacement in pixels between selected frames rather than physical velocity per second. Illumination changes and large inter-frame displacement can violate the underlying approximation.
+
+\subsection{Optical strain: the symmetric displacement gradient}
+\label{sec:optical-strain}
+
+Strain describes how neighbouring displacements differ. For $\mathbf{u}=[u,v]^{\mathsf T}$, the small-strain approximation used for optical strain~\cite{shreve2011} is
+\[
+    \varepsilon=\tfrac12\left(\nabla\mathbf{u}
+                         +(\nabla\mathbf{u})^{\mathsf T}\right),
+    \qquad
+    \varepsilon_{xx}=\frac{\partial u}{\partial x},\quad
+    \varepsilon_{yy}=\frac{\partial v}{\partial y},
+\]
+\[
+    \varepsilon_{xy}=\varepsilon_{yx}
+       =\tfrac12\left(\frac{\partial u}{\partial y}
+                    +\frac{\partial v}{\partial x}\right).
+\]
+Normal components describe local stretching or compression; the off-diagonal terms describe shear. A spatially uniform translation has zero gradient and therefore zero strain. This property does not imply immunity to arbitrary head rotation, projection effects or flow-estimation errors. Differentiation may amplify noise.
+
+The implemented scalar is
+\[
+    \varepsilon_{\mathrm{mag}}
+       =\sqrt{\varepsilon_{xx}^2+\varepsilon_{yy}^2
+                    +\varepsilon_{xy}^2}.
+\]
+It counts shear once. The Frobenius norm of the symmetric tensor counts both off-diagonal entries, giving $2\varepsilon_{xy}^2$ inside the root. These forms differ in relative shear weighting, not merely a removable global scale. The scalar discards deformation direction but accompanies the original displacement components as a third channel.
+
+\subsection{Assembling the three-channel tensor}
+\label{sec:three-channel-tensor}
+
+Uniform index sampling selects 33 existing frames from the onset--offset sequence. No manifold-based Temporal Interpolation Model (TIM) or frame synthesis is performed; repeated indices can occur for short clips. After optional EVM, Farneb\"ack flow is computed for the 32 adjacent frame pairs, following the estimator choice reported by Zhao et al.~\cite{zhaoS2021}. The OpenCV settings are pyramid scale 0.5, three levels, window size 15, three iterations, polynomial neighbourhood 5, polynomial smoothing 1.2 and flags 0.
+
+Spatial derivatives from NumPy's \texttt{gradient} supply strain, with unit pixel spacing, central differences in the interior and first-order one-sided differences at boundaries. Temporal derivatives are not used in its construction, and no dedicated strain post-filter is applied. Stacking $[u,v,\mathrm{strain}]$ gives a tensor of shape $(3,32,224,224)$ over the resized full frame. The network receives this tensor rather than the original intensity sequence.
+
+Two normalisations remain active. Extraction independently maps each channel to $[0,1]$ using its extrema across the clip. At loading, each channel is standardised over its $T\times H\times W$ values, after any training augmentation. Small denominator constants protect nearly constant channels; these need not have unit variance. Both stages are per sample and use no statistics pooled across training and held-out subjects.
+
+\section{Neural Network Fundamentals}
+\label{sec:nn-fundamentals}
+
+A neural network composes parameterised operations to map the motion tensor to emotion-class scores. Only the concepts needed to interpret the implemented blocks and their controls are introduced here.
+
+\subsection{Units, layers and the forward pass}
+\label{sec:units-layers}
+
+A unit computes $a=\phi(w^{\mathsf T}x+b)$, where $w$ and $b$ are learned weights and bias, $\phi$ is an activation function and $a$ is the resulting activation. A layer applies several such operations; composing layers gives a network. Depth is the number of layers and width their feature dimension. A forward pass evaluates these operations with the current parameters and produces class scores, or logits, from which probabilities can be obtained.
+
+\subsection{Non-linearity}
+\label{sec:non-linearity}
+
+Without non-linear operations, a stack of affine layers reduces to one affine map. Non-linearity allows the composition to represent more complex relationships. The convolutional streams use the rectified linear unit, $\operatorname{ReLU}(x)=\max(0,x)$. The transformer feed-forward layers use the Gaussian error linear unit (GELU). These activations are fixed functions, although they act on features learned by the surrounding layers.
+
+\subsection{Learning by gradient descent}
+\label{sec:gradient-descent}
+
+A loss compares predictions with labels. Backpropagation applies the chain rule through the network to compute derivatives of that loss with respect to its parameters. An optimiser uses these gradients to update the parameters; the learning rate controls the update scale. Mini-batches provide successive updates, while an epoch completes the configured sequence of batch draws. With replacement sampling, an epoch need not visit every distinct clip.
+
+Evaluation holds parameters fixed and disables training-only stochastic behaviour such as dropout. Low training loss alone does not establish useful learning: the relevant objective is prediction on unseen subjects. A validation set used to select an epoch has a different role from a test set reserved for final assessment.
+
+\subsection{Convolution as a learned filter}
+\label{sec:convolution}
+
+A convolution applies the same learned kernel at multiple positions. This weight sharing detects local patterns without learning a separate detector for every image location. Each output channel is a feature map; kernels combine all input channels over their local window. For a two-dimensional layer with one bias per output channel,
+\[
+    N_{\mathrm{params}}=C_{\mathrm{out}}
+       (C_{\mathrm{in}}k_Hk_W+1).
+\]
+Parameter count is independent of image dimensions, but computation and activation memory increase with the number of positions processed. Stride sets the spacing between applications; padding controls boundary treatment and output size. Stacking layers enlarges the receptive field, the input region that can influence a later activation.
+
+\subsection{Pooling and spatial reduction}
+\label{sec:pooling}
+
+Pooling replaces a neighbourhood with a fixed summary such as its maximum or mean. A $2\times2$ max-pool with stride two halves spatial dimensions, retaining the strongest response in each window. Adaptive average pooling instead targets a specified output grid. Neither learns weights. Both discard detail while reducing the computation of subsequent layers; a later learned projection remains a separate operation with its own parameters.
+
+\subsection{Parameters, capacity and small data}
+\label{sec:capacity}
+
+Capacity describes the range of functions a model can represent. Parameter count is one indicator, but architecture, constraints and training also matter. A model can overfit subject-specific appearance, noise or recording conditions, achieving low training loss without generalising. More parameters than examples do not by themselves prove overfitting, just as few parameters do not guarantee good predictions.
+
+The small CASME II training pool motivates controlled architectural comparisons and regularisation. Their effectiveness must be assessed on held-out subjects, while keeping checkpoint selection separate from final testing where possible. The analytical flow and strain transformations already expose motion structure, so the learned network is not starting from raw pixels.
