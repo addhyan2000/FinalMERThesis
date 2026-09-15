@@ -1,12 +1,69 @@
-% Include once in the thesis front matter, unless the master already calls
-% \listoftables. LaTeX collects numbered captions from ALL included chapters.
-% Compile to convergence to populate/update the .lot file and page numbers.
+% =============================================================================
+% List of Tables and List of Figures -- front matter
+% =============================================================================
+% Include from the front matter, before the List of Acronyms:
+%     \input{contents/list_of_tables}
 %
-% Chapter 2 originally had no table floats. The shortened chapter adds two,
-% both with short \caption[...] entries for this list:
-%   tab:ch2-evm-departures --- EVM implementation departures
-%   tab:ch2-component-controls --- Enabled components and their controls
-% They appear here only if the master includes chapter2_shortened.tex (or the
-% two halves) in place of the original chapter2.tex.
-\clearpage
+% \listoftables and \listoffigures build themselves from the SHORT caption of
+% every float -- the \caption[short]{long} form. Every float in the shortened
+% Chapters 3 and 4 carries one, so both lists generate correctly with no
+% manual entry. Compile to convergence (at least twice) after any edit: the
+% lists are written to .lot/.lof on one pass and read back on the next.
+%
+% The inventory below is documentation, not markup. It is the audited list of
+% what these two chapters contain, so that a missing or renamed float can be
+% spotted without compiling. Verified: 24 floats, 22 tables and 2 figures,
+% every one carrying both a \label and a short caption.
+%
+% -------------------------------------------------------------------- Ch. 3
+% TABLES
+%   tab:spontaneous-corpora   Posed and spontaneous micro-expression corpora
+%   tab:casme2-labels         CASME II label taxonomy and the three-class working set
+%   tab:megc-cde-results      MEGC 2019 Composite Database Evaluation results
+%                             (must stay identical to Chapter 5's twin)
+%   tab:corpus-threats        Threats to validity carried by CASME II and the
+%                             decisions they force
+%   tab:evm-effect            Effect of Eulerian motion magnification on CASME II
+%   tab:evm-settings          Review findings and the magnification settings
+%                             they determine
+%   tab:flow-decisions        Optical-flow evidence and study decisions
+%   tab:strain-performance    Recognition results for strain-based descriptors
+%   tab:strain-decisions      Strain representation and unresolved choices
+%   tab:tim-decisions         Review findings and the temporal-normalisation
+%                             decisions they determine
+%   tab:cnn-decisions         Review findings and the backbone decisions they
+%                             determine
+%   tab:attention-modules     Parameter costs of attention modules
+%   tab:simam-decisions       SimAM implementation choices
+%   tab:slstt-results         SLSTT and comparison results
+%   tab:slstt-divergences     Divergences from published SLSTT
+%   tab:imbalance-decisions   Review findings and the imbalance-handling
+%                             decisions they determine
+%   tab:divergence-ledger     Every declared departure from the reviewed
+%                             literature -- TWELVE rows; Chapters 5 and 6
+%                             depend on the count and on the subsection
+%                             numbers in its first column
+% FIGURES
+%   fig:dataset-composition   Composition of CASME II   [fig3_1_dataset.png]
+%   fig:fold-composition      Class composition of the 25 leave-one-subject-out
+%                             folds                     [fig3_2_fold_composition.png]
+%
+% -------------------------------------------------------------------- Ch. 4
+% TABLES
+%   tab:twelve-configs        The twelve valid ablation configurations
+%   tab:matched-pairs         Matched pairs by variable  (cited from Chapter 5)
+%   tab:parameter-totals      Parameter totals by architectural combination
+%   tab:five-evaluations      The five evaluations of the ablation matrix
+%   tab:compute-per-config    Last-fold training time and peak VRAM per
+%                             configuration
+% Chapter 4 contains no figures.
+%
+% Image files required on the graphics path: fig3_1_dataset.png and
+% fig3_2_fold_composition.png, both under report_figures_thesis/.
+% =============================================================================
+
 \listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}

@@ -1,59 +1,87 @@
-% Consolidated Chapter 2 entries and existing Chapter 3 companion lists.
-% Include once in front matter. Replaces the separate acronym supplements.
-% If the master already supplies an acronym heading/list, merge these entries
-% there instead. The description environment needs no glossary package.
-\clearpage
-\chapter*{List of Acronyms}
-\addcontentsline{toc}{chapter}{List of Acronyms}
+% =============================================================================
+% List of Acronyms -- consolidated
+% =============================================================================
+% Supersedes the four per-batch Chapter 3 lists
+%   chapter3_short_parts34_acronyms.tex
+%   chapter3_short_parts56_acronyms.tex
+%   chapter3_short_parts78_acronyms.tex
+%   chapter3_short_parts910_acronyms.tex
+% and adds the terms introduced by the shortened Chapter 4. Include ONE of
+% these -- this file -- not this file and the four it replaces.
+%
+% Include from the front matter, after the List of Tables:
+%     \chapter*{List of Acronyms}
+%     \addcontentsline{toc}{chapter}{List of Acronyms}
+%     \input{contents/list_of_acronyms}
+%
+% This is a portable description list, because the thesis master's glossary
+% setup is not present in this checkout. If the master loads `glossaries` or
+% `acronym`, translate each row into that package's declaration rather than
+% inserting a second, competing list.
+%
+% Deliberately omitted, as ordinary technical vocabulary rather than acronyms
+% the reader needs defined: GPU, CPU, RAM, MB, GB, JSON, CSV, NaN, API.
+% Dataset and method names that are not expansions (CASME II, SAMM, SMIC's
+% corpus name, MMEW) appear only where an expansion genuinely exists.
+% =============================================================================
+
 \begin{description}
-    \item[AdamW] Adam optimiser with decoupled weight decay
-    \item[AU] Action Unit (plural: AUs)
-    \item[Bi-WOOF] Bi-weighted oriented optical flow
-    \item[BN] Batch normalisation
-    \item[C3D] Three-dimensional convolutional network
-    \item[CASME II] Chinese Academy of Sciences Micro-Expression database II
-    \item[CBAM] Convolutional block attention module
-    \item[CDE] Composite Database Evaluation
-    \item[CIFAR] Canadian Institute for Advanced Research (dataset family)
-    \item[CNN] Convolutional neural network
-    \item[ECA] Efficient channel attention
-    \item[EMR] Expression Magnification and Reduction
-    \item[EVM] Eulerian video magnification
-    \item[FACS] Facial Action Coding System
-    \item[FN] False negative
-    \item[FP] False positive
-    \item[fps] Frames per second
-    \item[GC] Global context
-    \item[GELU] Gaussian error linear unit
-    \item[Grad-CAM++] Generalised gradient-based visual explanation for convolutional networks
-    \item[JCFDA] Joint cascade face detection and alignment
-    \item[LBP-TOP] Local binary patterns on three orthogonal planes
-    \item[LOSO] Leave-one-subject-out
-    \item[LSTM] Long short-term memory
-    \item[MEGC] Micro-Expression Grand Challenge
-    \item[MMEW] Micro-and-macro expression warehouse
-    \item[OFF] Optical flow features
-    \item[OFF-ApexNet] Optical Flow Features from Apex frame Network
-    \item[OFW] Optical flow weighted features
-    \item[OSF] Optical strain features
-    \item[OSW] Optical strain weighted features
-    \item[RBF] Radial basis function
-    \item[RCN] Recurrent convolutional network
-    \item[ReLU] Rectified linear unit
-    \item[SDE] Sole Database Evaluation
-    \item[SE] Squeeze-and-excitation
-    \item[SimAM] Simple, parameter-free attention module (method name)
-    \item[SLSTT] Short and Long Range Relation Based Spatio-Temporal Transformer
-    \item[SMIC] Spontaneous Micro-Expression Corpus
-    \item[SRM] Style-based recalibration module
-    \item[STRCN] Spatiotemporal recurrent convolutional network
-    \item[STSTNet] Shallow triple stream three-dimensional convolutional neural network
-    \item[SVM] Support vector machine
-    \item[TIM] Temporal Interpolation Model
-    \item[TP] True positive
-    \item[TV-L1] Total-variation regularisation with an L1 data term
-    \item[UAR] Unweighted average recall
-    \item[UF1] Unweighted F1
-    \item[ViT] Vision Transformer
-    \item[XBM] Cross-Batch Memory
+
+	% --- corpora, benchmarks and protocols ---
+	\item[CDE] Composite Database Evaluation
+	\item[LOSO] Leave-one-subject-out (cross-validation)
+	\item[MEGC] Micro-Expression Grand Challenge
+	\item[MMEW] Micro-and-macro expression warehouse
+	\item[SDE] Sole Database Evaluation
+	\item[SMIC] Spontaneous Micro-Expression Corpus
+
+	% --- metrics ---
+	\item[UAR] Unweighted average recall
+	\item[UF1] Unweighted F1
+
+	% --- hand-crafted features and descriptors ---
+	\item[Bi-WOOF] Bi-weighted oriented optical flow
+	\item[LBP-TOP] Local binary patterns on three orthogonal planes
+	\item[OFF] Optical flow features
+	\item[OFW] Optical flow weighted features
+	\item[OSF] Optical strain features
+	\item[OSW] Optical strain weighted features
+	\item[TIM] Temporal Interpolation Model
+	\item[TV-L1] Total-variation regularisation with an L1 data term
+
+	% --- network architectures and modules ---
+	\item[C3D] Three-dimensional convolutional network
+	\item[CBAM] Convolutional block attention module
+	\item[CNN] Convolutional neural network
+	\item[ECA] Efficient channel attention
+	\item[EMR] Expression Magnification and Reduction
+	\item[GC] Global context
+	\item[LSTM] Long short-term memory
+	\item[OFF-ApexNet] Optical Flow Features from Apex frame Network
+	\item[RCN] Recurrent convolutional network
+	\item[SE] Squeeze-and-excitation
+	\item[SimAM] Simple, parameter-free attention module
+	\item[SLSTT] Short and Long Range Relation Based Spatio-Temporal Transformer
+	\item[SRM] Style-based recalibration module
+	\item[STRCN] Spatiotemporal recurrent convolutional network
+	\item[STSTNet] Shallow triple stream three-dimensional convolutional neural network
+	\item[ViT] Vision Transformer
+
+	% --- layers, training and numerics ---
+	\item[AdamW] Adam optimiser with decoupled weight decay
+	\item[AMP] Automatic mixed precision
+	\item[BN] Batch normalisation
+	\item[EVM] Eulerian Video Magnification
+	\item[ReLU] Rectified linear unit
+	\item[GELU] Gaussian error linear unit
+	\item[RBF] Radial basis function
+	\item[SVM] Support vector machine
+	\item[VRAM] Video memory (on-device GPU memory)
+
+	% --- other methods named in the review ---
+	\item[CIFAR] Canadian Institute for Advanced Research (dataset family)
+	\item[Grad-CAM++] Generalised gradient-based visual explanation for convolutional networks
+	\item[JCFDA] Joint cascade face detection and alignment
+	\item[XBM] Cross-Batch Memory
+
 \end{description}

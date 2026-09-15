@@ -1,0 +1,253 @@
+% =============================================================================
+% Chapter 4 - Methodology (shortened), half 2 of 2: sections 4.5-4.8.
+% =============================================================================
+% Include after chapter4_short_half1.tex; do not include alongside the original
+% contents/chapter4.tex, which shares every label.
+%
+% Load-bearing structure, verified before cutting:
+%   * chapter2.tex cites Sections 4.5.1 (Loss), 4.5.2 (The class-weighting
+%     rule) and 4.5.4 (Optimiser and learning-rate schedule) BY NUMBER, and
+%     introduction.tex cites Section 4.6.7 (Earlier evaluations). Every
+%     subsection slot in 4.5 and 4.6 is preserved in order.
+%   * Labels referenced from Chapters 5 and 6 and the introduction are all
+%     retained, including tab:matched-pairs' companions sec:aggregation,
+%     sec:checkpoint-selection, sec:primary-metric, sec:mean-of-folds-rejected,
+%     sec:what-is-stored, sec:excluded-evaluations, sec:one-fold-only,
+%     sec:stem-sets-cost, sec:gpu-hours, sec:seeding and
+%     sec:no-hyperparameter-search.
+%   * Tables tab:five-evaluations and tab:compute-per-config keep their labels
+%     and short captions.
+%
+% Convention: no sentence points at another chapter by name or number. Where
+% this chapter refers to its own study history (4.6.7) or its own compute
+% record (4.7), that is content, not scaffolding, and is kept.
+% =============================================================================
+
+\section{Training Procedure}
+\label{sec:training-procedure}
+
+Every one of the twelve valid configurations is trained by the same procedure --- the same loss, sampler, optimiser, schedule, safeguards and seed --- exactly as configured in \texttt{Ablation\_Study/ablation\_config.py} and implemented in \texttt{losses.py} and \texttt{run\_ablation\_experiments.py}. \autoref{sec:scarcity-skew} describes what each mechanism computes; that derivation is not repeated.
+
+\subsection{Loss}
+\label{sec:loss-config}
+
+The classification objective is focal loss with $\gamma = 2.0$ and label smoothing of $0.05$ (\autoref{sec:focal-loss} gives the mechanism). Both are fixed defaults on \texttt{ExperimentConfig}, identical across every configuration and every fold.
+
+\subsection{The class-weighting rule}
+\label{sec:class-weighting-rule}
+
+\texttt{ExperimentConfig} exposes an optional per-class $\alpha$ weight vector for the loss, and \texttt{use\_class\_weights} defaults to \texttt{True} --- but that is not the flag deciding whether $\alpha$ is applied. The effective switch, computed at the start of every run, is:
+
+\begin{verbatim}
+use_loss_weights = self.exp.use_class_weights and not self.exp.use_balanced_sampler
+\end{verbatim}
+
+\texttt{use\_balanced\_sampler} also defaults to \texttt{True} (\autoref{sec:sampler-config}) and no reported run overrides either default, so \textbf{the $\alpha$ term is inactive in every run reported in this thesis}: \texttt{use\_loss\_weights} evaluates to \texttt{False}, \texttt{class\_weights} is never constructed, and \texttt{FocalLoss} is instantiated with \texttt{alpha=None}. The code logs this explicitly --- \texttt{"Class weights in loss disabled (balanced sampler already active)."} --- whenever both flags are on, which is every run here.
+
+The rule is not an oversight. The $\alpha$ term and the balanced sampler correct for the same skew at different points --- one re-weighting the loss, the other which examples a batch draws from --- so applying both corrects twice (\autoref{sec:combining-both}). What remains active once $\alpha$ is off must be stated precisely: focal loss still operates through its difficulty-focusing term $(1-p_t)^\gamma$, which down-weights confidently correct predictions regardless of class, and through label smoothing. Neither looks at class frequency. The loss used throughout is therefore focal loss with label smoothing and no per-class weighting, and every run's frequency correction comes entirely from the sampler.
+
+\subsection{Sampler}
+\label{sec:sampler-config}
+
+The training loader for every fold and configuration uses a \texttt{WeightedRandomSampler}. Each training example is assigned weight $1/n_c$, where $n_c$ is the number of training examples of that example's class within the current fold's training split; sampling proceeds with \texttt{replacement=True}, drawing as many indices per epoch as the split contains. This is what makes the rule of \autoref{sec:class-weighting-rule} well founded rather than merely convenient: the skew correction genuinely happens here, so switching off its loss-side equivalent avoids double-counting rather than removing it.
+
+\subsection{Optimiser and learning-rate schedule}
+\label{sec:optimiser-config}
+
+Every configuration is optimised with AdamW, learning rate $1\times10^{-4}$ and weight decay $1\times10^{-4}$, applied uniformly across all parameters. The schedule combines linear warmup with cosine annealing: \texttt{LinearLR} with \texttt{start\_factor=0.1} ramps the rate from a tenth of target to full over \texttt{warmup\_epochs=5}, then a \texttt{SequentialLR} wrapper hands off at the warmup boundary to \texttt{CosineAnnealingLR} with \texttt{T\_max = epochs - warmup\_epochs} and \texttt{eta\_min=1e-7}. Both schedulers step once per epoch. Training runs for \textbf{50 epochs} with no early stopping: every configuration and every fold trains the full 50 regardless of when its best validation epoch occurred.
+
+\subsection{Batch size}
+\label{sec:batch-size}
+
+\texttt{ExperimentConfig} declares \texttt{batch\_size: int = 2}, annotated in the source as deliberately small because transformer-bearing configurations use roughly 10\,GB of VRAM at batch size 4. The GPU runner \texttt{tools/run\_ablation\_gpu.py} overrides this with an explicit \verb|"--batch_size", "4"|. \textbf{Neither value produced the results reported here.} The sweep was launched from the project's graphical front-end, whose persisted state is committed as \texttt{gui\_settings.json} and records \verb|"ablation_batch_size": "8"| alongside the protocol, fold and epoch settings of the runs of record; \texttt{tools/run\_gui.py} passes that value to the training script. \textbf{Every reported result was produced with batch size 8.}
+
+The mechanism matters to anyone reconstructing the command from source. The run of record does pass through the GPU runner --- \texttt{tools/run\_gui.py} builds its command with \texttt{run\_ablation\_gpu.py} as the script --- but that runner's \texttt{-{}-batch\_size 4} is not authoritative, because it places \verb|*sys.argv[1:]| after its own arguments and the front-end appends its own \texttt{-{}-batch\_size 8} to that tail. Under \texttt{argparse} the later value wins, so 4 is overridden by 8 on every invocation. No result file stores the batch size, so the evidence for 8 is the committed launcher state and the argument ordering just described, not the artefacts.
+
+\subsection{Numerical safeguards}
+\label{sec:numerical-safeguards}
+
+Gradients are clipped to a global norm of $1.0$ via \texttt{clip\_grad\_norm\_}, applied after the AMP scaler's \texttt{unscale\_} step so that clipping acts on true rather than scaled magnitudes. On the same branch, and before clipping, every parameter's gradient is checked for non-finite values; if any contains a NaN or an infinity the optimiser step is skipped entirely, gradients are zeroed and a warning logged, rather than letting a corrupted update reach the weights. The two are not independent: both sit under \verb|if self.gradient_clip_norm is not None|, so the NaN guard is active precisely because clipping is configured --- as it is, at 1.0, in every run reported here --- and would not run at all were clipping disabled.
+
+Automatic mixed precision is enabled (\texttt{use\_amp=True} by default) but effective only on CUDA: the trainer constructs the flag as \verb|use_amp and device.type == "cuda"|, so a CPU run trains in full precision whatever the configuration says.
+
+\subsection{Seeding and replication}
+\label{sec:seeding}
+
+A single global seed, \texttt{42}, is reset --- via \texttt{random.seed}, \texttt{numpy.random.seed}, \texttt{torch.manual\_seed} and \texttt{torch.cuda.manual\_seed\_all} --- once at the start of the whole experiment and again immediately before every training-and-evaluation call: at the start of every configuration and, under the protocol of \autoref{sec:evaluation-protocol}, every one of its 25 folds. The sampler's draw order, weight initialisation and every other stochastic step therefore begin from the same fixed state each time a fold is trained.
+
+It guarantees nothing about how sensitive the outcome is to that state. \textbf{Every configuration was trained exactly once, under this one seed, for every fold; none was retrained under a second seed, and no seed variance was estimated anywhere in this study.} A single 50-epoch run on one initialisation is the entire evidentiary basis for each fold's contribution to a configuration's aggregate score. A different seed could move any individual fold's result, and by how much is not known from this design; \autoref{sec:design-limitation} states the consequence for what may be claimed.
+
+\subsection{No hyperparameter search}
+\label{sec:no-hyperparameter-search}
+
+Every value in this section --- the focal loss parameters, learning rate and weight decay, warmup length and annealing floor, batch size, clipping threshold and the seed --- is a fixed default on \texttt{ExperimentConfig} or a single hard-coded override in a launch script, carried unchanged across all twelve configurations and all 25 folds of each. No grid search, random search or manual tuning pass was run over any of them, for any configuration, at any point. This is stated explicitly because the design could otherwise be misread as having tuned each configuration to its best achievable performance before comparing them: every comparison is between architectures trained under one common, untuned recipe, not between architectures each given the chance to be tuned to its own advantage.
+
+
+\section{Evaluation Protocol}
+\label{sec:evaluation-protocol}
+
+Every configuration is scored by the same protocol --- the same fold structure, checkpoint-selection rule, cross-fold aggregation and persisted outputs --- as implemented in \texttt{Ablation\_Study/dataset.py}, \texttt{run\_ablation\_experiments.py} and \texttt{metrics.py}. \autoref{sec:evaluation} gives the general mechanism behind macro-F1, pooling and subject-disjoint cross-validation, and \autoref{sec:megc-metrics} argues why this corpus calls for the choices below. This section states what was run.
+
+\subsection{Leave-one-subject-out folds}
+\label{sec:loso-folds}
+
+Evaluation uses leave-one-subject-out cross-validation. Since the 156-clip three-class working set retains 25 of CASME II's 26 subjects (\autoref{sec:corpus-preparation}), this produces \textbf{25 folds}, each holding out one subject's clips and training on the remaining 24 subjects'. Every stored result confirms it: \texttt{final\_results.json} records \texttt{"protocol": "loso"}, \texttt{loso\_folds\_run: 25}, \texttt{loso\_folds\_total: 25} and \texttt{loso\_pilot: false}. The codebase supports a pilot mode, \verb|select_loso_folds(max_folds=...)|, selecting an evenly spaced subject subset for fast iteration; it was not used for any reported result.
+
+\subsection{Checkpoint selection and the absent inner validation split}
+\label{sec:checkpoint-selection}
+
+Within each fold the trainer tracks validation macro-F1 after every epoch and keeps the weights from whichever epoch scored highest --- \verb|trainer.fit(train_loader, val_loader)|, then \verb|trainer.load_best()|. The fold's final score comes from evaluating that restored checkpoint on \texttt{val\_loader} a second time, \verb|trainer.evaluate(val_loader)|. In both calls \texttt{val\_loader} holds the same held-out subject's clips.
+
+Stated plainly, because it is the single most significant methodological limitation of this evaluation: \textbf{there is no inner validation split}. The held-out subject's clips are used twice --- once as the signal deciding which epoch's weights to keep, and again as the data that epoch is scored against. A genuine inner split would carve a validation subset out of the training subjects, select against that, and reserve the held-out subject for a final unseen evaluation. This pipeline does not. The consequence is an optimistic bias of unknown size in every fold's score: model selection has already seen the exact data it is then scored on.
+
+The magnitude cannot be quantified from the stored output (\autoref{sec:what-is-stored}), but its scale follows from the fold structure: fold sizes vary by more than a factor of thirty (\autoref{sec:subjects-loso}), so in the smallest folds checkpoint selection searches 50 epochs against a handful of examples, with considerable freedom to fit noise in the very set it is later judged against. This is a property of every fold's score, recorded where the protocol is fixed.
+
+One further value should not be mistaken for an alternative in use: \texttt{val\_fraction = 0.2} exists on \texttt{ExperimentConfig}, consumed by \verb|dataset.subject_disjoint_split| under a separate \texttt{"holdout"} protocol --- a single subject-disjoint split evaluated once rather than 25 times. It produced none of the reported results; every figure comes from the \texttt{"loso"} branch, where \texttt{val\_fraction} plays no role.
+
+\subsection{Aggregation across folds}
+\label{sec:aggregation}
+
+Having trained and scored all 25 folds, \verb|MetricsComputer.average_results| combines them into the single stored result. It computes, and \texttt{final\_results.json} persists:
+
+\begin{itemize}
+	\item \texttt{accuracy} --- the \textbf{mean of the 25 per-fold accuracies}.
+	\item \texttt{macro\_f1} --- the \textbf{mean of the 25 per-fold macro-F1 scores}.
+	\item a confusion matrix obtained by \textbf{summing} the 25 per-fold matrices element-wise into one pooled $3\times3$ matrix.
+	\item \texttt{per\_class\_f1}, \texttt{per\_class\_precision}, \texttt{per\_class\_recall} --- computed per class \textbf{from that pooled matrix}, not averaged from per-fold values.
+	\item \texttt{micro\_f1} --- the pooled matrix's trace over its total, which for single-label multi-class classification is pooled accuracy (\autoref{sec:macro-micro}).
+\end{itemize}
+
+The distinction matters throughout: \texttt{accuracy} and \texttt{macro\_f1}, as the code names them, are averages of per-fold statistics, while everything else is computed once over all folds' predictions pooled together.
+
+\subsection{The primary metric: pooled macro F1}
+\label{sec:primary-metric}
+
+The primary reported metric is \textbf{pooled macro F1} --- the mean of the three values in the stored \texttt{per\_class\_f1} array. \textbf{No run artefact stores this quantity under any key.} It appears nowhere in \texttt{final\_results.json}, \texttt{summary.csv} or any other artefact the training run writes; it is derived afterwards by the reporting scripts under \texttt{tools/}, by averaging those three numbers. A reader expecting the headline figure under a field called \texttt{macro\_f1} will instead find the per-fold-averaged quantity of \autoref{sec:aggregation} --- a different estimator, addressed next.
+
+\subsection{Why mean-of-folds macro F1 is rejected}
+\label{sec:mean-of-folds-rejected}
+
+Pooled macro F1 is primary, and the stored \texttt{macro\_f1} field is not, because of how 156 clips distribute across 25 held-out subjects. Of the 25 folds, \textbf{10 contain clips of only one class}, \textbf{8 contain two}, and \textbf{7 contain all three}. A macro F1 computed within a fold is the unweighted mean of that fold's three per-class F1 scores, and a class absent from a fold's ground truth contributes zero regardless of what the model does. A single-class fold can therefore reach at most $1/3$, a two-class fold $2/3$, and only a three-class fold $1$ --- ceilings fixed by which subject was held out, before any model is trained.
+
+Averaging across folds therefore averages seventeen sub-unity ceilings into every score. Taking each fold at its own maximum bounds the mean-of-folds macro F1 at
+
+\[
+	\frac{10 \cdot \tfrac13 + 8 \cdot \tfrac23 + 7 \cdot 1}{25} = \frac{3.333\ldots + 5.333\ldots + 7}{25} \approx 0.627.
+\]
+
+No configuration, however accurately it classifies, can exceed approximately \textbf{0.627} on the metric stored under that name --- a property of the fold structure, applying identically to all twelve.
+
+Pooling the confusion matrices first avoids the ceiling entirely: TP, FP and FN accumulate across all 25 folds, all 156 clips, before any per-class F1 is computed, so a class locally absent from one fold no longer forces a zero into its contribution. \autoref{sec:megc-metrics} establishes that pooled macro F1 computed this way is identical in construction to the Unweighted F1 of the MEGC 2019 protocol~\cite{see2019}. The consequence is arithmetic: a metric with a hard ceiling below 0.7 cannot serve as the headline result.
+
+The same composition biases mean-of-folds \textbf{accuracy} in the same direction without a hard ceiling, since one predicted label suffices to score well on a single-class fold, whereas pooled accuracy is computed once over the correctly distributed 156 clips. For the full configuration, mean-of-folds accuracy exceeds pooled accuracy by \textbf{6.3 points}. Both figures are properties of the protocol, fixed before any model is trained.
+
+\subsection{What is stored}
+\label{sec:what-is-stored}
+
+For each configuration, \texttt{Ablation\_Study/results/<config\_folder\_name>/} holds \texttt{final\_results.json} (the metrics of \autoref{sec:aggregation}, plus \texttt{toggles}, \texttt{class\_names} and an \texttt{extra} block carrying the protocol metadata of \autoref{sec:loso-folds}); \texttt{confusion\_matrix.npy} and a rendered \texttt{confusion\_matrix.png}; and \texttt{configuration\_summary.txt}, recording toggle settings and hardware statistics. Each configuration also contributes one row to a master \texttt{summary.csv}.
+
+Two further artefacts are written per configuration but are not aggregates: \texttt{training\_metrics.csv} and \texttt{checkpoints/best\_model.pth} are overwritten on every fold's completion, so what survives is the training curve and checkpoint of the \textbf{last fold only} --- not a representative fold, not the best, simply whichever subject was held out last.
+
+\textbf{Per-clip predictions are not saved at all.} No file records which fold evaluated a given clip, what was predicted, or whether it was correct --- only the aggregate metrics and matrices persist. This is why no paired significance test between any two of the twelve configurations can be constructed from the stored output: such a test needs to know which specific clips each configuration got right or wrong, and that record does not exist.
+
+\subsection{Earlier evaluations, and why they are excluded}
+\label{sec:excluded-evaluations}
+
+The protocol above is not the only evaluation this project ran over the ablation matrix. Four earlier sweeps preceded it. They are recorded rather than dropped, because what disqualifies each is a property of the evaluation itself --- its routing, class support or coverage --- and therefore belongs to this chapter.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{c l r r l c p{3.6cm}}
+		\hline
+		\textbf{run} & \textbf{protocol} & \textbf{clips} & \textbf{configs} & \textbf{support Neg/Pos/Sur} & \textbf{EVM pairs identical} & \textbf{top-ranked configuration} \\
+		\hline
+		A & holdout, 60 epochs      & 39  & 12 & 29 / 9 / 1    & 6 of 6 & \texttt{config\_5\_attention\_base}, 0.7427 (tied) \\
+		B & LOSO, 5 of 25 folds     & 24  & 8  & 19 / 5 / 0    & 2 of 2 & \texttt{config\_6\_full\_stage2\_noevm}, 0.6274 \\
+		C & holdout, 50 epochs      & 52  & 12 & 39 / 10 / 3   & 0 of 6 & \texttt{config\_13\_permutation}, 0.4575 \\
+		D & LOSO, 20 of 25 folds    & 139 & 12 & 92 / 30 / 17  & 0 of 6 & \texttt{config\_16\_permutation}, 0.5473 \\
+		E & LOSO, 25 of 25 folds    & 156 & 12 & 99 / 32 / 25  & 0 of 6 & \texttt{config\_2\_temporal\_only}, 0.7122 \\
+		\hline
+	\end{tabular}
+	\caption[The five evaluations of the ablation matrix]{The five evaluations of the ablation matrix, and the status of each.}
+	\label{tab:five-evaluations}
+\end{table}
+
+Every score in \autoref{tab:five-evaluations} is pooled macro F1, recomputed from each run's stored \texttt{per\_class\_f1} array; the \texttt{macro\_f1} and \texttt{accuracy} keys those files also carry are the mean-of-folds quantities rejected in \autoref{sec:mean-of-folds-rejected} and are used nowhere. Run E is the protocol specified above and the only one reported.
+
+\textbf{The imbalance treatment also changed across these runs, and that is the largest difference between them and run E.} The rule of \autoref{sec:class-weighting-rule} was absent for most of this history: the earliest runs applied inverse-frequency class weights in the loss unconditionally with no sampler at all, a later revision added the \texttt{WeightedRandomSampler} while leaving the loss weighting unconditional so both corrections acted at once, and the guard came only afterwards. Run E is the first full evaluation conducted under it. Runs A--D are therefore not comparable to E on the training regime either, independently of protocol (\autoref{sec:imbalance-double-correction}).
+
+Runs A and B carry the data-routing defect of \autoref{sec:evm-implications}: all six magnification matched pairs are bit-identical in run A, as are both pairs its eight configurations contain in run B, so one half of the matrix duplicated the other and the magnification variable was never exercised --- run A's leading score is a tie between a configuration and its own duplicate. Runs C and D show all six pairs differing, so the repair preceded run C.
+
+They also lack usable class support. Run A's Surprise class contains one clip --- its pooled confusion matrix is \verb|[[23, 6, 0], [5, 4, 0], [0, 0, 1]]| --- classified correctly, so a per-class F1 of 1.0 contributes a full third of the macro mean on a single example. That is why run A's 0.7427 stands above run E's 0.7122 while resting on a fraction of the data. Run B contains no Surprise clips at all.
+
+Coverage is incomplete in two further senses: run B scores only eight of the twelve configurations, so the matched-pair effects of \autoref{sec:matched-pairs-table} cannot be computed from it; and runs B and D stop at five and twenty of twenty-five subjects, so neither holds out every subject. Only run E has all 25 folds, the full 156 clips, all twelve configurations and all three classes at usable support.
+
+A different configuration ranks first in each of the five runs. That is not offered as evidence that protocol choice reorders an otherwise fixed ranking: the runs differ in sample count, training budget and class coverage as well as protocol, so no pair isolates a single factor, and some margins are negligible --- run D's top two are separated by 0.0007. What it does show is that a ranking read off an incomplete evaluation of a corpus this size is not stable. Hence one complete run reported, and the four incomplete ones listed rather than quietly discarded.
+
+
+\section{Computational Environment}
+\label{sec:computational-environment}
+
+\subsection{A gap in the record, stated before anything else}
+\label{sec:record-gap}
+
+No file produced by this study's training runs records what hardware they ran on. \texttt{final\_results.json}, \texttt{configuration\_summary.txt}, \texttt{summary.csv} and the training logs contain no GPU name, no CPU identity, no RAM figure, and no recorded version of Python, PyTorch or CUDA. A script exists that would have printed exactly this --- \texttt{tools/check\_environment.py} reports the Python and PyTorch versions, CUDA availability, \verb|torch.cuda.get_device_name(0)| and the CUDA runtime version --- but it is a standalone diagnostic, never called from \texttt{run\_ablation\_experiments.py}, \texttt{tools/run\_ablation\_gpu.py}, or any other path the training runs executed. This is a limitation of what those runs left behind: no hardware identity or library version is invented to fill the gap, and \autoref{sec:mixed-precision} states what can still be inferred.
+
+\subsection{What is recorded, and for one fold only}
+\label{sec:one-fold-only}
+
+What each \texttt{configuration\_summary.txt} does record is a training time and a peak VRAM figure, written by \texttt{ResultWriter} from a \texttt{TrainState}. Both describe \textbf{one fold, not the twenty-five-fold sweep}: the LOSO loop constructs a fresh \texttt{AblationTrainer} per fold, each returning its own \texttt{TrainState}, and \texttt{total\_train\_time\_sec} and \texttt{peak\_vram\_mb} are taken from whichever is in hand when the summary is written rather than accumulated. What survives is whichever fold ran last --- not a total, not an average, not necessarily representative. A reader taking either figure as a sweep total would overstate it by roughly a factor of twenty-five.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r r}
+		\hline
+		\textbf{configuration} & \textbf{last-fold train time (s)} & \textbf{peak VRAM (MB)} \\
+		\hline
+		\texttt{config\_1\_pure\_base}          & 56.47  & 165.5 \\
+		\texttt{config\_4\_motion\_amp\_base}   & 58.12  & 165.5 \\
+		\texttt{config\_12\_permutation}        & 67.58  & 174.1 \\
+		\texttt{config\_2\_temporal\_only}      & 68.96  & 174.1 \\
+		\texttt{config\_3\_spatial\_only}       & 830.94 & 14,742.0 \\
+		\texttt{config\_13\_permutation}        & 831.79 & 14,742.0 \\
+		\texttt{config\_7\_full\_no\_attention} & 832.81 & 14,747.4 \\
+		\texttt{config\_9\_permutation}         & 832.81 & 14,747.4 \\
+		\texttt{config\_5\_attention\_base}     & 924.85 & 20,034.0 \\
+		\texttt{config\_16\_permutation}        & 925.61 & 20,034.0 \\
+		\texttt{config\_6\_full\_stage2\_noevm} & 927.65 & 20,039.4 \\
+		\texttt{config\_8\_proposed\_unified}   & 930.63 & 20,039.4 \\
+		\hline
+	\end{tabular}
+	\caption[Last-fold training time and peak VRAM per configuration]{Last-fold training time and peak VRAM per configuration.}
+	\label{tab:compute-per-config}
+\end{table}
+
+\subsection{The convolutional stem, not the transformer, sets the cost}
+\label{sec:stem-sets-cost}
+
+\autoref{tab:compute-per-config} splits cleanly in two. The four configurations without the 3D-CNN backbone run their last fold in \textbf{56--69 seconds} at \textbf{165--174 MB} of peak VRAM; the eight carrying it run in \textbf{831--931 seconds} at \textbf{14.7--20.0 GB} --- roughly \textbf{thirteen times the time and over one hundred times the memory}. The split tracks \texttt{use\_cnn} exactly, with no exception either way.
+
+This is set by the stem, not the transformer, even though the transformer holds about 96\,\% of a full configuration's parameters (\autoref{sec:parameter-counts}). Parameter count and activation memory are different quantities. Per stream, the stem's second convolution reaches 32 channels while spatial resolution is still the full $224 \times 224$ (\autoref{sec:conv-stem}); with three unshared streams and 32 time steps carried through untouched, the activations produced before the stem's single pooling step are correspondingly large, and peak VRAM measures activation memory, not weight count. The transformer operates on a sequence of only 32 steps at width 96, after the stem or its fallback has already collapsed the spatial extent. A component can dominate compute and memory while holding a small fraction of the parameters.
+
+\subsection{GPU-hours: an extrapolation, not a measurement}
+\label{sec:gpu-hours}
+
+The analysis scripts report approximately \textbf{50.6 GPU-hours} across the sweep, of which about \textbf{48.9 hours --- 96.6\,\%} --- is attributed to the eight CNN-bearing configurations. Both are extrapolations, not measurements: each configuration's single stored fold time (\autoref{sec:one-fold-only}) is multiplied by 25 and divided into hours. This assumes every one of a configuration's 25 folds costs the same as the one whose timing survived; no other fold's time exists to check it against.
+
+The arithmetic is reproducible from \autoref{tab:compute-per-config}: the eight CNN-bearing configurations' stored fold times sum to 7,036\,s and the remaining four to 251\,s, for a sweep total of 7,287\,s. Multiplied by 25 folds and divided by 3,600 this gives 50.6 hours overall, of which the CNN-bearing eight account for $7{,}036 \times 25 / 3600 \approx 48.9$. It is the only cost summary the record supports, and should be read for what it is: a single-fold time scaled by a fold count, not a sum of 300 measured fold durations.
+
+\subsection{Mixed precision, and what a reproduction would need}
+\label{sec:mixed-precision}
+
+Mixed precision was enabled and, as \autoref{sec:numerical-safeguards} records, takes effect only on CUDA. The peak-VRAM figures exist at all only because \verb|torch.cuda.max_memory_allocated()| returns a value on a CUDA device, so although no GPU is named anywhere in the stored output, the runs were GPU-based.
+
+What is missing for exact reproduction is everything \autoref{sec:record-gap} lists: the GPU model, driver version, CUDA runtime and PyTorch versions, and the wall-clock dates of the sweep. A future run of the same code on different hardware or a different library version could reproduce the relative pattern between CNN-bearing and CNN-free configurations without reproducing these absolute timings or memory figures.
+
+
+\section{Conclusion}
+\label{sec:ch4-conclusion}
+
+This chapter has specified, rather than argued for, what is needed to reproduce these experiments and read their results correctly. The design is a factorial ablation over four boolean components: sixteen cells from the full Cartesian product, four rejected as architecturally ill-formed because SimAM has no convolutional feature map to act on without the stem, and the remaining twelve the object of study, each effect read off matched pairs differing in exactly one flag --- four pairs each for SimAM and the CNN stem, six each for EVM and the transformer. The shared data is CASME II's 255-row label set reduced, once the residual \texttt{Others} category is dropped, to 156 clips across 25 subjects in three classes. The shared architecture makes the pairs exact: three unshared per-channel convolutional streams, an optional SimAM re-weighting, an optional transformer encoder and a common classification head, each disabled component replaced by a near-parameter-free fallback rather than removed, so that a flag removes the component and not also a comparably sized replacement. Training is constant throughout --- focal loss with label smoothing, a weighted sampler carrying the frequency correction, AdamW with warmup and cosine annealing over 50 epochs at batch size 8, one seed reset before every fold --- and evaluation is leave-one-subject-out over 25 subjects, with pooled macro-F1 as the primary metric in preference to a mean-of-folds macro-F1 that fold composition caps below 0.7 regardless of model quality.
+
+These sections also fix the bounds within which the results may be interpreted. A single fixed seed, with no repeat run and no variance estimate, means no difference between two configurations carries a confidence interval or standard error. No hyperparameter search was run over any training value, so every comparison is between architectures given one common, untuned recipe. The protocol selects each fold's checkpoint against the same held-out subject it is then scored against, for want of an inner validation split, biasing every score optimistically by an amount this design cannot measure. And no per-clip prediction is saved, so no paired significance test between any two configurations can be constructed after the fact, however suggestive their pooled macro-F1 scores appear. These four limitations are not caveats appended to a result; they are properties of the design fixed here, bounding what any comparison is entitled to claim.

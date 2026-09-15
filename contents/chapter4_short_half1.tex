@@ -1,0 +1,283 @@
+% =============================================================================
+% Chapter 4 - Methodology (shortened), half 1 of 2: sections 4.1-4.4.
+% =============================================================================
+% Include before chapter4_short_half2.tex; do not include alongside the
+% original contents/chapter4.tex, which shares every label.
+%
+% Load-bearing structure, verified before cutting:
+%   * chapter2.tex cites Section 4.2.5 BY NUMBER, so every subsection slot in
+%     4.2 is preserved in order.
+%   * 26 of this chapter's 58 labels are referenced from Chapters 5 and 6 and the
+%     introduction; all are retained.
+%   * Tables tab:twelve-configs, tab:matched-pairs and tab:parameter-totals
+%     keep their labels and short captions. tab:matched-pairs is cited from
+%     Chapter 5.
+%
+% Convention, following the shortened Chapter 3: no sentence points at another
+% chapter by name or number; every float carries a short \caption[...].
+% =============================================================================
+
+\chapter{Methodology}
+\label{ch:methodology}
+
+This chapter specifies the study as it was carried out: the experimental design, the corpus and its preparation, the twelve configurations trained, the architecture and its ablatable components, the training procedure, the evaluation protocol, and the computational conditions under which the sweep ran. Mechanisms already explained are cross-referenced rather than re-derived; every parameter reported here is taken from the configuration and code that produced the results.
+
+
+\section{Research Approach and Experimental Design}
+\label{sec:research-approach}
+
+\subsection{The form of the study}
+\label{sec:study-form}
+
+This is not the proposal and evaluation of a single architecture. It is a factorial ablation: four components of a micro-expression recognition pipeline are each represented by a boolean flag, every viable combination of flags is trained and scored under an identical protocol, and each component's contribution is read off as a marginal effect over pairs of runs differing in exactly that one flag. No single ``best'' model is nominated as the object of study. The object of study is the set of runs, and the question is not how well the pipeline performs but which of its stages are responsible for that performance, and by how much.
+
+That form follows from the gap of \autoref{sec:research-gap}. Components in the reviewed literature are varied one at a time from inside a single proposed design --- Li et al.~\cite{liX2018} sweep the magnification factor with $\alpha = 1$ as an explicit no-magnification arm, for instance --- while across papers whole systems are compared with each other. What no reviewed study does is vary several components jointly, under one protocol, with everything else held identical, so no existing result can say whether magnification does the work usually credited to it, whether attention contributes anything once a convolutional stem is present, or whether a temporal transformer earns its cost. Every comparison this design supports is a matched pair in which one component alone changed.
+
+\subsection{The four variables}
+\label{sec:four-variables}
+
+Four independently toggled components define the design space, each a boolean flag in the codebase:
+
+\begin{itemize}
+	\item \texttt{use\_evm} --- Eulerian motion magnification, applied as a pre-processing stage before any frame reaches the network (\autoref{sec:motion-magnification}).
+	\item \texttt{use\_simam} --- SimAM, a parameter-free attention module inserted into the convolutional stream (\autoref{sec:simam}).
+	\item \texttt{use\_cnn} --- the three-stream convolutional spatial stem (\autoref{sec:conv3d}).
+	\item \texttt{use\_transformer} --- the temporal transformer encoder applied after spatial features are extracted (\autoref{sec:self-attention}).
+\end{itemize}
+
+Each flag is a strict on/off switch, with no intermediate setting and no \textit{equivalent} implementation substituted when a flag is off: switching off the convolutional stem does not swap in a different spatial feature extractor, only the deliberately minimal fallback of \autoref{sec:fallbacks-config} --- or, where the resulting configuration is invalid, the cell is not trained at all.
+
+\subsection{Twelve configurations, not sixteen}
+\label{sec:twelve-configs}
+
+Four binary flags define $2^4 = 16$ cells, and the implementation constructs all of them directly as the Cartesian product of the flag states (\verb|itertools.product([False, True], repeat=4)|).
+
+Not every generated cell is trained. Each candidate passes through \verb|AblationConfig.is_valid()|, which rejects any configuration with \texttt{use\_simam=True} while \texttt{use\_cnn=False}. The reason is architectural rather than empirical: SimAM re-weights activations in a convolutional feature map, and without a convolutional stem there is no such map for it to act on, so the combination is not a weaker pipeline but a specification that does not correspond to a well-formed model. The check is applied per candidate at run time, after all sixteen are generated. Exactly four cells carry that combination; all four are rejected, and the remaining \textbf{twelve} are trained and evaluated.
+
+\subsection{Matched pairs and their counts}
+\label{sec:matched-pairs}
+
+Because the retained cells form a near-complete factorial design, each flag's effect is estimated by matched-pair comparison: for a given flag, every pair of trained configurations sharing identical settings on the other three, and differing only in that one, is one matched comparison.
+
+The counts differ by flag, and the asymmetry is arithmetic rather than oversight. Validity depends only on the joint setting of \texttt{use\_simam} and \texttt{use\_cnn}, so toggling \texttt{use\_evm} or \texttt{use\_transformer} alone never crosses the validity boundary: for each of the six valid combinations of the other three flags, both settings survive, giving \textbf{six} pairs each. Toggling \texttt{use\_simam} or \texttt{use\_cnn} can cross it. A \texttt{use\_simam} pair requires \texttt{use\_cnn=True}, since a \texttt{use\_cnn=False} cell is valid only at \texttt{use\_simam=False}; a \texttt{use\_cnn} pair requires \texttt{use\_simam=False}, since only then is the \texttt{use\_cnn=False} cell valid. Each therefore has \textbf{four} pairs. The two flags entangled by the exclusion rule are exactly the two that lose pairs to it.
+
+\subsection{A stated limitation}
+\label{sec:design-limitation}
+
+Every configuration is trained exactly once, under a single fixed random seed (\textbf{42}); none is retrained under multiple seeds and no across-seed variance is estimated. Every reported difference between configurations, including the matched-pair effects of \autoref{sec:matched-pairs}, is therefore a difference between two single point estimates, with no confidence interval and no significance test. A difference could narrow, widen or reverse under a different seed, and this design cannot separate a robust component effect from noise attributable to initialisation or batch ordering. It is stated here, where the design is fixed, because it is a property of the design rather than of any outcome.
+
+
+\section{The Corpus and Its Preparation}
+\label{sec:corpus-preparation}
+
+\subsection{The corpus used}
+\label{sec:corpus-used}
+
+This study trains and evaluates exclusively on CASME II~\cite{yan2014}. No other corpus --- not SAMM, not CAS(ME)$^2$, not the original CASME --- contributes a single clip to any of the twelve configurations; every number reported is a within-corpus result. \autoref{sec:corpus} reviews the corpus literature and the reasons CASME II is the standard single-corpus choice, and \autoref{sec:recording-to-input} describes what its recording hands the pipeline. What follows is what this study drew from it, and how that was reduced to the clips actually used.
+
+\subsection{From 255 rows to 156 clips}
+\label{sec:255-to-156}
+
+The pipeline's label table, \texttt{Processed\_Data/master\_thesis\_labels.csv}, holds \textbf{255} rows, all CASME II and all coded \texttt{micro-expression} --- the set already filtered by the first two of the four row-level conditions of \autoref{sec:clip-selection}. Its distribution under \texttt{Unified\_Emotion} is Negative 99, Others 99, Positive 32, Surprise 25.
+
+\texttt{Others} is excluded before any model is trained, leaving \textbf{156} clips. It is not an emotion label but the residual category for clips that do not fit cleanly elsewhere, so a clip coded \texttt{Others} carries no positive claim about what it shows. Since the task is recognising a named expression, a category that by construction names nothing cannot support a training signal for it, and including it would ask the network to learn a class defined by exclusion rather than content. The 99 Negative, 32 Positive and 25 Surprise clips form the working set for every configuration.
+
+\subsection{The three-class grouping}
+\label{sec:three-class-grouping}
+
+The 156 retained clips are mapped to three coarser classes by \texttt{GROUPED\_EMOTION\_MAP}, which assigns \verb|{"Negative": 0, "Positive": 1, "Surprise": 2}|: disgust, fear, repression and sadness group into Negative; happiness maps to Positive; surprise is kept as its own class. The resulting distribution is \textbf{99 : 32 : 25}, roughly 4 : 1.3 : 1.
+
+The grouping is the field convention reviewed in \autoref{sec:label-taxonomy}, adopted rather than re-argued, and stated in full here because results are reported against these three classes and the imbalance is needed to distinguish a genuine component effect from an artefact of it.
+
+\subsection{Subjects and the leave-one-subject-out protocol}
+\label{sec:subjects-loso}
+
+Across the full 255-row set, \textbf{26} distinct subjects appear. Once \texttt{Others} is excluded, only \textbf{25} remain: subject 18 contributes clips coded \texttt{Others} alone, so it disappears with that exclusion.
+
+The distinction matters directly to the protocol. Leave-one-subject-out cross-validation (\autoref{sec:evaluation}) is run over the 156-clip three-class subset and therefore produces \textbf{25 folds}, not 26. The number 26 describes the corpus before class filtering; 25 describes the data this thesis trains and evaluates on. Both are given explicitly because reporting either in place of the other would misstate the protocol.
+
+Fold sizes are uneven by construction, since each held-out set is one subject's clips and CASME II subjects do not contribute equally --- a property of leave-one-subject-out on this corpus, inherited rather than introduced here, against which every per-fold figure should be read.
+
+\subsection{Preparation for the network}
+\label{sec:network-preparation}
+
+Before reaching any ablatable component, each of the 156 clips is reduced to a three-channel motion tensor of fixed shape $[3, 32, 224, 224]$: 32 temporal frames, each $224 \times 224$, the channels holding horizontal optical flow, vertical optical flow and optical strain magnitude. The procedure converting a variable-length sequence of greyscale frames --- the corpus's original recordings, uncropped and unregistered (\autoref{sec:corpus-supplies}) --- into that tensor is given in \autoref{sec:recording-to-input} and \autoref{sec:video-to-motion}.
+
+The values it was run with are fixed throughout and are recorded here because reproducing the study requires them. Magnification, where enabled, uses amplification factor $\boldsymbol{\alpha = 10}$, a temporal band of \textbf{5--25 Hz} and \textbf{four pyramid levels}, with output clipped to $[0,255]$ and requantised to 8-bit (\autoref{sec:evm-departures} explains the band, \autoref{sec:evm-implications} the divergence it embodies). Frames spanning onset to offset are uniformly resampled to \textbf{33}, which is what yields the tensor's $T = 32$: flow is computed between \textit{adjacent} sampled frames, so 33 frames give 32 consecutive pairs. Flow and strain follow \autoref{sec:three-channel-tensor}, whose Farneb\"ack settings and gradient discretisation are not repeated, and each channel is min--max normalised to $[0,1]$ across the clip before storage.
+
+None of these values is varied by the ablation, so every clip enters the network at the same fixed shape whichever configuration processes it.
+
+
+\section{The Ablation Matrix}
+\label{sec:ablation-matrix}
+
+\subsection{The twelve trained configurations}
+\label{sec:twelve-trained}
+
+\autoref{tab:twelve-configs} lists the twelve configurations retained after the validity check of \autoref{sec:twelve-configs}, named exactly as in \texttt{Ablation\_Study/ablation\_config.py}. \texttt{T}/\texttt{F} stand for \texttt{True}/\texttt{False}.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{p{3.3cm} c c c c p{5.0cm}}
+		\hline
+		\textbf{name} & \textbf{evm} & \textbf{simam} & \textbf{cnn} & \textbf{transformer} & \textbf{descriptor} \\
+		\hline
+		\texttt{config\_1\_pure\_base}        & F & F & F & F & no component active; raw motion tensor pooled and classified directly \\
+		\texttt{config\_2\_temporal\_only}    & F & F & F & T & transformer only, on unmagnified input \\
+		\texttt{config\_3\_spatial\_only}     & F & F & T & F & convolutional stem only, on unmagnified input \\
+		\texttt{config\_4\_motion\_amp\_base} & T & F & F & F & magnification only, no learned spatial or temporal component \\
+		\texttt{config\_5\_attention\_base}   & F & T & T & F & convolutional stem with SimAM, no magnification, no transformer \\
+		\texttt{config\_6\_full\_stage2\_noevm} & F & T & T & T & full learned stack without magnification \\
+		\texttt{config\_7\_full\_no\_attention} & T & F & T & T & magnification, CNN and transformer, without SimAM \\
+		\texttt{config\_8\_proposed\_unified} & T & T & T & T & all four components active \\
+		\texttt{config\_9\_permutation}       & F & F & T & T & CNN and transformer, no magnification, no SimAM \\
+		\texttt{config\_12\_permutation}      & T & F & F & T & magnification and transformer, no CNN, no SimAM \\
+		\texttt{config\_13\_permutation}      & T & F & T & F & magnification and CNN, no SimAM, no transformer \\
+		\texttt{config\_16\_permutation}      & T & T & T & F & magnification, CNN and SimAM, no transformer \\
+		\hline
+	\end{tabular}
+	\caption[The twelve valid ablation configurations]{The twelve valid ablation configurations.}
+	\label{tab:twelve-configs}
+\end{table}
+
+\subsection{The four excluded cells}
+\label{sec:excluded-cells}
+
+Four of the sixteen generated cells are rejected by \verb|AblationConfig.is_valid()| and never trained, all sharing \texttt{use\_simam=True, use\_cnn=False} --- the combination \autoref{sec:twelve-configs} identifies as ill-formed rather than merely weak: \texttt{config\_10} (evm F, transformer F), \texttt{config\_11} (evm F, transformer T), \texttt{config\_14} (evm T, transformer F) and \texttt{config\_15} (evm T, transformer T).
+
+\subsection{Naming is not contiguous}
+\label{sec:naming}
+
+Configurations 1 through 8 carry the descriptive names of the original eight-cell design that preceded the full factorial; 9, 12, 13 and 16 were added when it was completed to all sixteen generated cells and carry the generic suffix \texttt{\_permutation}. The numbering therefore skips 10, 11, 14 and 15, the four excluded cells --- a consequence of how candidates are generated and filtered, not an error in the results.
+
+\subsection{The baseline, and the control it is read against}
+\label{sec:baseline-control}
+
+Two configurations are easily confused and serve different purposes:
+
+\begin{itemize}
+	\item \textbf{\texttt{config\_4\_motion\_amp\_base} is the study's baseline.} It applies magnification and nothing else --- no SimAM, no convolutional stem, no transformer --- and is the reference against which every learned component's contribution is ultimately read.
+	\item \textbf{\texttt{config\_1\_pure\_base} is not a second baseline.} It is the EVM-off control, identical to \texttt{config\_4} in every flag but magnification, and exists to isolate magnification by matched-pair comparison against it (\autoref{sec:matched-pairs-table}).
+\end{itemize}
+
+\texttt{config\_8\_proposed\_unified} is the full system, all four components active, and is not privileged beyond that: one of twelve cells, not the object the ablation exists to justify.
+
+\subsection{Matched pairs}
+\label{sec:matched-pairs-table}
+
+\autoref{tab:matched-pairs} lists all twenty matched pairs, in the sense of \autoref{sec:matched-pairs}, written \texttt{off $\rightarrow$ on}.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l l r}
+		\hline
+		\textbf{variable} & \textbf{pairs (off $\rightarrow$ on)} & \textbf{pair count} \\
+		\hline
+		Transformer & 1$\rightarrow$2, 4$\rightarrow$12, 3$\rightarrow$9, 13$\rightarrow$7, 5$\rightarrow$6, 16$\rightarrow$8 & 6 \\
+		EVM         & 1$\rightarrow$4, 3$\rightarrow$13, 9$\rightarrow$7, 6$\rightarrow$8, 5$\rightarrow$16, 2$\rightarrow$12 & 6 \\
+		SimAM       & 3$\rightarrow$5, 9$\rightarrow$6, 7$\rightarrow$8, 13$\rightarrow$16 & 4 \\
+		3D-CNN      & 1$\rightarrow$3, 2$\rightarrow$9, 4$\rightarrow$13, 12$\rightarrow$7 & 4 \\
+		\hline
+	\end{tabular}
+	\caption[Matched pairs by variable]{Matched pairs by variable.}
+	\label{tab:matched-pairs}
+\end{table}
+
+A variable's reported effect is the mean of the per-pair differences over its rows. The pair count is reported alongside every such effect, because an average over four comparisons is a noisier estimate of the same quantity than one over six; any comparison between the size of a four-pair effect and a six-pair effect should be read with that asymmetry in mind. No accuracy, F1 score or ranking of configurations is reported in this section.
+
+
+\section{Model Architecture}
+\label{sec:architecture}
+
+\subsection{Which implementation this is}
+\label{sec:which-implementation}
+
+Every result in this thesis was produced by \texttt{AblationMERModel}, in \texttt{Ablation\_Study/models.py}. A second implementation exists in the repository, \texttt{Stage2\_Architecture/models/hybrid\_model.py}, but it is an earlier fixed prototype with no ablation toggles and produced none of these runs.
+
+\texttt{AblationMERModel} is one \texttt{nn.Module} whose forward pass conditionally executes or skips each of the three model-level components --- SimAM, the 3D-CNN backbone, the transformer --- according to flags fixed at construction; magnification is applied at the data level and is not part of the network graph. Building all twelve configurations as branches of one module is what makes the matched-pair logic hold exactly: the shared code path guarantees that two configurations differing in one flag are identical in every other respect, down to initialisation and layer ordering.
+
+\subsection{Input and the three streams}
+\label{sec:input-streams}
+
+The model receives the tensor of \autoref{sec:network-preparation} with a batch dimension prepended, giving \texttt{[B, 3, 32, 224, 224]}. Each motion channel is routed to its own convolutional stream with \textbf{unshared weights}: \texttt{ThreeStreamCNNBackbone} instantiates three independent copies of the stem below, one per channel. Three streams therefore means three motion channels processed independently, not three stages of one pipeline.
+
+\subsection{The convolutional stem}
+\label{sec:conv-stem}
+
+When the backbone is active (\texttt{use\_cnn=True}), each stream applies the following stack, implemented as \texttt{SingleStream3DCNN}:
+
+\begin{verbatim}
+Conv3d(1 -> 16, kernel=(1,3,3), stride=(1,1,1), padding=(0,1,1), bias=False)
+BatchNorm3d -> ReLU -> Dropout3d(p=0.3)
+Conv3d(16 -> 32, kernel=(1,3,3), stride=(1,1,1), padding=(0,1,1), bias=False)
+BatchNorm3d -> ReLU -> Dropout3d(p=0.3)
+MaxPool3d(kernel=(1,2,2), stride=(1,2,2))
+\end{verbatim}
+
+\textbf{No kernel in this stem spans the temporal axis}, for the reason \autoref{sec:conv3d} sets out, so the sequence length $T = 32$ passes through unchanged while height and width are halved once, from 224 to 112. Per stream the shape transformation is $[B,1,32,224,224] \rightarrow [B,32,32,112,112]$; the three streams are concatenated along the channel dimension to give $[B,96,32,112,112]$.
+
+\subsection{SimAM placement}
+\label{sec:simam-placement}
+
+When SimAM is active it is applied \textbf{per stream}, immediately after that stream's convolutional output and before the three are concatenated, each stream carrying its own \texttt{SimAM3D} instance. It is meaningful only when \texttt{use\_cnn=True}, and the model forces \texttt{use\_simam} to \texttt{False} internally otherwise. The gate is as given in \autoref{sec:simam}~\cite{yang2021}, applied to the five-dimensional feature map $x \in \mathbb{R}^{B \times C \times D \times H \times W}$ each stream produces, with the variance Bessel-corrected over $n = D \cdot H \cdot W - 1$. No weight or bias is learned anywhere in it, so SimAM introduces \textbf{zero learnable parameters} regardless of stream or channel count. The regularisation constant is fixed at $\lambda = 1 \times 10^{-4}$ throughout, matching \texttt{SimAM3D}'s default and the value passed at construction.
+
+\subsection{The transformer}
+\label{sec:transformer-config}
+
+The input sequence is formed from the concatenated feature map $[B,96,32,112,112]$ by \texttt{AdaptiveAvgPool3d((32,1,1))}, which collapses both spatial dimensions while leaving the temporal dimension at 32. After the singleton dimensions are squeezed and permuted away this yields $[B,32,96]$: 32 time steps, each a 96-dimensional feature vector. The sequence is passed to \texttt{SLSTTTransformer}, an \texttt{nn.TransformerEncoder} configured with $d_{\text{model}} = 96$, $n_{\text{head}} = 8$, \textbf{4} encoder layers, feed-forward dimension \textbf{256}, dropout \textbf{0.1}, \texttt{norm\_first=True} (pre-norm ordering), GELU activation, \texttt{batch\_first=True}, and fixed sinusoidal positional encoding.
+
+That encoding follows the standard form, added before the first encoder layer: for position $p$ and feature index $2i$ or $2i+1$ of the 96-dimensional embedding,
+
+\[
+	\mathrm{PE}(p, 2i) = \sin\!\left(\frac{p}{10000^{2i/96}}\right), \qquad \mathrm{PE}(p, 2i+1) = \cos\!\left(\frac{p}{10000^{2i/96}}\right).
+\]
+
+It is a fixed buffer, not a learned parameter, and contributes nothing to the parameter counts --- though the positional-encoding stage applies its own \texttt{Dropout(p=0.1)} to the sequence \textit{after} the encoding is added, a separate application from the encoder layers' dropout of the same rate. The encoder is additionally constructed with a final \texttt{LayerNorm(96)} after its four layers, accounting for 192 of the 348,736 parameters. Its output, still 32 steps, is reduced to a single vector by \textbf{mean-pooling over the time axis}, giving $[B,96]$.
+
+\subsection{The classifier head}
+\label{sec:classifier-head}
+
+Every configuration, whichever upstream components are active, ends in the same head:
+
+\begin{verbatim}
+LayerNorm(96) -> Dropout(p=0.3) -> Linear(96, 3)
+\end{verbatim}
+
+\subsection{Fallbacks for disabled components}
+\label{sec:fallbacks-config}
+
+A switched-off component is replaced by a deliberately minimal substitute rather than removed, so the disabled configuration stays a fair control rather than a network with a truncated forward pass.
+
+\begin{itemize}
+	\item \textbf{\texttt{use\_cnn=False} $\rightarrow$ \texttt{RawPatchEmbedding}.} The raw input $[B,3,32,224,224]$ is average-pooled with \texttt{AdaptiveAvgPool3d((32,4,4))}, leaving the temporal axis untouched and crushing each frame to a $4 \times 4$ spatial grid across all three channels. The result is reshaped to $[B,32,48]$ (three channels $\times$ a $4 \times 4$ grid) and passed through a single \texttt{Linear(48, 96)} to match the sequence width the downstream stage expects. This fallback \textbf{adds 4,704 parameters}.
+	\item \textbf{\texttt{use\_transformer=False} $\rightarrow$ \texttt{TemporalPooling}.} The 32-step sequence is collapsed to one vector by a plain mean (or max) over the time axis. This fallback has \textbf{zero parameters} and, critically, no notion of frame order or inter-frame dependency of any kind --- whatever temporal structure a micro-expression's onset--apex--offset carries is unavailable to any configuration using it.
+\end{itemize}
+
+\subsection{Weight initialisation}
+\label{sec:weight-init}
+
+Every configuration is initialised by the same routine, applied once at construction and independent of which components are present: \texttt{Conv3d} weights by Kaiming-normal initialisation (\texttt{fan\_out} mode, ReLU nonlinearity), \texttt{Linear} weights by Xavier-uniform, and the scale and shift of every \texttt{BatchNorm3d} and \texttt{LayerNorm} to one and zero respectively, with all biases zero. Because the routine is applied uniformly, a difference between two matched configurations cannot be attributed to a difference in how their shared components were initialised.
+
+\subsection{Parameter counts}
+\label{sec:parameter-counts}
+
+Four components combine to give any configuration's total. Their individual counts are: the convolutional backbone (\texttt{ThreeStreamCNNBackbone}, all three streams) \textbf{14,544}; the transformer encoder (\texttt{SLSTTTransformer}) \textbf{348,736}; \texttt{RawPatchEmbedding}, the no-CNN fallback, \textbf{4,704}; and the classifier head \textbf{483}. These give four distinct totals (\autoref{tab:parameter-totals}). SimAM and EVM do not appear as rows because neither changes a parameter count --- SimAM contributes zero, and magnification is a pre-processing step rather than a network component.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l l r}
+		\hline
+		\textbf{configuration type} & \textbf{example} & \textbf{parameters} \\
+		\hline
+		no CNN, no transformer & \texttt{config\_1}, \texttt{config\_4} & 5,187 \\
+		CNN, no transformer    & \texttt{config\_3}, \texttt{config\_5}, \texttt{config\_13}, \texttt{config\_16} & 15,027 \\
+		no CNN, transformer    & \texttt{config\_2}, \texttt{config\_12} & 353,923 \\
+		CNN and transformer    & \texttt{config\_6}, \texttt{config\_7}, \texttt{config\_8}, \texttt{config\_9} & 363,763 \\
+		\hline
+	\end{tabular}
+	\caption[Parameter totals by architectural combination]{Parameter totals by architectural combination.}
+	\label{tab:parameter-totals}
+\end{table}
+
+In a full configuration the transformer accounts for roughly \textbf{96\,\%} of total parameters (348,736 of 363,763), while the convolutional backbone carries about 14.5 thousand. This is a fact about the implementation's parameter budget, not a claim about which component contributes more to classification performance.
