@@ -6,14 +6,21 @@
 %
 % \listoftables and \listoffigures build themselves from the SHORT caption of
 % every float -- the \caption[short]{long} form. Every float in the shortened
-% Chapters 3 and 4 carries one, so both lists generate correctly with no
+% Chapters 2, 3, 4 and 5 carries one, so both lists generate correctly with no
 % manual entry. Compile to convergence (at least twice) after any edit: the
 % lists are written to .lot/.lof on one pass and read back on the next.
 %
 % The inventory below is documentation, not markup. It is the audited list of
-% what these two chapters contain, so that a missing or renamed float can be
-% spotted without compiling. Verified: 24 floats, 22 tables and 2 figures,
-% every one carrying both a \label and a short caption.
+% what these chapters contain, so that a missing or renamed float can be
+% spotted without compiling. The Chapter 5 inventory retains all ten tables
+% and nine figures. Every listed float has a label and a short caption.
+% This file generates BOTH lists. Do not also include list_of_figures.tex.
+%
+% -------------------------------------------------------------------- Ch. 2
+% TABLES
+%   tab:ch2-evm-departures    EVM implementation departures
+%   tab:ch2-component-controls Enabled components and their controls
+% Chapter 2 contains no figures.
 %
 % -------------------------------------------------------------------- Ch. 3
 % TABLES
@@ -58,8 +65,31 @@
 %                             configuration
 % Chapter 4 contains no figures.
 %
-% Image files required on the graphics path: fig3_1_dataset.png and
-% fig3_2_fold_composition.png, both under report_figures_thesis/.
+% -------------------------------------------------------------------- Ch. 5
+% TABLES
+%   tab:twelve-ranked        All twelve configurations, ranked by pooled macro F1
+%   tab:transformer-pairs    Transformer matched pairs
+%   tab:evm-pairs-result     Motion-magnification matched pairs
+%   tab:simam-pairs-result   SimAM matched pairs
+%   tab:simam-per-class      Per-class F1 for the two most-affected SimAM pairs
+%   tab:cnn-pairs-result     Convolutional stem matched pairs
+%   tab:cnn-cost             Compute cost of stem-bearing vs stem-free configurations
+%   tab:per-class-f1         Per-class F1 for all twelve configurations
+%   tab:published-uf1        Published CASME II-subset UF1, MEGC 2019
+%   tab:component-effects   Mean marginal effect of each component
+% FIGURES
+%   fig:headline             fig5_1_headline.png
+%   fig:metric-definitions   fig5_2_metric_definitions.png
+%   fig:transformer-split    fig5_3_transformer_split.png
+%   fig:evm-pairs            fig5_4_evm_pairs.png
+%   fig:cost-vs-performance  fig5_5_cost_vs_performance.png
+%   fig:confusion-matrices   fig5_6_confusion_matrices.png
+%   fig:per-class-f1         fig5_7_per_class_f1.png
+%   fig:literature           fig5_8_literature.png
+%   fig:component-effects   fig5_9_component_effects.png
+%
+% Local source images live under report_figures_thesis/. Shortened Chapter 5
+% targets the existing figures/ folder in Overleaf; Chapter 3 uses its graphics path.
 % =============================================================================
 
 \listoftables

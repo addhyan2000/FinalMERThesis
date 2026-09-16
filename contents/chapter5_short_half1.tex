@@ -1,0 +1,251 @@
+% Shortened Chapter 5, half 1: sections 5.1--5.4.
+% Assemble with half 2 using tools/assemble_short_chapter5.py.
+
+\section{Overview of Results}
+\label{sec:results-overview}
+
+The twelve valid configurations are compared on 156 clips from 25 subjects. Scores pool the held-out predictions from all leave-one-subject-out (LOSO) folds; the same data and training regime are used throughout.
+
+\subsection{The twelve configurations, ranked}
+\label{sec:twelve-ranked}
+
+Table~\ref{tab:twelve-ranked} ranks configurations by pooled macro F1 and reports pooled accuracy and the number of correct classifications. Figure~\ref{fig:headline} plots the ranking. Configuration numbers identify the flag combinations in the table; shorter identifiers are used below.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{c l c c c c r r r}
+		\hline
+		\textbf{Rank} & \textbf{Config.} & \textbf{EVM} & \textbf{SimAM} & \textbf{CNN} & \textbf{Transf.} & \textbf{Macro F1} & \textbf{Accuracy} & \textbf{Correct} \\
+		\hline
+		1  & \texttt{config\_2}      & --  & --  & --  & \checkmark & 0.7122 & 0.7436 & 116 \\
+		2  & \texttt{config\_8}   & \checkmark & \checkmark & \checkmark & \checkmark & 0.6659 & 0.7500 & 117 \\
+		3  & \texttt{config\_7} & \checkmark & --  & \checkmark & \checkmark & 0.6625 & 0.7051 & 110 \\
+		4  & \texttt{config\_12}        & \checkmark & --  & --  & \checkmark & 0.6581 & 0.6795 & 106 \\
+		5  & \texttt{config\_6} & --  & \checkmark & \checkmark & \checkmark & 0.6171 & 0.7308 & 114 \\
+		6  & \texttt{config\_9}         & --  & --  & \checkmark & \checkmark & 0.5830 & 0.7308 & 114 \\
+		7  & \texttt{config\_13}        & \checkmark & --  & \checkmark & --  & 0.4480 & 0.4359 & 68 \\
+		8  & \texttt{config\_4}   & \checkmark & --  & --  & --  & 0.4386 & 0.4808 & 75 \\
+		9  & \texttt{config\_1}          & --  & --  & --  & --  & 0.4337 & 0.4615 & 72 \\
+		10 & \texttt{config\_5}     & --  & \checkmark & \checkmark & --  & 0.4302 & 0.4231 & 66 \\
+		11 & \texttt{config\_3}       & --  & --  & \checkmark & --  & 0.4252 & 0.4167 & 65 \\
+		12 & \texttt{config\_16}        & \checkmark & \checkmark & \checkmark & --  & 0.4192 & 0.4038 & 63 \\
+		\hline
+	\end{tabular}
+	\caption[All twelve configurations, ranked by pooled macro F1]{All twelve configurations, ranked by pooled macro F1. Accuracy is pooled; correct counts are out of 156 clips.}
+	\label{tab:twelve-ranked}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_1_headline.png}
+	\caption[The twelve configurations ranked by pooled macro F1]{The twelve configurations ranked by pooled macro F1, with pooled accuracy shown alongside. The six carrying a transformer occupy the upper band and the six without the lower, with no overlap between them.}
+	\label{fig:headline}
+\end{figure}
+
+\subsection{The headline result}
+\label{sec:headline-result}
+
+\textbf{Configuration 2 is best on pooled macro F1: 0.7122.} Its transformer receives motion features through spatial pooling and a learned projection, with no convolutional stem, SimAM or Eulerian video magnification (EVM). The all-components configuration 8 scores \textbf{0.6659}, a gap of \textbf{0.0463}.
+
+Configuration 8 leads on pooled accuracy, 0.7500 versus 0.7436, corresponding to 117 versus 116 correct clips. These metrics therefore select different winners. Under the study's primary metric, configuration 2 ranks first; the observed gap is a point estimate, not a demonstrated statistically significant advantage.
+
+\subsection{A reference point: the all-Negative classifier}
+\label{sec:all-negative-reference}
+
+An input-independent classifier predicting Negative for every clip obtains accuracy $99/156=0.6346$. Its Negative-class F1 is $2\times99/(156+99)=0.7765$; the other two class scores are zero, giving pooled macro F1 \textbf{0.2588}. All twelve configurations exceed that particular macro-F1 reference, although this alone does not establish generalisation or improvement over every possible input-independent rule. Accuracy near 0.63 is attainable without discriminating among expressions.
+
+Figure~\ref{fig:metric-definitions} contrasts pooled and mean-of-folds scores. With all three classes retained and undefined class F1 set to zero, missing classes in individual folds impose a 0.6267 ceiling on mean-of-folds macro F1. That ceiling does not apply to pooled macro F1.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_2_metric_definitions.png}
+	\caption[Mean-of-folds against pooled aggregation]{Mean-of-folds against pooled aggregation, for accuracy and for macro F1. The dashed line marks the 0.6267 ceiling that fold composition imposes on any mean-of-folds macro F1, irrespective of model quality.}
+	\label{fig:metric-definitions}
+\end{figure}
+
+\subsection{The transformer/no-transformer split}
+\label{sec:transformer-split}
+
+The six transformer configurations occupy pooled macro F1 values 0.5830--0.7122; the six without occupy 0.4192--0.4480. The closest members are separated by \textbf{0.1350}. The other flags do not produce non-overlapping score groups.
+
+\subsection{The baseline, and how many configurations fall below it}
+\label{sec:baseline-count}
+
+The designated baseline is configuration 4, EVM with spatial pooling, a learned projection and temporal averaging, at 0.4386. Four other configurations score lower: 1, 3, 5 and 16. Configuration 13 scores 0.4480 and is therefore above this baseline despite belonging to the lower-performing transformer-free group.
+
+\section{The Temporal Transformer}
+\label{sec:transformer-results}
+
+Each matched pair holds EVM, SimAM and the CNN stem fixed and toggles the temporal encoder.
+
+\subsection{The effect}
+\label{sec:transformer-effect}
+
+The transformer has the largest observed mean marginal effect: \textbf{+0.2173} pooled macro F1. All six differences are positive, ranging from \textbf{+0.1578} to \textbf{+0.2786}.
+
+\subsection{The six pairs}
+\label{sec:transformer-six-pairs}
+
+Table~\ref{tab:transformer-pairs} retains all six comparisons; Figure~\ref{fig:transformer-split} visualises their gains and the group separation. Differences are calculated from unrounded results, so subtracting displayed four-decimal scores can differ in the last digit.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r}
+		\hline
+		\textbf{Pair (off $\rightarrow$ on)} & \textbf{$\Delta$ pooled macro F1} \\
+		\hline
+		\texttt{config\_1} $\rightarrow$ \texttt{config\_2}  & +0.2786 \\
+		\texttt{config\_16} $\rightarrow$ \texttt{config\_8}  & +0.2467 \\
+		\texttt{config\_4} $\rightarrow$ \texttt{config\_12} & +0.2195 \\
+		\texttt{config\_13} $\rightarrow$ \texttt{config\_7}  & +0.2146 \\
+		\texttt{config\_5} $\rightarrow$ \texttt{config\_6}  & +0.1869 \\
+		\texttt{config\_3} $\rightarrow$ \texttt{config\_9}  & +0.1578 \\
+		\hline
+	\end{tabular}
+	\caption[Transformer matched pairs]{Transformer matched pairs.}
+	\label{tab:transformer-pairs}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_3_transformer_split.png}
+	\caption[The six transformer matched pairs]{The six transformer matched pairs, and the resulting separation between transformer-bearing and transformer-free configurations.}
+	\label{fig:transformer-split}
+\end{figure}
+
+\subsection{What consistency across six of six means, and does not}
+\label{sec:transformer-consistency}
+
+Even the smallest transformer gain exceeds the absolute mean effect of every other component. The repeated positive direction describes consistency across the tested architectural settings, but the pairs share a dataset and training protocol and are not independent statistical replications. With one seed and no repeated-run variance estimate, neither a confidence interval nor robustness across seeds can be inferred from six positive differences. Paired prediction-based testing is also unavailable because per-clip predictions were not retained.
+
+\subsection{The group separation}
+\label{sec:transformer-separation}
+
+The transformer flag alone separates the upper and lower halves of the ranking. This is a descriptive property of the twelve observed scores, not evidence that the same boundary would hold under another dataset, seed or training regime.
+
+\subsection{Interpretation}
+\label{sec:transformer-interpretation}
+
+The comparison replaces direct temporal averaging with a position-aware transformer followed by averaging. The stem's $(1,3,3)$ kernels do not perform temporal convolution, although BatchNorm during training and SimAM when enabled use statistics spanning time. Thus the control is order-blind, but not necessarily independent across frames at every operation.
+
+The gain supports the encoder as implemented. It does not isolate the contribution of temporal order from attention, feed-forward transformations or additional learned capacity; that would require further controls. Among the four stem-free configurations, the transformer adds approximately one fifth to stored last-fold training time, and configuration 2 combines the highest score with this relatively inexpensive route.
+
+\section{Motion Magnification}
+\label{sec:evm-results}
+
+Magnification is compared over six pairs with all learned-component flags fixed.
+
+\subsection{The effect}
+\label{sec:evm-effect-result}
+
+EVM's mean effect is \textbf{+0.0152} pooled macro F1, with four positive and two negative differences spanning \textbf{$-$0.0541} to \textbf{+0.0795}. The small mean conceals substantial variation across architectural settings.
+
+\subsection{The six pairs}
+\label{sec:evm-six-pairs}
+
+Table~\ref{tab:evm-pairs-result} lists the comparisons and their accompanying components; Figure~\ref{fig:evm-pairs} plots them.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l l r}
+		\hline
+		\textbf{Pair (off $\rightarrow$ on)} & \textbf{Other enabled blocks} & \textbf{$\Delta$ pooled macro F1} \\
+		\hline
+		\texttt{config\_9} $\rightarrow$ \texttt{config\_7}  & CNN + transformer         & +0.0795 \\
+		\texttt{config\_6} $\rightarrow$ \texttt{config\_8}  & CNN + SimAM + transformer & +0.0488 \\
+		\texttt{config\_3} $\rightarrow$ \texttt{config\_13} & CNN only                  & +0.0228 \\
+		\texttt{config\_1} $\rightarrow$ \texttt{config\_4}  & none                      & +0.0049 \\
+		\texttt{config\_5} $\rightarrow$ \texttt{config\_16} & CNN + SimAM               & $-$0.0109 \\
+		\texttt{config\_2} $\rightarrow$ \texttt{config\_12} & transformer only          & $-$0.0541 \\
+		\hline
+	\end{tabular}
+	\caption[Motion-magnification matched pairs]{Motion-magnification matched pairs.}
+	\label{tab:evm-pairs-result}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_4_evm_pairs.png}
+	\caption[The six magnification matched pairs]{The six magnification matched pairs under the full leave-one-subject-out protocol. Four improve, two regress.}
+	\label{fig:evm-pairs}
+\end{figure}
+
+\subsection{The most consequential observation}
+\label{sec:evm-consequential}
+
+Adding EVM to the best configuration, $2\rightarrow12$, produces its largest loss, \textbf{$-$0.0541}, over three and a half times the mean effect's magnitude. The largest absolute movement is instead the gain for $9\rightarrow7$, \textbf{+0.0795}. Both pairs contain a transformer; only the latter contains the CNN stem.
+
+\subsection{A pattern, not a conclusion}
+\label{sec:evm-pattern}
+
+Three of four stem-bearing pairs improve with EVM; $5\rightarrow16$ declines by 0.0109. The two stem-free pairs split one gain and one loss. These counts suggest dependence on the surrounding architecture, but two or four comparisons under one seed cannot establish a general interaction or its uncertainty.
+
+\subsection{Interpretation}
+\label{sec:evm-interpretation-result}
+
+Two implementation choices offer possible explanations. First, clips are sampled to 33 frames before magnification while filtering still assumes nominal 200 fps, making the physical meaning of the intended 5--25 Hz band clip-dependent. Second, magnification precedes flow and strain, which already expose motion and deformation; its benefit need not match that reported for appearance descriptors. Neither explanation was isolated experimentally.
+
+EVM adds no learned parameters, but its preprocessing cost is excluded from the stored training-time and peak-memory measurements. Those measurements cannot establish its full computational trade-off.
+
+\section{Parameter-Free Attention}
+\label{sec:simam-results}
+
+SimAM is evaluated within the stem-bearing configurations, where the model implements its activation gate.
+
+\subsection{The effect}
+\label{sec:simam-effect-result}
+
+The mean effect is \textbf{+0.0034} pooled macro F1 across four pairs: three positive, one negative, ranging from \textbf{$-$0.0288} to \textbf{+0.0341}. This is the smallest observed mean. Its closeness to zero is descriptive; without uncertainty estimates it establishes neither a reliable benefit nor equivalence to zero.
+
+\subsection{The four pairs}
+\label{sec:simam-four-pairs}
+
+Table~\ref{tab:simam-pairs-result} gives all four pairs. The model excludes SimAM without a CNN stem, leaving twelve valid configurations rather than sixteen and four SimAM comparisons rather than eight.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r}
+		\hline
+		\textbf{Pair (off $\rightarrow$ on)} & \textbf{$\Delta$ pooled macro F1} \\
+		\hline
+		\texttt{config\_9} $\rightarrow$ \texttt{config\_6}   & +0.0341 \\
+		\texttt{config\_3} $\rightarrow$ \texttt{config\_5}   & +0.0050 \\
+		\texttt{config\_7} $\rightarrow$ \texttt{config\_8}   & +0.0034 \\
+		\texttt{config\_13} $\rightarrow$ \texttt{config\_16} & $-$0.0288 \\
+		\hline
+	\end{tabular}
+	\caption[SimAM matched pairs]{SimAM matched pairs.}
+	\label{tab:simam-pairs-result}
+\end{table}
+
+\subsection{Why the mean is not the finding}
+\label{sec:simam-mean-not-finding}
+
+Table~\ref{tab:simam-per-class} shows the two pairs with the largest changes. For $9\rightarrow6$, Surprise F1 rises from 0.3000 to 0.5902, but Positive falls from 0.6000 to 0.4286 and Negative from 0.8491 to 0.8325. The +0.0341 macro-F1 gain is therefore a net class trade-off. Configuration 9's initial Surprise score is the second-lowest in the sweep, above configuration 4's 0.2462.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r r r}
+		\hline
+		\textbf{Configuration} & \textbf{Negative} & \textbf{Positive} & \textbf{Surprise} \\
+		\hline
+		\texttt{config\_9} (SimAM off)  & 0.8491 & 0.6000 & \textbf{0.3000} \\
+		\texttt{config\_6} (SimAM on)   & 0.8325 & 0.4286 & \textbf{0.5902} \\
+		\texttt{config\_13} (SimAM off) & 0.4127 & 0.5278 & 0.4035 \\
+		\texttt{config\_16} (SimAM on)  & 0.3500 & 0.5143 & 0.3934 \\
+		\hline
+	\end{tabular}
+	\caption[Per-class F1 for the two most-affected SimAM pairs]{Per-class F1 for the two most-affected SimAM pairs.}
+	\label{tab:simam-per-class}
+\end{table}
+
+\subsection{What this supports, and what it does not}
+\label{sec:simam-supports}
+
+The largest-loss pair, $13\rightarrow16$, declines on all three classes, including Surprise from 0.4035 to 0.3934. SimAM therefore does not consistently improve the rarest class. With only 32 Positive and 25 Surprise clips, these aggregate changes cannot identify which clips changed predictions or establish a reproducible class-specific effect.
+
+\subsection{Cost}
+\label{sec:simam-cost}
+
+SimAM adds no learned parameters but increases stored last-fold training time by approximately 11\% and peak VRAM by about 5,292 MB (35.9\%) in its matched comparisons. Scaling the four time differences by 25 folds attributes approximately 2.64 of the sweep's 50.61 extrapolated GPU-hours to these additions, or 5.2\%. These are estimates from retained last-fold measurements, not measured totals over all folds. The small mean score change must therefore be considered alongside a nonzero computational cost.

@@ -1,0 +1,261 @@
+% Shortened Chapter 5, half 2: sections 5.5--5.8.
+% Assemble with half 1 using tools/assemble_short_chapter5.py.
+
+\section{The Convolutional Stem}
+\label{sec:cnn-results}
+
+The convolutional stem has the only negative mean component effect and separates the sweep's expensive configurations from its inexpensive ones.
+
+\subsection{The effect}
+\label{sec:cnn-effect-result}
+
+The stem's mean effect is \textbf{$-$0.0310} pooled macro F1 across four pairs, two positive and two negative. Differences range from \textbf{$-$0.1292} to \textbf{+0.0094}.
+
+\subsection{The four pairs}
+\label{sec:cnn-four-pairs}
+
+Table~\ref{tab:cnn-pairs-result} holds the other flags fixed. All four pairs have SimAM disabled, because the model does not define its stem-free counterpart. The measured stem effect is consequently conditional on that restriction.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l l r}
+		\hline
+		\textbf{Pair (off $\rightarrow$ on)} & \textbf{Components also present} & \textbf{$\Delta$ pooled macro F1} \\
+		\hline
+		\texttt{config\_4} $\rightarrow$ \texttt{config\_13} & EVM               & +0.0094 \\
+		\texttt{config\_12} $\rightarrow$ \texttt{config\_7} & EVM + transformer & +0.0044 \\
+		\texttt{config\_1} $\rightarrow$ \texttt{config\_3}  & none              & $-$0.0085 \\
+		\texttt{config\_2} $\rightarrow$ \texttt{config\_9}  & transformer       & \textbf{$-$0.1292} \\
+		\hline
+	\end{tabular}
+	\caption[Convolutional stem matched pairs]{Convolutional stem matched pairs.}
+	\label{tab:cnn-pairs-result}
+\end{table}
+
+\subsection{The largest stem-associated loss}
+\label{sec:cnn-worst-pair}
+
+Three differences have absolute magnitude below 0.01. The fourth, $2\rightarrow9$, reduces the best configuration from 0.7122 to 0.5830, a loss of \textbf{0.1292} that dominates the mean. Adding either the stem or EVM separately to configuration 2 reduces its score; the stem's loss is larger. The two small stem gains do not support a blanket claim that the stem always harms performance.
+
+\subsection{The cost}
+\label{sec:cnn-cost}
+
+Table~\ref{tab:cnn-cost} compares stored peak VRAM and estimated training cost. The eight stem-bearing configurations account for \textbf{48.87 of 50.61 extrapolated GPU-hours (96.6\%)}. This is their share of the sweep's estimated cost, not an estimate that the stem operation alone consumed that fraction.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r r}
+		\hline
+		 & \textbf{CNN-bearing (8 configs)} & \textbf{Stem-free (4 configs)} \\
+		\hline
+		Extrapolated GPU-hours each & 5.77 -- 6.46 & 0.39 -- 0.48 \\
+		Peak VRAM & 14,742 -- 20,039 MB & 165 -- 174 MB \\
+		\hline
+	\end{tabular}
+	\caption[Compute cost of stem-bearing against stem-free configurations]{Compute cost of stem-bearing against stem-free configurations.}
+	\label{tab:cnn-cost}
+\end{table}
+
+Training hours are extrapolated by multiplying each configuration's retained last-fold duration by 25; durations were not retained for all 300 configuration-fold runs. EVM preprocessing is excluded. Figure~\ref{fig:cost-vs-performance} places score against these cost estimates and the recorded peak memory.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_5_cost_vs_performance.png}
+	\caption[Pooled macro F1 against compute cost]{Pooled macro F1 against extrapolated GPU-hours and against peak VRAM. The configurations carrying a convolutional stem occupy the high-cost region without a corresponding gain in score.}
+	\label{fig:cost-vs-performance}
+\end{figure}
+
+\subsection{Interpretation}
+\label{sec:cnn-interpretation-result}
+
+Three candidate explanations remain unresolved. The stem uses spatial-only convolutional kernels, rather than temporal convolution. Its flow and strain inputs already encode motion structure. Its $224\times224$ input is also large relative to STSTNet's $28\times28$ and the lower-resolution settings advocated for some recurrent backbones in the reviewed literature. However, other reviewed systems use $224\times224$, and shallow models need not share deeper models' resolution sensitivity. There is no universal literature threshold established for this stem.
+
+The no-CNN route still learns a projection, and toggling the stem changes capacity as well as processing. The observed loss therefore cannot be assigned uniquely to resolution, redundant feature extraction or model size. Kernel shape, input resolution and stem placement were not varied. These results concern this implementation under its fixed training regime, rather than convolutional feature extraction in general.
+
+\section{Per-Class Performance}
+\label{sec:per-class}
+
+Per-class scores reveal differences concealed by the macro average.
+
+\subsection{Per-class F1 for all twelve configurations}
+\label{sec:per-class-table}
+
+Table~\ref{tab:per-class-f1} reports the stored pooled F1 values for all configurations, with class supports of 99 Negative, 32 Positive and 25 Surprise clips. Figure~\ref{fig:confusion-matrices} shows three pooled confusion matrices, and Figure~\ref{fig:per-class-f1} plots all twelve class profiles.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r r r r}
+		\hline
+		\textbf{Configuration} & \textbf{Negative} & \textbf{Positive} & \textbf{Surprise} & \textbf{Pooled macro F1} \\
+		\hline
+		\texttt{config\_2}      & 0.8068 & 0.6506 & 0.6792 & 0.7122 \\
+		\texttt{config\_8}   & 0.8458 & 0.5556 & 0.5965 & 0.6659 \\
+		\texttt{config\_7} & 0.7845 & 0.5479 & 0.6552 & 0.6625 \\
+		\texttt{config\_12}        & 0.7485 & 0.5591 & 0.6667 & 0.6581 \\
+		\texttt{config\_6} & 0.8325 & 0.4286 & 0.5902 & 0.6171 \\
+		\texttt{config\_9}         & 0.8491 & 0.6000 & 0.3000 & 0.5830 \\
+		\texttt{config\_13}        & 0.4127 & 0.5278 & 0.4035 & 0.4480 \\
+		\texttt{config\_4}   & 0.5641 & 0.5055 & 0.2462 & 0.4386 \\
+		\texttt{config\_1}          & 0.5600 & 0.3714 & 0.3696 & 0.4337 \\
+		\texttt{config\_5}     & 0.3840 & 0.5227 & 0.3838 & 0.4302 \\
+		\texttt{config\_3}       & 0.3607 & 0.5227 & 0.3922 & 0.4252 \\
+		\texttt{config\_16}        & 0.3500 & 0.5143 & 0.3934 & 0.4192 \\
+		\hline
+	\end{tabular}
+	\caption[Per-class F1 for all twelve configurations]{Per-class F1 for all twelve configurations.}
+	\label{tab:per-class-f1}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_6_confusion_matrices.png}
+	\caption[Pooled confusion matrices for three configurations]{Pooled confusion matrices, summed across all twenty-five folds, for the baseline-level \texttt{config\_1}, the proposed \texttt{config\_8}, and the best-scoring \texttt{config\_2}.}
+	\label{fig:confusion-matrices}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_7_per_class_f1.png}
+	\caption[Per-class F1 for all twelve configurations]{Per-class F1 for all twelve configurations, ordered as in \autoref{fig:headline}. Negative, Positive and Surprise are supported by 99, 32 and 25 clips respectively.}
+	\label{fig:per-class-f1}
+\end{figure}
+
+\subsection{No configuration abandons a class}
+\label{sec:no-abandoned-class}
+
+Every configuration achieves nonzero pooled F1 on all three classes; the minimum is configuration 4's Surprise score of 0.2462. Thus every class receives at least some correct predictions across the full evaluation, although this need not hold within every fold. These results are consistent with the chosen balanced-sampling regime and its guard against simultaneous loss-side class weighting. They do not isolate the guard's causal effect, because the final sweep does not compare training regimes.
+
+\subsection{\texttt{config\_9} is the most imbalanced configuration in the study}
+\label{sec:config9-imbalanced}
+
+Configuration 9 has the highest Negative F1, 0.8491, and the second-lowest Surprise F1, 0.3000. Its best-to-worst class gap, \textbf{0.5491}, is the widest in the sweep. Nevertheless, pooled accuracy is 0.7308. This illustrates how high accuracy can accompany weak minority-class performance; its pooled macro-F1 rank is sixth.
+
+\subsection{\texttt{config\_2} balances high class scores}
+\label{sec:config2-balanced}
+
+Configuration 2 has the highest Positive and Surprise F1 values, 0.6506 and 0.6792, and the narrowest class-score range among transformer configurations, 0.1562. Configurations 13 and 5 have narrower ranges overall, 0.1243 and 0.1389, but substantially lower scores.
+
+Relative to configuration 8, configuration 2 improves Positive F1 from 0.5556 to 0.6506 and Surprise from 0.5965 to 0.6792, while Negative falls from 0.8458 to 0.8068. Its macro-F1 advantage therefore comes from the minority classes. Configuration 8's stronger majority-class performance coexists with its one-clip accuracy advantage.
+
+\subsection{Negative-class F1 tracks the transformer split}
+\label{sec:negative-tracks-split}
+
+Negative F1 separates transformer configurations (0.7485--0.8491) from those without (0.3500--0.5641), with a gap of 0.1844. Positive and Surprise ranges overlap by 0.0992 and 0.1035 respectively. The transformer's cleanest single-class separation therefore occurs on the class with the most examples.
+
+\subsection{A caution about minority-class numbers}
+\label{sec:minority-caution}
+
+One changed prediction can noticeably alter a minority-class score, but its effect on F1 depends on the existing true-positive, false-positive and false-negative counts. There is no fixed F1 increment determined by support alone. Similar scores also do not imply that two models classified the same clips correctly. Without saved per-clip predictions or repeated seeds, the small observed differences cannot be assigned paired significance or reproducibility estimates.
+
+\section{Comparison with Published Results}
+\label{sec:literature-comparison}
+
+\subsection{What is being compared}
+\label{sec:what-compared}
+
+Pooled macro F1 has the same construction as Unweighted F1 (UF1) in the Micro-Expression Grand Challenge (MEGC) 2019~\cite{see2019}: pool confusion counts over LOSO folds, then average class F1. Matching metric definitions does not make the experimental populations or model-selection procedures equivalent.
+
+\subsection{The published results}
+\label{sec:published-results}
+
+Table~\ref{tab:published-uf1} retains the seven CASME II-subset UF1 values from See et al.'s Composite Database Evaluation (CDE)~\cite{see2019}. These values come from the challenge comparison, rather than being substituted from each method's individual paper. The two daggered entries are attributed through that supplied source.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r}
+		\hline
+		\textbf{Method} & \textbf{CASME II subset UF1} \\
+		\hline
+		OFF-ApexNet~\cite{liong2019a}              & 0.8764 \\
+		Zhou et al.\textsuperscript{\textdagger}   & 0.8621 \\
+		Liong et al., STSTNet~\cite{liong2019b}    & 0.8382 \\
+		Liu et al., EMR~\cite{liu2019}             & 0.8293 \\
+		Bi-WOOF~\cite{liong2018}                   & 0.7805 \\
+		Quang et al.\textsuperscript{\textdagger}  & 0.7068 \\
+		LBP-TOP~\cite{zhaoG2007}                   & 0.7026 \\
+		\hline
+	\end{tabular}
+	\caption[Published CASME II-subset UF1, MEGC 2019]{Published CASME II-subset UF1, MEGC 2019~\cite{see2019}. \textdagger{} outside the review corpus; reported as it appears in that table.}
+	\label{tab:published-uf1}
+\end{table}
+
+\subsection{Where this study lands}
+\label{sec:where-lands}
+
+The study's best score, 0.7122, is numerically above LBP-TOP (0.7026) and Quang et al. (0.7068), and below the other five entries. It trails OFF-ApexNet, STSTNet and EMR by approximately 0.117--0.164. Quang et al. use a capsule network, so the two lower entries must not both be characterised as classical hand-crafted methods. Figure~\ref{fig:literature} supplies descriptive context, not a controlled ranking of these systems against this study.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_8_literature.png}
+	\caption[This study's configurations against MEGC 2019 published results]{This study's configurations set against the MEGC 2019 CASME II subset results. The published entries are produced by models trained on the composite database, not on CASME II alone.}
+	\label{fig:literature}
+\end{figure}
+
+\subsection{Three reasons the comparison is not like-for-like}
+\label{sec:not-like-for-like}
+
+Three differences prevent a direct benchmark claim:
+
+\begin{itemize}
+    \item \textbf{Training population.} CDE pools SMIC, CASME II and SAMM: 442 samples and 68 subjects, compared with this study's 156 clips and 25 subjects from CASME II. These are dataset totals before each held-out subject is removed. Some methods use additional data: See et al.~\cite{see2019} report CK+ macro-expression samples for EMR. The composite alone is approximately 2.8 times larger and includes different capture conditions, but its effect on performance cannot be quantified from this comparison.
+    \item \textbf{Evaluation population.} MEGC's CASME II subset has 145 clips; this study has 156. The working mapping includes sadness and fear within Negative, following the challenge's SAMM mapping rather than its CASME II mapping. The existing dataset reconciliation leaves two clips unresolved. The evaluated samples are consequently not interchangeable.
+    \item \textbf{Checkpoint selection.} This study selects the epoch using the same held-out subject subsequently scored, without an inner validation split. That creates a risk of upward selection bias of unknown magnitude. It cannot be used to excuse the numerical gap or establish how large a fair-protocol gap would be.
+\end{itemize}
+
+\subsection{What the comparison does support}
+\label{sec:comparison-supports}
+
+The comparison locates the study's score within the range of published results while exposing the protocol differences. It does not establish state-of-the-art performance, superiority over the two lower entries, or a causal effect of the amount of training data. The study's principal evidence is its within-pipeline comparison of component settings under a shared protocol.
+
+\section{Summary and Limitations}
+\label{sec:summary-limitations}
+
+\subsection{The four component findings, recapitulated}
+\label{sec:four-findings}
+
+Table~\ref{tab:component-effects} collects the four mean effects and their pair counts. Figure~\ref{fig:component-effects} retains all twenty differences, which reveal the variation hidden by those means.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{l r c c}
+		\hline
+		\textbf{Component} & \textbf{Mean effect (pooled macro F1)} & \textbf{Pairs} & \textbf{Positive} \\
+		\hline
+		Temporal transformer      & \textbf{+0.2173} & 6 & 6 / 6 \\
+		Motion magnification      & +0.0152          & 6 & 4 / 6 \\
+		Parameter-free attention  & +0.0034          & 4 & 3 / 4 \\
+		Convolutional stem        & \textbf{$-$0.0310} & 4 & 2 / 4 \\
+		\hline
+	\end{tabular}
+	\caption[Mean marginal effect of each component on pooled macro F1]{Mean marginal effect of each component on pooled macro F1.}
+	\label{tab:component-effects}
+\end{table}
+
+The transformer has the largest mean and improves every tested pair. EVM is mixed, including a loss for the best configuration. SimAM's small mean conceals class trade-offs. The stem's negative mean is driven by one large loss, while stem-bearing configurations account for most estimated training cost. These are observed effects within the tested settings; the pair counts are not counts of independent replications.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig5_9_component_effects.png}
+	\caption[All twenty matched pairs, grouped by component]{All twenty matched pairs, grouped by component. Each bar is one pair differing in exactly one switch; the dashed line marks that component's mean effect. The panel names ``SLSTT'' and ``3D-CNN'' identify implementation switches: the temporal encoder is adapted, and the stem's convolutional kernels are spatial-only.}
+	\label{fig:component-effects}
+\end{figure}
+
+\subsection{The headline tension, and what it means for this thesis}
+\label{sec:headline-tension}
+
+The all-components system is outperformed on the primary metric by configuration 2, while retaining a one-clip accuracy advantage. The ablation therefore reveals that assembling every tested component does not maximise pooled macro F1. It supports choosing configurations on the measured trade-offs, without implying that each omitted component is universally ineffective or that effects are additive.
+
+\subsection{Limitations}
+\label{sec:ch5-limitations}
+
+\begin{itemize}
+    \item \textbf{One seed.} Each configuration has one LOSO evaluation across 25 subjects, without independent seed repetitions or confidence intervals on component differences.
+    \item \textbf{Checkpoint selection on the reporting fold.} No inner validation partition separates epoch selection from final scoring; the resulting selection bias cannot be estimated here.
+    \item \textbf{No retained per-clip predictions.} Aggregated confusion matrices cannot reconstruct which models disagree on individual clips, preventing paired prediction-based significance tests.
+    \item \textbf{Limited population.} The 156 clips come from 25 subjects in one corpus with restricted ethnicity and age range, laboratory capture and fold sizes varying by a factor of 33. Generalisation beyond these conditions is unmeasured.
+    \item \textbf{Fixed training settings.} No hyperparameter search was run, so a component could behave differently under another learning rate, loss or regularisation setting.
+    \item \textbf{Restricted component variants.} Only presence or absence was varied. Resolution, kernel shape, magnification settings and preprocessing order were held fixed; the controls also change learned capacity. The sweep identifies observed changes, not their unique mechanisms.
+    \item \textbf{Incomplete cost records.} GPU-hours are extrapolated from last-fold training times; preprocessing and measured end-to-end totals are unavailable.
+\end{itemize}
+
+The reported ranking and component effects are single-seed point estimates under a selection-sensitive protocol. Their value is the explicit comparison of the tested configurations, with the limits above carried into any interpretation.

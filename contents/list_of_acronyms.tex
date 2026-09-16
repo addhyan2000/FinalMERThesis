@@ -6,7 +6,7 @@
 %   chapter3_short_parts56_acronyms.tex
 %   chapter3_short_parts78_acronyms.tex
 %   chapter3_short_parts910_acronyms.tex
-% and adds the terms introduced by the shortened Chapter 4. Include ONE of
+% and includes terms used by shortened Chapters 2, 4 and 5. Include ONE of
 % these -- this file -- not this file and the four it replaces.
 %
 % Include from the front matter, after the List of Tables:
@@ -19,25 +19,34 @@
 % `acronym`, translate each row into that package's declaration rather than
 % inserting a second, competing list.
 %
-% Deliberately omitted, as ordinary technical vocabulary rather than acronyms
-% the reader needs defined: GPU, CPU, RAM, MB, GB, JSON, CSV, NaN, API.
-% Dataset and method names that are not expansions (CASME II, SAMM, SMIC's
-% corpus name, MMEW) appear only where an expansion genuinely exists.
+% Ordinary file-format names and units are not exhaustively listed. Dataset
+% and method names below identify the corpora and systems discussed.
 % =============================================================================
 
 \begin{description}
 
 	% --- corpora, benchmarks and protocols ---
+	\item[CASME II] Chinese Academy of Sciences Micro-Expression database II
 	\item[CDE] Composite Database Evaluation
+	\item[CK+] Extended Cohn--Kanade dataset
 	\item[LOSO] Leave-one-subject-out (cross-validation)
 	\item[MEGC] Micro-Expression Grand Challenge
 	\item[MMEW] Micro-and-macro expression warehouse
 	\item[SDE] Sole Database Evaluation
+	\item[SAMM] Spontaneous Actions and Micro-Movements dataset
 	\item[SMIC] Spontaneous Micro-Expression Corpus
 
 	% --- metrics ---
+	\item[FN] False negative
+	\item[FP] False positive
+	\item[TP] True positive
 	\item[UAR] Unweighted average recall
 	\item[UF1] Unweighted F1
+
+	% --- annotation and capture ---
+	\item[AU] Action Unit (plural: AUs)
+	\item[FACS] Facial Action Coding System
+	\item[fps] Frames per second
 
 	% --- hand-crafted features and descriptors ---
 	\item[Bi-WOOF] Bi-weighted oriented optical flow
@@ -74,6 +83,7 @@
 	\item[EVM] Eulerian Video Magnification
 	\item[ReLU] Rectified linear unit
 	\item[GELU] Gaussian error linear unit
+	\item[GPU] Graphics processing unit
 	\item[RBF] Radial basis function
 	\item[SVM] Support vector machine
 	\item[VRAM] Video memory (on-device GPU memory)
