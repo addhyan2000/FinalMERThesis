@@ -1,97 +1,126 @@
 % =============================================================================
-% List of Acronyms -- consolidated
+% List of Acronyms -- front matter
 % =============================================================================
-% Supersedes the four per-batch Chapter 3 lists
-%   chapter3_short_parts34_acronyms.tex
-%   chapter3_short_parts56_acronyms.tex
-%   chapter3_short_parts78_acronyms.tex
-%   chapter3_short_parts910_acronyms.tex
-% and includes terms used by shortened Chapters 2, 4 and 5. Include ONE of
-% these -- this file -- not this file and the four it replaces.
-%
-% Include from the front matter, after the List of Tables:
+% Include from the front matter, after the List of Figures:
 %     \chapter*{List of Acronyms}
 %     \addcontentsline{toc}{chapter}{List of Acronyms}
 %     \input{contents/list_of_acronyms}
 %
+% Supersedes the four per-batch Chapter 3 lists, which should no longer be
+% included:
+%   chapter3_short_parts34_acronyms.tex   chapter3_short_parts56_acronyms.tex
+%   chapter3_short_parts78_acronyms.tex   chapter3_short_parts910_acronyms.tex
+%
+% Compiled by extracting every capitalised token from the six chapter sources
+% (introduction, 2, 3, 4, 5, 6) and keeping those that are genuine acronyms
+% needing expansion. Deliberately excluded: code identifiers typeset in
+% \texttt (AblationConfig, MetricsComputer, BatchNorm, LayerNorm, NumPy,
+% OpenCV, PyTorch), individual action-unit numbers (AU4, AU12, ... -- AU
+% itself is listed), tensor-axis labels (XY, XT, YT, H, W, T), and units
+% (MB, GB).
+%
 % This is a portable description list, because the thesis master's glossary
-% setup is not present in this checkout. If the master loads `glossaries` or
+% setup is not in this checkout. If the master loads `glossaries` or
 % `acronym`, translate each row into that package's declaration rather than
 % inserting a second, competing list.
-%
-% Ordinary file-format names and units are not exhaustively listed. Dataset
-% and method names below identify the corpora and systems discussed.
 % =============================================================================
 
 \begin{description}
 
-	% --- corpora, benchmarks and protocols ---
+	% --- corpora and datasets ---
 	\item[CASME II] Chinese Academy of Sciences Micro-Expression database II
-	\item[CDE] Composite Database Evaluation
+	\item[CAS(ME)$^2$] Chinese Academy of Sciences Macro- and Micro-Expression database
+	\item[CIFAR] Canadian Institute for Advanced Research (dataset family)
 	\item[CK+] Extended Cohn--Kanade dataset
-	\item[LOSO] Leave-one-subject-out (cross-validation)
-	\item[MEGC] Micro-Expression Grand Challenge
-	\item[MMEW] Micro-and-macro expression warehouse
-	\item[SDE] Sole Database Evaluation
+	\item[JAFFE] Japanese Female Facial Expression database
+	\item[MMEW] Micro-and-Macro Expression Warehouse
+	\item[MMI] MMI Facial Expression Database
+	\item[MUG] Multimedia Understanding Group facial expression database
+	\item[Multi-PIE] Multi Pose, Illumination and Expression database
 	\item[SAMM] Spontaneous Actions and Micro-Movements dataset
 	\item[SMIC] Spontaneous Micro-Expression Corpus
+	\item[USF-HD] University of South Florida High-Definition dataset
+
+	% --- benchmarks and evaluation protocols ---
+	\item[CDE] Composite Database Evaluation
+	\item[LOSO] Leave-one-subject-out (cross-validation)
+	\item[MEGC] Micro-Expression Grand Challenge
+	\item[SDE] Sole Database Evaluation
 
 	% --- metrics ---
+	\item[F1] Harmonic mean of precision and recall
 	\item[FN] False negative
 	\item[FP] False positive
 	\item[TP] True positive
 	\item[UAR] Unweighted average recall
 	\item[UF1] Unweighted F1
 
-	% --- annotation and capture ---
-	\item[AU] Action Unit (plural: AUs)
+	% --- the phenomenon, annotation and capture ---
+	\item[AU] Action Unit (plural AUs)
 	\item[FACS] Facial Action Coding System
 	\item[fps] Frames per second
+	\item[ME] Micro-expression (plural MEs)
+	\item[SD] Standard deviation
 
-	% --- hand-crafted features and descriptors ---
-	\item[Bi-WOOF] Bi-weighted oriented optical flow
-	\item[LBP-TOP] Local binary patterns on three orthogonal planes
+	% --- hand-crafted features and preprocessing ---
+	\item[AMM] Amplitude-based motion magnification
+	\item[ASM] Active Shape Model
+	\item[Bi-WOOF] Bi-Weighted Oriented Optical Flow
+	\item[EVM] Eulerian Video Magnification
+	\item[FFT] Fast Fourier transform
+	\item[HIGO] Histogram of Image Gradient Orientation
+	\item[HOG] Histogram of Oriented Gradients
+	\item[JCFDA] Joint cascade face detection and alignment
+	\item[LBP] Local Binary Patterns
+	\item[LBP-TOP] Local Binary Patterns on Three Orthogonal Planes
 	\item[OFF] Optical flow features
 	\item[OFW] Optical flow weighted features
 	\item[OSF] Optical strain features
 	\item[OSW] Optical strain weighted features
-	\item[TIM] Temporal Interpolation Model
+	\item[PMM] Phase-based motion magnification
+	\item[TIM] Temporal Interpolation Model (TIM10: interpolated to ten frames)
 	\item[TV-L1] Total-variation regularisation with an L1 data term
 
 	% --- network architectures and modules ---
 	\item[C3D] Three-dimensional convolutional network
-	\item[CBAM] Convolutional block attention module
+	\item[CBAM] Convolutional Block Attention Module
 	\item[CNN] Convolutional neural network
-	\item[ECA] Efficient channel attention
+	\item[DenseNet] Densely Connected Convolutional Network
+	\item[ECA] Efficient Channel Attention
+	\item[EMME] Extended Magnified Micro-Expression database
 	\item[EMR] Expression Magnification and Reduction
-	\item[GC] Global context
+	\item[GC] Global Context (attention module)
 	\item[LSTM] Long short-term memory
 	\item[OFF-ApexNet] Optical Flow Features from Apex frame Network
 	\item[RCN] Recurrent convolutional network
-	\item[SE] Squeeze-and-excitation
+	\item[ResNet] Residual Network
+	\item[SE] Squeeze-and-Excitation
 	\item[SimAM] Simple, parameter-free attention module
-	\item[SLSTT] Short and Long Range Relation Based Spatio-Temporal Transformer
-	\item[SRM] Style-based recalibration module
-	\item[STRCN] Spatiotemporal recurrent convolutional network
-	\item[STSTNet] Shallow triple stream three-dimensional convolutional neural network
+	\item[SLSTT] Short and Long range relation based Spatio-Temporal Transformer
+	\item[SRM] Style-based Recalibration Module
+	\item[STRCN] Spatiotemporal Recurrent Convolutional Network
+	\item[STSTNet] Shallow Triple Stream Three-dimensional CNN
+	\item[VGG-Face] VGG face-recognition network (VGGFace2: its successor dataset and model)
 	\item[ViT] Vision Transformer
+	\item[XBM] Cross-Batch Memory
 
-	% --- layers, training and numerics ---
+	% --- training, optimisation and numerics ---
 	\item[AdamW] Adam optimiser with decoupled weight decay
 	\item[AMP] Automatic mixed precision
 	\item[BN] Batch normalisation
-	\item[EVM] Eulerian Video Magnification
-	\item[ReLU] Rectified linear unit
+	\item[FL] Focal loss
 	\item[GELU] Gaussian error linear unit
-	\item[GPU] Graphics processing unit
+	\item[Grad-CAM++] Generalised gradient-based class activation mapping
+	\item[NaN] Not a Number (invalid floating-point value)
 	\item[RBF] Radial basis function
+	\item[ReLU] Rectified linear unit
 	\item[SVM] Support vector machine
-	\item[VRAM] Video memory (on-device GPU memory)
 
-	% --- other methods named in the review ---
-	\item[CIFAR] Canadian Institute for Advanced Research (dataset family)
-	\item[Grad-CAM++] Generalised gradient-based visual explanation for convolutional networks
-	\item[JCFDA] Joint cascade face detection and alignment
-	\item[XBM] Cross-Batch Memory
+	% --- computing environment ---
+	\item[CPU] Central processing unit
+	\item[CUDA] Compute Unified Device Architecture
+	\item[GPU] Graphics processing unit
+	\item[RAM] Random-access memory
+	\item[VRAM] Video memory (on-device GPU memory)
 
 \end{description}

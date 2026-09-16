@@ -1,99 +1,73 @@
 % =============================================================================
-% List of Tables and List of Figures -- front matter
+% List of Tables -- front matter
 % =============================================================================
-% Include from the front matter, before the List of Acronyms:
+% Include from the front matter:
 %     \input{contents/list_of_tables}
 %
-% \listoftables and \listoffigures build themselves from the SHORT caption of
-% every float -- the \caption[short]{long} form. Every float in the shortened
-% Chapters 2, 3, 4 and 5 carries one, so both lists generate correctly with no
-% manual entry. Compile to convergence (at least twice) after any edit: the
-% lists are written to .lot/.lof on one pass and read back on the next.
+% \listoftables builds itself from the SHORT caption of every table -- the
+% \caption[short]{long} form. All 34 tables across the six chapters carry one,
+% verified, so the list generates with no manual entry. Compile to convergence
+% (at least twice): the list is written to .lot on one pass and read back on
+% the next.
 %
-% The inventory below is documentation, not markup. It is the audited list of
-% what these chapters contain, so that a missing or renamed float can be
-% spotted without compiling. The Chapter 5 inventory retains all ten tables
-% and nine figures. Every listed float has a label and a short caption.
-% This file generates BOTH lists. Do not also include list_of_figures.tex.
+% This file emits the List of Tables only. The List of Figures is in
+% contents/list_of_figures.tex. Include both.
 %
-% -------------------------------------------------------------------- Ch. 2
-% TABLES
-%   tab:ch2-evm-departures    EVM implementation departures
-%   tab:ch2-component-controls Enabled components and their controls
-% Chapter 2 contains no figures.
+% ---------------------------------------------------------------------------
+% AUDITED INVENTORY -- documentation, not markup. Numbering is what LaTeX will
+% assign given the chapter order introduction, 2, 3, 4, 5, 6. Every row below
+% was verified to have a \label and a short \caption.
 %
-% -------------------------------------------------------------------- Ch. 3
-% TABLES
-%   tab:spontaneous-corpora   Posed and spontaneous micro-expression corpora
-%   tab:casme2-labels         CASME II label taxonomy and the three-class working set
-%   tab:megc-cde-results      MEGC 2019 Composite Database Evaluation results
-%                             (must stay identical to Chapter 5's twin)
-%   tab:corpus-threats        Threats to validity carried by CASME II and the
-%                             decisions they force
-%   tab:evm-effect            Effect of Eulerian motion magnification on CASME II
-%   tab:evm-settings          Review findings and the magnification settings
-%                             they determine
-%   tab:flow-decisions        Optical-flow evidence and study decisions
-%   tab:strain-performance    Recognition results for strain-based descriptors
-%   tab:strain-decisions      Strain representation and unresolved choices
-%   tab:tim-decisions         Review findings and the temporal-normalisation
-%                             decisions they determine
-%   tab:cnn-decisions         Review findings and the backbone decisions they
-%                             determine
-%   tab:attention-modules     Parameter costs of attention modules
-%   tab:simam-decisions       SimAM implementation choices
-%   tab:slstt-results         SLSTT and comparison results
-%   tab:slstt-divergences     Divergences from published SLSTT
-%   tab:imbalance-decisions   Review findings and the imbalance-handling
-%                             decisions they determine
-%   tab:divergence-ledger     Every declared departure from the reviewed
-%                             literature -- TWELVE rows; Chapters 5 and 6
-%                             depend on the count and on the subsection
-%                             numbers in its first column
-% FIGURES
-%   fig:dataset-composition   Composition of CASME II   [fig3_1_dataset.png]
-%   fig:fold-composition      Class composition of the 25 leave-one-subject-out
-%                             folds                     [fig3_2_fold_composition.png]
+%   Ch. 2 -- Background (2 tables)
+%     2.1   tab:ch2-evm-departures      EVM implementation departures
+%     2.2   tab:ch2-component-controls  Enabled components and their controls
 %
-% -------------------------------------------------------------------- Ch. 4
-% TABLES
-%   tab:twelve-configs        The twelve valid ablation configurations
-%   tab:matched-pairs         Matched pairs by variable  (cited from Chapter 5)
-%   tab:parameter-totals      Parameter totals by architectural combination
-%   tab:five-evaluations      The five evaluations of the ablation matrix
-%   tab:compute-per-config    Last-fold training time and peak VRAM per
-%                             configuration
-% Chapter 4 contains no figures.
+%   Ch. 3 -- Literature Review (17 tables)
+%     3.1   tab:spontaneous-corpora     Posed and spontaneous micro-expression corpora
+%     3.2   tab:casme2-labels           CASME II label taxonomy and the three-class working set
+%     3.3   tab:megc-cde-results        MEGC 2019 Composite Database Evaluation results
+%     3.4   tab:corpus-threats          Threats to validity carried by CASME II
+%     3.5   tab:evm-effect              Effect of Eulerian motion magnification on CASME II
+%     3.6   tab:evm-settings            Review findings and the magnification settings
+%     3.7   tab:flow-decisions          Optical-flow evidence and study decisions
+%     3.8   tab:strain-performance      Recognition results for strain-based descriptors
+%     3.9   tab:strain-decisions        Strain representation and unresolved choices
+%     3.10  tab:tim-decisions           Review findings and the temporal-normalisation decisions
+%     3.11  tab:cnn-decisions           Review findings and the backbone decisions
+%     3.12  tab:attention-modules       Parameter costs of attention modules
+%     3.13  tab:simam-decisions         SimAM implementation choices
+%     3.14  tab:slstt-results           SLSTT and comparison results
+%     3.15  tab:slstt-divergences       Divergences from published SLSTT
+%     3.16  tab:imbalance-decisions     Review findings and the imbalance-handling decisions
+%     3.17  tab:divergence-ledger       Every declared departure from the reviewed literature
+%                                       -- TWELVE rows; Chapters 5 and 6 depend on the count
+%                                       and on the subsection numbers in its first column.
 %
-% -------------------------------------------------------------------- Ch. 5
-% TABLES
-%   tab:twelve-ranked        All twelve configurations, ranked by pooled macro F1
-%   tab:transformer-pairs    Transformer matched pairs
-%   tab:evm-pairs-result     Motion-magnification matched pairs
-%   tab:simam-pairs-result   SimAM matched pairs
-%   tab:simam-per-class      Per-class F1 for the two most-affected SimAM pairs
-%   tab:cnn-pairs-result     Convolutional stem matched pairs
-%   tab:cnn-cost             Compute cost of stem-bearing vs stem-free configurations
-%   tab:per-class-f1         Per-class F1 for all twelve configurations
-%   tab:published-uf1        Published CASME II-subset UF1, MEGC 2019
-%   tab:component-effects   Mean marginal effect of each component
-% FIGURES
-%   fig:headline             fig5_1_headline.png
-%   fig:metric-definitions   fig5_2_metric_definitions.png
-%   fig:transformer-split    fig5_3_transformer_split.png
-%   fig:evm-pairs            fig5_4_evm_pairs.png
-%   fig:cost-vs-performance  fig5_5_cost_vs_performance.png
-%   fig:confusion-matrices   fig5_6_confusion_matrices.png
-%   fig:per-class-f1         fig5_7_per_class_f1.png
-%   fig:literature           fig5_8_literature.png
-%   fig:component-effects   fig5_9_component_effects.png
+%   Ch. 4 -- Methodology (5 tables)
+%     4.1   tab:twelve-configs          The twelve valid ablation configurations
+%     4.2   tab:matched-pairs           Matched pairs by variable
+%     4.3   tab:parameter-totals        Parameter totals by architectural combination
+%     4.4   tab:five-evaluations        The five evaluations of the ablation matrix
+%     4.5   tab:compute-per-config      Last-fold training time and peak VRAM per configuration
 %
-% Local source images live under report_figures_thesis/. Shortened Chapter 5
-% targets the existing figures/ folder in Overleaf; Chapter 3 uses its graphics path.
+%   Ch. 5 -- Results (10 tables)
+%     5.1   tab:twelve-ranked           All twelve configurations, ranked by pooled macro F1
+%     5.2   tab:transformer-pairs       Transformer matched pairs
+%     5.3   tab:evm-pairs-result        Motion-magnification matched pairs
+%     5.4   tab:simam-pairs-result      SimAM matched pairs
+%     5.5   tab:simam-per-class         Per-class F1 for the two most-affected SimAM pairs
+%     5.6   tab:cnn-pairs-result        Convolutional stem matched pairs
+%     5.7   tab:cnn-cost                Compute cost of stem-bearing against stem-free
+%     5.8   tab:per-class-f1            Per-class F1 for all twelve configurations
+%     5.9   tab:published-uf1           Published CASME II-subset UF1, MEGC 2019
+%     5.10  tab:component-effects       Mean marginal effect of each component
+%
+%   Chapters 1 and 6 contain no tables.
+%
+% NOTE: Table 3.3 (tab:megc-cde-results) and Table 5.9 (tab:published-uf1) both
+% reproduce MEGC 2019's CASME II-subset figures. They must stay numerically
+% identical to each other.
 % =============================================================================
 
 \listoftables
 \addcontentsline{toc}{chapter}{List of Tables}
-
-\listoffigures
-\addcontentsline{toc}{chapter}{List of Figures}

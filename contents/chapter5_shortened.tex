@@ -3,7 +3,9 @@
 % Rebuild with tools/assemble_short_chapter5.py after editing either half.
 % Include IN PLACE OF chapter5.tex; do not also include the separate halves.
 % Requires graphicx and the existing thesis support for \checkmark.
-% Figure paths use the existing figures/ folder in the Overleaf project root.
+% Figure filenames are bare; set \graphicspath in the master preamble, e.g.
+%   \graphicspath{{figures/}{report_figures_thesis/}}
+% so the same source resolves in Overleaf and in this checkout.
 \chapter{Results}
 \label{ch:results}
 
@@ -57,7 +59,7 @@ Table~\ref{tab:twelve-ranked} ranks configurations by pooled macro F1 and report
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_1_headline.png}
+	\includegraphics[width=\textwidth]{fig5_1_headline.png}
 	\caption[The twelve configurations ranked by pooled macro F1]{The twelve configurations ranked by pooled macro F1, with pooled accuracy shown alongside. The six carrying a transformer occupy the upper band and the six without the lower, with no overlap between them.}
 	\label{fig:headline}
 \end{figure}
@@ -78,7 +80,7 @@ Figure~\ref{fig:metric-definitions} contrasts pooled and mean-of-folds scores. W
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_2_metric_definitions.png}
+	\includegraphics[width=\textwidth]{fig5_2_metric_definitions.png}
 	\caption[Mean-of-folds against pooled aggregation]{Mean-of-folds against pooled aggregation, for accuracy and for macro F1. The dashed line marks the 0.6267 ceiling that fold composition imposes on any mean-of-folds macro F1, irrespective of model quality.}
 	\label{fig:metric-definitions}
 \end{figure}
@@ -128,7 +130,7 @@ Table~\ref{tab:transformer-pairs} retains all six comparisons; Figure~\ref{fig:t
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_3_transformer_split.png}
+	\includegraphics[width=\textwidth]{fig5_3_transformer_split.png}
 	\caption[The six transformer matched pairs]{The six transformer matched pairs, and the resulting separation between transformer-bearing and transformer-free configurations.}
 	\label{fig:transformer-split}
 \end{figure}
@@ -185,7 +187,7 @@ Table~\ref{tab:evm-pairs-result} lists the comparisons and their accompanying co
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_4_evm_pairs.png}
+	\includegraphics[width=\textwidth]{fig5_4_evm_pairs.png}
 	\caption[The six magnification matched pairs]{The six magnification matched pairs under the full leave-one-subject-out protocol. Four improve, two regress.}
 	\label{fig:evm-pairs}
 \end{figure}
@@ -331,7 +333,7 @@ Training hours are extrapolated by multiplying each configuration's retained las
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_5_cost_vs_performance.png}
+	\includegraphics[width=\textwidth]{fig5_5_cost_vs_performance.png}
 	\caption[Pooled macro F1 against compute cost]{Pooled macro F1 against extrapolated GPU-hours and against peak VRAM. The configurations carrying a convolutional stem occupy the high-cost region without a corresponding gain in score.}
 	\label{fig:cost-vs-performance}
 \end{figure}
@@ -379,14 +381,14 @@ Table~\ref{tab:per-class-f1} reports the stored pooled F1 values for all configu
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_6_confusion_matrices.png}
+	\includegraphics[width=\textwidth]{fig5_6_confusion_matrices.png}
 	\caption[Pooled confusion matrices for three configurations]{Pooled confusion matrices, summed across all twenty-five folds, for the baseline-level \texttt{config\_1}, the proposed \texttt{config\_8}, and the best-scoring \texttt{config\_2}.}
 	\label{fig:confusion-matrices}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_7_per_class_f1.png}
+	\includegraphics[width=\textwidth]{fig5_7_per_class_f1.png}
 	\caption[Per-class F1 for all twelve configurations]{Per-class F1 for all twelve configurations, ordered as in \autoref{fig:headline}. Negative, Positive and Surprise are supported by 99, 32 and 25 clips respectively.}
 	\label{fig:per-class-f1}
 \end{figure}
@@ -457,7 +459,7 @@ The study's best score, 0.7122, is numerically above LBP-TOP (0.7026) and Quang 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_8_literature.png}
+	\includegraphics[width=\textwidth]{fig5_8_literature.png}
 	\caption[This study's configurations against MEGC 2019 published results]{This study's configurations set against the MEGC 2019 CASME II subset results. The published entries are produced by models trained on the composite database, not on CASME II alone.}
 	\label{fig:literature}
 \end{figure}
@@ -506,7 +508,7 @@ The transformer has the largest mean and improves every tested pair. EVM is mixe
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{figures/fig5_9_component_effects.png}
+	\includegraphics[width=\textwidth]{fig5_9_component_effects.png}
 	\caption[All twenty matched pairs, grouped by component]{All twenty matched pairs, grouped by component. Each bar is one pair differing in exactly one switch; the dashed line marks that component's mean effect. The panel names ``SLSTT'' and ``3D-CNN'' identify implementation switches: the temporal encoder is adapted, and the stem's convolutional kernels are spatial-only.}
 	\label{fig:component-effects}
 \end{figure}
