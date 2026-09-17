@@ -5,7 +5,7 @@
 %     \input{contents/list_of_figures}
 %
 % \listoffigures builds itself from the SHORT caption of every figure -- the
-% \caption[short]{long} form. All 11 figures carry one, verified, so the list
+% \caption[short]{long} form. All 10 figures carry one, verified, so the list
 % generates with no manual entry. Compile to convergence (at least twice).
 %
 % ---------------------------------------------------------------------------
@@ -27,42 +27,33 @@
 % been missing. Chapter 5 was normalised to bare names to fix this.
 %
 % ---------------------------------------------------------------------------
-% AUDITED INVENTORY -- documentation, not markup. Numbering is what LaTeX will
-% assign given the chapter order introduction, 2, 3, 4, 5, 6. Every row was
-% verified to have a \label, a short \caption, and an image file present in
-% report_figures_thesis/.
+% AUDITED INVENTORY -- documentation, not markup. Regenerated against the
+% six-file manuscript: introduction, chapter2_shortened, chapter3_cut,
+% chapter4_shortened, chapter5_shortened, chapter6.
+% Every entry below was verified to carry a \label and a short \caption.
 %
-%   Ch. 3 -- Literature Review (2 figures)
-%     3.1  fig:dataset-composition   Composition of CASME II
-%                                    [fig3_1_dataset.png]
-%     3.2  fig:fold-composition      Class composition of the 25 LOSO folds
-%                                    [fig3_2_fold_composition.png]
+%   Ch. 2 -- Background (no figures)
+%   Ch. 3 -- Literature Review (1 figure)
+%     3.1   fig:fold-composition           Class composition of the 25 leave-one-subject-out folds   [fig3_2_fold_composition.png]
 %
+%   Ch. 4 -- Methodology (no figures)
 %   Ch. 5 -- Results (9 figures)
-%     5.1  fig:headline              The twelve configurations ranked by pooled macro F1
-%                                    [fig5_1_headline.png]
-%     5.2  fig:metric-definitions    Mean-of-folds against pooled aggregation
-%                                    [fig5_2_metric_definitions.png]
-%     5.3  fig:transformer-split     The six transformer matched pairs
-%                                    [fig5_3_transformer_split.png]
-%     5.4  fig:evm-pairs             The six magnification matched pairs
-%                                    [fig5_4_evm_pairs.png]
-%     5.5  fig:cost-vs-performance   Pooled macro F1 against compute cost
-%                                    [fig5_5_cost_vs_performance.png]
-%     5.6  fig:confusion-matrices    Pooled confusion matrices for three configurations
-%                                    [fig5_6_confusion_matrices.png]
-%     5.7  fig:per-class-f1          Per-class F1 for all twelve configurations
-%                                    [fig5_7_per_class_f1.png]
-%     5.8  fig:literature            This study's configurations against MEGC 2019
-%                                    [fig5_8_literature.png]
-%     5.9  fig:component-effects     All twenty matched pairs, grouped by component
-%                                    [fig5_9_component_effects.png]
+%     5.1   fig:headline                   The twelve configurations ranked by pooled macro F1   [fig5_1_headline.png]
+%     5.2   fig:metric-definitions         Mean-of-folds against pooled aggregation   [fig5_2_metric_definitions.png]
+%     5.3   fig:transformer-split          The six transformer matched pairs   [fig5_3_transformer_split.png]
+%     5.4   fig:evm-pairs                  The six magnification matched pairs   [fig5_4_evm_pairs.png]
+%     5.5   fig:cost-vs-performance        Pooled macro F1 against compute cost   [fig5_5_cost_vs_performance.png]
+%     5.6   fig:confusion-matrices         Pooled confusion matrices for three configurations   [fig5_6_confusion_matrices.png]
+%     5.7   fig:per-class-f1               Per-class F1 for all twelve configurations   [fig5_7_per_class_f1.png]
+%     5.8   fig:literature                 This study's configurations against MEGC 2019 published    [fig5_8_literature.png]
+%     5.9   fig:component-effects          All twenty matched pairs, grouped by component   [fig5_9_component_effects.png]
 %
-%   Chapters 1, 2, 4 and 6 contain no figures.
+%   Ch. 6 -- Conclusion (no figures)
 %
-% One further rendered image exists in report_figures_thesis/ but is
-% deliberately unused: fig3_3_metric_definitions.png duplicates Figure 5.2,
-% which is a Chapter 5 result and does not belong in the literature review.
+% NOTE: Chapter 3's former fig:dataset-composition (fig3_1_dataset.png) has
+% been REMOVED; its content is now prose. fig3_1_dataset.png is therefore no
+% longer referenced by the manuscript and need not be uploaded.
+% Chapters 1, 2, 4 and 6 contain no figures.
 % =============================================================================
 
 \listoffigures

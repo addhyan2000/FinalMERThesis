@@ -228,7 +228,9 @@ Flow is also used for alignment rather than recognition. Xu et al.~\cite{xu2017}
 
 The central interpretive point is that optical flow is an \textit{analytical spatio-temporal feature extractor}: it estimates motion from paired frames before the network is trained. A learned spatial stem therefore acts on a representation that already makes displacement explicit, and with 156 clips, learning additional spatial filters may offer limited benefit or duplicate structure preprocessing has already exposed. This is a hypothesis about the stem's marginal value, not proof that learned spatial processing is unnecessary.
 
-A temporal encoder addresses a different task: modelling relations among successive displacement fields, which pairwise flow estimation does not itself learn. Keeping those two roles distinct is necessary when attributing performance to the stem as against the transformer, and it is what the matched comparisons of this thesis are designed to separate. The design does not rank estimators, isolate alignment quality, or compare onset--apex against sequence representations; those remain limitations rather than gaps claimed as closed.
+A temporal encoder addresses a different task: modelling relations among successive displacement fields, which pairwise flow estimation does not itself learn. Keeping those two roles distinct is necessary when attributing performance to the stem as against the transformer, and it is what the matched comparisons of this thesis are designed to separate.
+
+Two consequences are untested extensions rather than gaps claimed as closed. \textbf{Flow-based fine alignment}, which the estimation discussion above names the most promising unexploited improvement to preprocessing, is not performed here. And \textbf{Farneb\"ack against TV-L1} is fixed rather than compared, so no estimator ranking is established. The design likewise does not compare onset--apex against sequence representations.
 
 
 % =============================================================================
@@ -420,6 +422,8 @@ The 99 : 32 : 25 distribution of \autoref{sec:label-taxonomy} is a property of w
 \textbf{At the metric.} \autoref{sec:megc-metrics} defines the pooled macro-averaged measure. Liong et al.~\cite{liong2016} add the argument from the subject side, reporting F1, precision and recall because these ``provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples.'' Both arguments compound here, where classes are skewed \textbf{and} per-subject clip counts range from 1 to 33.
 
 One further gap: \textbf{label smoothing is named in the corpus but never examined on this task.} Dosovitskiy et al.~\cite{dosovitskiy2021} list it among the regularisers they tune, but no reviewed micro-expression paper uses it or reports what it does under class skew.
+
+Two techniques belonging to a fuller account of this pipeline are excluded from the implemented system and recorded here rather than silently dropped: \textbf{Grad-CAM++ visual auditing}, which would show whether the learned components attend where the coded action units are, and \textbf{adversarial identity disentanglement}, which bears directly on the single-demographic limitation of \autoref{sec:corpus-threats}. Both were removed at earlier stages of this project and are declared as further work.
 
 \subsection{Implications for this research}
 \label{sec:imbalance-double-correction}
