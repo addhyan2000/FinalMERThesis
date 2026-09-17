@@ -1,0 +1,176 @@
+% Standalone formula guide, companion volume: Chapter 6.
+% Source: contents/chapter6.tex (no shortened version exists).
+% Compile this file as the main document. No bibliography: the chapter cites
+% nothing, and this volume introduces no citation of its own.
+%
+% NO-REPETITION RULE: Chapter 6 introduces NO formula, new or restated. Every
+% mathematical symbol it uses is a back-reference to a quantity fixed in
+% Chapters 2 to 4. This volume is therefore an index, not a derivation, and it
+% prints no equation that appears in formula_guide_chapters1_4.tex.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{longtable}
+\usepackage[hidelinks]{hyperref}
+\numberwithin{equation}{section}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\title{Formula Guide: Chapter 6}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\textbf{Scope.} This companion volume covers the conclusion,
+\texttt{contents/chapter6.tex}. No shortened version of that chapter exists.
+Section and equation numbers continue those of
+\texttt{formula\_guide\_chapters1\_4.tex}, so a reference of the form
+``Equation (2.11)'' points into that document.
+
+\textbf{Finding, stated plainly.} \textbf{Chapter 6 contains no displayed
+mathematics, no new formula, and no restatement of an earlier formula in
+algebraic form.} This was verified by scanning the source for displayed-math
+delimiters and equation environments; the count is zero for both. It also
+contains no citations at all.
+
+What it contains is nine inline mathematical spans, every one of which is a
+\emph{reference to a quantity already fixed elsewhere} --- a design-space
+count, four inherited hyper-parameters, one weighting ratio and a set of image
+dimensions. A conclusion that introduced new mathematics would be doing
+something wrong; this one does not.
+
+\textbf{What this volume therefore does.} It indexes those nine spans: what
+each denotes, what value it carries, which equation in Chapters 2 to 4 defines
+it, and --- the part that matters for reading the conclusion --- what claim
+the chapter attaches to it. Because every entry is a back-reference, no
+equation is reprinted here. Readers wanting the mathematics itself are
+directed to the numbered equation named in each entry.
+
+\setcounter{section}{5}
+\section{Chapter 6: Conclusion}
+\label{fg6:chapter6}
+
+\subsection{The design-space count}
+
+\subsubsection{The \texorpdfstring{$2^4$}{2\^{}4} matrix}
+\label{fg6:factorial}
+\textbf{Thesis location:} 6.1, Contributions, first bullet.
+
+\textbf{No new formula.} The chapter writes ``every architecturally valid cell
+of a $2^4$ matrix''. This is Equation~(4.1), which gives $2^4 = 16$ cells of
+which 12 are architecturally valid, the four invalid ones being those pairing
+SimAM with no convolutional stem.
+
+The conclusion uses the count to state the study's form: twelve configurations,
+each trained from scratch, each scored under complete 25-fold
+leave-one-subject-out, with every non-varied factor held identical. The
+qualifier ``architecturally valid'' is doing real work --- it is what
+distinguishes twelve from sixteen, and Equation~(4.1) records that the four
+excluded cells are rejected as ill-formed specifications rather than as
+weaker pipelines.
+
+\subsection{The inherited preprocessing parameters}
+\label{fg6:inherited}
+\textbf{Thesis location:} 6.2, Limitations, first paragraph; and 6.3, Further
+Work, the divergence backlog.
+
+\textbf{No new formulas.} The chapter names four fixed parameters, all
+defined earlier and none introduced here. They are gathered in one place
+because the conclusion's central caveat is about them jointly: they are
+\emph{inherited from the literature, held fixed throughout, and never swept},
+even though the reviewed work establishes that such parameters have interior
+optima locatable only by exhaustive search.
+
+\begin{center}
+\begin{tabular}{@{}l l l p{5.4cm}@{}}
+\hline
+\textbf{Symbol} & \textbf{Value} & \textbf{Defined at} & \textbf{What it controls} \\
+\hline
+$\alpha$  & 10        & Equation (2.3)  & Eulerian magnification gain: the factor by which band-passed temporal variation is amplified before reconstruction \\
+$T$       & 32        & Ch.\ 2, tensor shape & Temporal length of the motion tensor --- 32 flow fields from 33 sampled frames \\
+$\lambda$ & $10^{-4}$ & Equation (2.16) & SimAM regularisation constant, stabilising the division by channel variance \\
+$\gamma$  & 2.0       & Equation (2.20) & Focal-loss focusing exponent, controlling how strongly confident examples are down-weighted \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{The claim attached to them.} Every effect reported in Chapter~5 is
+\emph{conditional on these four values}. The design measures architecture at
+one point in preprocessing space and cannot say how any effect would move if
+that point changed. The conclusion lists sweeping them --- $T$ on one hand,
+and $\alpha$, $\lambda$ and $\gamma$ on the other --- among the further work
+that would establish whether the reported effects survive away from the single
+setting at which they were measured.
+
+\textbf{A notational warning carried over.} These symbols are reused across
+topics with unrelated meanings. $\alpha$ is magnification gain here but the
+class-weight factor $\alpha_t$ in Equation~(2.20); $\gamma$ is the focal
+exponent here but the per-channel scale $\gamma_c$ in Equation~(2.14);
+$\lambda$ appears only in SimAM. They are not interchangeable, and the
+conclusion's single sentence naming all four together is the one place in the
+thesis where confusing them is easiest.
+
+\subsection{The strain shear-weighting ratio}
+
+\subsubsection{\texorpdfstring{$\sqrt{2}$}{sqrt(2)}}
+\label{fg6:sqrt2}
+\textbf{Thesis location:} 6.3, Further Work, the declared-divergence backlog.
+
+\textbf{No new formula.} The chapter refers to ``the four-term strain
+magnitude, whose $\sqrt{2}$ shear weighting the three-term form \ldots\ does
+not carry''. This ratio is the consequence of Equations~(3.1)
+and~(2.9): the published four-term magnitude counts shear twice and the
+implemented three-term magnitude counts it once, so for pure shear the two
+scalars stand in the ratio $\sqrt{2}$.
+
+The conclusion's use of it is to schedule an experiment, not to restate the
+algebra: adopting the four-term magnitude is listed in the backlog of declared
+divergences worth testing. Chapter~3 establishes that the two conventions were
+never compared experimentally, so the ratio marks an untested difference
+rather than a known cost.
+
+\subsection{Image dimensions}
+\label{fg6:dimensions}
+\textbf{Thesis locations:} 6.2, Limitations, second paragraph; 6.3, Further
+Work, second paragraph.
+
+\textbf{No new formula.} The chapter names four spatial resolutions, in the
+width-by-height pixel convention defined in Chapter~2's geometry entry:
+the implemented $224 \times 224$; the literature norm it contrasts that with,
+``at or below $100 \times 100$''; and the two resolutions it proposes
+re-training the stem arm at, $28 \times 28$ and $56 \times 56$.
+
+\textbf{The claim attached to them.} This is the conclusion's sharpest
+qualification of a Chapter~5 result. Because the convolutional stem runs far
+above the literature's resolution range, its measured negative effect
+\emph{may be a resolution result as much as an architectural one}. The chapter
+advances that reading and then qualifies it, noting that the same source
+reports shallow models to be largely robust to resolution. Re-training the
+stem arm at $28 \times 28$ and $56 \times 56$ with everything else held as
+Chapter~4 specifies is named as the cheapest experiment left undone, and the
+one whose outcome would most change how the stem result must be worded.
+
+\subsection{Coverage boundary}
+
+All nine inline mathematical spans in Chapter 6 are accounted for above. The
+chapter has \textbf{no displayed equation blocks} and \textbf{no citations},
+so none of either has been omitted.
+
+Three further quantities appear in the chapter as \emph{reported measurements}
+rather than as formulas, and have not been reverse-engineered into equations:
+the two headline pooled macro F1 scores, \textbf{0.7122} for
+\texttt{config\_2\_temporal\_only} against \textbf{0.6659} for
+\texttt{config\_8\_proposed\_unified}; the count of twelve declared
+divergences; and the compute share attributed to the stem-bearing
+configurations. Each is produced by a formula defined in Chapters 2 to 4 ---
+pooled macro F1 at Equation~(2.26), pooled per Equation~(2.28) --- and each is
+a number this chapter quotes rather than derives.
+
+The conclusion also proposes one statistical procedure it does not formalise:
+McNemar's test over the clips on which two configurations disagree, offered as
+what retained per-clip predictions would make possible. No equation for it
+appears in the thesis, and none has been invented here.
+
+\end{document}

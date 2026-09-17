@@ -1,0 +1,949 @@
+% =============================================================================
+% Appendix - Mathematical Formulations
+% =============================================================================
+% Collects every display formula in the thesis, with its symbols, mechanism,
+% source attribution and implementation status.
+%
+% INCLUSION: this file is an APPENDIX, not a chapter. In main.tex:
+%
+%     \appendix
+%     \include{contents/appendix_formulas}
+%
+% It must come after \appendix. Including it as a numbered chapter would shift
+% the chapter numbering that chapter3_shortened.tex's divergence ledger depends
+% on (it cites ten section numbers literally: 3.1.2, 3.1.3, 3.2.6, 3.4.3,
+% 3.4.7, 3.5.7, 3.6.6, 3.7.7, 3.8.6, 3.9.7).
+%
+% CITATION POLICY: this file adds NO new bibliography entries. Works cited only
+% inside the reviewed papers (Vaswani, Lin et al., Ioffe & Szegedy, Wu et al.)
+% are attributed in prose to the corpus paper that reports them, per the policy
+% stated in the header of bib/thesis.bib. Adding an entry would renumber the
+% whole bibliography, since tools/bibliography.py numbers by first appearance.
+%
+% All labels in this file are prefixed eq: and collide with nothing.
+% =============================================================================
+
+\chapter{Mathematical Formulations}
+\label{ch:formulas}
+
+This appendix collects every display formula that appears in the body of the
+thesis, in one place, with a consistent treatment: the expression as it is
+written in its own chapter, the section it belongs to, the meaning of each
+symbol, the mechanism it implements, the work it comes from, and whether this
+thesis implements it as written.
+
+\section*{How to read this appendix}
+\addcontentsline{toc}{section}{How to read this appendix}
+
+\textbf{Ordering.} Sequential by chapter, in the order the mathematics is
+introduced: Chapter~3 (\autoref{sec:eq-ch3}), Chapter~4
+(\autoref{sec:eq-ch4}), then Chapter~2 (\autoref{sec:eq-ch2}), which carries
+the bulk of the derivations. Chapters~1, 5 and~6 contain no display
+mathematics.
+
+\textbf{Reproduction.} Every expression is reproduced exactly as it is
+typeset in its own chapter --- same symbols, same subscripts, same
+conventions. Where two chapters state the same relation in different notation,
+both forms are given inside the one entry rather than being silently
+reconciled.
+
+\textbf{Each formula appears once.} Chapter~2 develops the mechanism and
+Chapter~3 reports the literature's version and any divergence from it, so
+several relations occur in both. Those are presented once, at the location
+listed first in the ordering above, with a cross-reference recording every
+section that states them. No entry is duplicated.
+
+\textbf{Attribution.} Citations use only keys already present in
+\texttt{bib/thesis.bib}. Several formulas originate in works that the
+bibliography deliberately omits, because this thesis's corpus is the set of
+reviewed micro-expression papers rather than the full ancestry of every
+technique they use. Those are attributed in prose to the reviewed paper that
+brings them to this task --- focal loss through Zhao et
+al.~\cite{zhaoS2021}, self-attention and the transformer through Dosovitskiy
+et al.~\cite{dosovitskiy2021} and Zhang et al.~\cite{zhang2022}, Eulerian
+magnification through Bai et al.~\cite{bai2021}. Formulas that are standard
+textbook material with no corpus source, such as batch normalisation and the
+convolution parameter count, carry no citation and are marked as such.
+
+\textbf{Implementation status.} Each entry closes by stating whether the
+thesis implements the formula as written. Three do not, and those are declared
+divergences recorded in the divergence ledger of \autoref{tab:divergence-ledger}
+rather than defects to be corrected here.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{@{}l l l l@{}}
+		\hline
+		\textbf{Entry} & \textbf{Quantity} & \textbf{Attributed to} & \textbf{As written?} \\
+		\hline
+		\multicolumn{4}{@{}l}{\textit{Chapter 3 --- Literature Review}} \\
+		\autoref{eq:uf1}           & Per-class F1 and UF1          & \cite{see2019}                        & yes \\
+		\autoref{eq:strain-frobenius} & Four-term strain magnitude & \cite{liong2014a,liong2014b,liong2016} & \textbf{no} \\
+		\autoref{eq:strain-implemented} & Three-term strain magnitude & declared divergence                & --- \\
+		\autoref{eq:simam}         & SimAM energy and gate         & \cite{yang2021}                       & partly \\
+		\autoref{eq:focal}         & Focal loss                    & \cite{zhaoS2021}                      & partly \\
+		\multicolumn{4}{@{}l}{\textit{Chapter 4 --- Methodology}} \\
+		\autoref{eq:posenc}        & Sinusoidal positional encoding & no corpus source                     & yes \\
+		\autoref{eq:fold-ceiling}  & Mean-of-folds macro F1 ceiling & this thesis                          & n/a \\
+		\multicolumn{4}{@{}l}{\textit{Chapter 2 --- Background}} \\
+		\autoref{eq:evm-taylor}    & Small-motion approximation    & \cite{bai2021}                        & yes \\
+		\autoref{eq:evm-amplified} & Amplified signal              & \cite{bai2021}                        & \textbf{no} \\
+		\autoref{eq:brightness}    & Brightness constancy          & \cite{liong2019a}                     & yes \\
+		\autoref{eq:flow-constraint} & Optical flow constraint     & \cite{liong2019a}                     & yes \\
+		\autoref{eq:strain-tensor} & Symmetric displacement gradient & \cite{shreve2011}                   & yes \\
+		\autoref{eq:conv-params}   & Convolution parameter count   & standard                              & yes \\
+		\autoref{eq:batchnorm}     & Batch normalisation           & standard, no corpus source            & yes \\
+		\autoref{eq:attention}     & Scaled dot-product attention  & via \cite{dosovitskiy2021}            & yes \\
+		\autoref{eq:label-smoothing} & Label smoothing             & named by \cite{dosovitskiy2021}       & yes \\
+		\autoref{eq:prf}           & Precision, recall, F1         & standard                              & yes \\
+		\autoref{eq:macro-f1}      & Macro-averaged F1             & standard; \cite{see2019} pooled       & yes \\
+		\hline
+	\end{tabular}
+	\caption[Index of formulations]{Index of the formulations collected in this
+	appendix, with the work each is attributed to and whether this thesis
+	implements it as written.}
+	\label{tab:formula-index}
+\end{table}
+
+
+% =============================================================================
+\section{Chapter 3 --- Literature Review}
+\label{sec:eq-ch3}
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+\subsection{Per-class F1 and Unweighted F1}
+\label{eq:uf1}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:megc-metrics}.
+
+\[
+	F1_c = \frac{2 \cdot TP_c}{2 \cdot TP_c + FP_c + FN_c}, \qquad \text{UF1} = \frac{1}{C}\sum_c F1_c
+\]
+
+\textbf{Symbols.} $TP_c$, $FP_c$ and $FN_c$ are the true positives, false
+positives and false negatives for class $c$; $C$ is the number of classes,
+three here; $F1_c$ is the harmonic mean of precision and recall for class $c$,
+written in the algebraically equivalent form that avoids computing either
+separately.
+
+\textbf{What it does.} UF1 scores a classifier without letting a frequent
+class dominate, by computing a score per class and averaging the scores with
+equal weight rather than averaging over examples. The construction that
+matters is not visible in the algebra: the counts $TP_c$, $FP_c$ and $FN_c$
+are \emph{accumulated across all $k$ folds before any $F1_c$ is computed}.
+That pooling is what distinguishes UF1 from the average of per-fold macro F1
+scores, which is a different estimator with a different expectation
+(\autoref{sec:pooled-vs-fold}, and \autoref{eq:fold-ceiling} for what it costs).
+
+\textbf{Source.} The metric convention of the Second Facial Micro-Expression
+Grand Challenge, See et al.~\cite{see2019}, which mandates UF1 and Unweighted
+Average Recall in place of plain accuracy on the explicit grounds of class
+imbalance.
+
+\textbf{As implemented.} Yes, and it is the thesis's primary metric. Pooled
+macro F1 as computed here is identical in construction to MEGC's UF1. The
+thesis adopts the challenge's metric definitions while declining its composite
+training regime.
+
+% -----------------------------------------------------------------------------
+\subsection{Four-term strain magnitude (the published convention)}
+\label{eq:strain-frobenius}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:strain-tensor}.
+
+\[
+    \varepsilon_{\mathrm{F}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +\varepsilon_{xy}^{2}+\varepsilon_{yx}^{2}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +2\varepsilon_{xy}^{2}}.
+\]
+
+\textbf{Symbols.} $\varepsilon_{xx}$ and $\varepsilon_{yy}$ are the normal
+components of the symmetric displacement-gradient tensor, describing local
+stretching or compression along each axis; $\varepsilon_{xy}=\varepsilon_{yx}$
+are its shear components. The tensor itself is defined at
+\autoref{eq:strain-tensor}. The second equality follows from the tensor's
+symmetry, which makes the two off-diagonal entries equal.
+
+\textbf{What it does.} It reduces the four-component tensor at each pixel to
+one non-negative scalar, the Frobenius norm, describing deformation
+\emph{intensity} while discarding its sign and direction. Because the tensor is
+symmetric, the norm counts shear twice --- once for each off-diagonal entry ---
+which is what produces the factor of two.
+
+\textbf{Source.} The Liong strain series~\cite{liong2014a,liong2014b,liong2016}.
+Shreve et al.~\cite{shreve2011} establish the tensor; the Liong papers use this
+four-component magnitude as the descriptor.
+
+\textbf{As implemented.} \textbf{No.} The implementation computes the
+three-term form of \autoref{eq:strain-implemented} instead. This is the
+thesis's most consequential divergence and is treated in the next entry.
+
+% -----------------------------------------------------------------------------
+\subsection{Three-term strain magnitude (the implemented form)}
+\label{eq:strain-implemented}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:strain-divergence}, and again as
+$\varepsilon_{\mathrm{mag}}$ at \autoref{sec:optical-strain} in Chapter~2.
+
+\[
+    \varepsilon_{\mathrm{os}}
+    =\sqrt{\varepsilon_{xx}^{2}+\varepsilon_{yy}^{2}
+        +\varepsilon_{xy}^{2}},
+    \qquad
+    \varepsilon_{xy}=\tfrac{1}{2}
+        \left(\frac{\partial u}{\partial y}
+             +\frac{\partial v}{\partial x}\right).
+\]
+
+Chapter~2 writes the same scalar as
+
+\[
+    \varepsilon_{\mathrm{mag}}
+       =\sqrt{\varepsilon_{xx}^2+\varepsilon_{yy}^2
+                    +\varepsilon_{xy}^2}.
+\]
+
+\textbf{Symbols.} As \autoref{eq:strain-frobenius}, with $u$ and $v$ the
+horizontal and vertical components of the estimated flow field. In the
+discrete pipeline $u$ and $v$ are displacements in pixels between selected
+frames, not physical velocities.
+
+\textbf{What it does.} The same reduction to a deformation-intensity scalar,
+but counting the shear contribution once rather than twice. The consequence is
+a change in relative weighting, not a removable constant: the four-term form
+weights pure shear by $\sqrt{2}$ relative to this one. Independent min--max
+normalisation removes a uniform scale factor but does not generally remove
+this difference, because normal and shear contributions vary across pixels and
+across time.
+
+\textbf{Source.} \textbf{None --- this is a declared divergence.} STSTNet
+\cite{liong2019b} cannot establish a precedent for the three-term form,
+because its printed magnitude equation is typographically defective in two
+independent ways. It repeats $\partial u$ in the mixed derivative where the
+symmetric tensor calls for $\partial v / \partial x$ alongside $\partial u /
+\partial y$, and it places the factor $\tfrac{1}{2}$ \emph{outside} the
+squared derivative sum. Correcting the repeated derivative while retaining
+that placement gives
+
+\[
+    \tfrac{1}{2}
+       \left(\frac{\partial u}{\partial y}
+            +\frac{\partial v}{\partial x}\right)^2
+       =2\varepsilon_{xy}^{2},
+\]
+
+which agrees with the \emph{four}-term convention, not the three-term one.
+Moving the factor inside the square would instead yield the implemented form,
+but that is a further change to the printed expression. The intended
+implementation cannot be settled from the published equation alone, so the
+thesis declares a departure from the unambiguous four-term convention rather
+than claiming to reproduce STSTNet's magnitude.
+
+\textbf{As implemented.} This is what the code computes. Spatial derivatives
+come from NumPy's \texttt{gradient} at one-pixel spacing, using central
+differences in the array interior; the spacing follows Liong et
+al.~\cite{liong2014a} even though the scalar reduction does not. The two
+conventions were never compared experimentally here, so their practical
+equivalence is not assumed. This is row 4 of the divergence ledger
+(\autoref{tab:divergence-ledger}). \textbf{Neither expression should be
+``corrected'' --- the difference between them is the finding.}
+
+% -----------------------------------------------------------------------------
+\subsection{SimAM: energy and gate}
+\label{eq:simam}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:simam-energy}, and at \autoref{sec:simam} in
+Chapter~2. Chapter~3 writes it in terms of the intermediate $d_i$ and $s^2$:
+
+\[
+    d_i=(x_i-\mu)^2,\qquad
+    s^2=\frac{1}{M-1}\sum_{i=1}^{M}d_i,\qquad
+    E_i^{-1}=\frac{d_i}{4(s^2+\lambda)}+\frac{1}{2},
+\]
+\[
+    \widetilde{x}_i=x_i\,\operatorname{sigmoid}(E_i^{-1}),
+    \qquad \mu=\frac{1}{M}\sum_{i=1}^{M}x_i.
+\]
+
+Chapter~2 states the same gate with the variance written as $v$:
+
+\[
+    \mu=\frac1M\sum_i x_i,\qquad
+    v=\frac1{M-1}\sum_i(x_i-\mu)^2,
+\]
+\[
+    E_i^{-1}=\frac{(x_i-\mu)^2}{4(v+\lambda)}+\frac12,
+    \qquad \widetilde x_i=x_i\operatorname{sigmoid}(E_i^{-1}).
+\]
+
+\textbf{Symbols.} $x_i$ is one activation; $\mu$ and $s^2$ (equivalently $v$)
+are the mean and variance over the statistical context shared by that
+channel; $M$ is the number of positions in that context; $\lambda$ is a
+positive regularisation constant, fixed at $10^{-4}$ here; $E_i^{-1}$ is the
+reciprocal energy, the importance score; $\widetilde{x}_i$ is the refined
+activation.
+
+\textbf{What it does.} It implements a distinctiveness prior: an activation
+that differs from its channel context is scored as more important, and the
+score multiplicatively rescales the feature map rather than being added to it.
+The score is the closed-form minimiser of a regularised separation energy, so
+the $+\tfrac{1}{2}$ follows from the reciprocal-energy expression rather than
+being an arbitrary offset. The sigmoid bounds the multiplicative weight while
+preserving the ordering of the scores; it does not produce a hard mask of
+inactive regions. No weight or bias is learned anywhere in the module, so it
+contributes \textbf{zero learnable parameters} regardless of channel count.
+
+Note what the prior is and is not. It is a statement about activation
+statistics, not a detector of facial action units or of minority classes. A
+distinctive response may encode useful deformation, or noise, or an artefact.
+
+\textbf{Source.} Yang et al.~\cite{yang2021}.
+
+\textbf{As implemented.} Partly --- with two documented distinctions, both
+deliberate.
+
+\begin{enumerate}
+	\item \textbf{The variance denominator.} The shared variance printed with
+	Yang et al.'s equation~(5) divides by $M$; the reference code in their
+	Figure~3 divides by $M-1$. The forms above follow the \emph{code}, as does
+	this thesis, which applies Bessel's correction over $n = D \cdot H \cdot W
+	- 1$ (\autoref{sec:simam-placement}).
+	\item \textbf{The statistical context.} Here $M = THW$ --- whole-clip
+	statistics within each channel --- against the original image
+	formulation's $M = HW$ per frame. The original module produces a separate
+	weight at each channel--height--width position, so its ``three-dimensional
+	weights'' describe $C \times H \times W$ and not a temporal volume.
+	Extending the context across frames is an additional design decision, not
+	part of the source formulation, and is row 10 of the divergence ledger.
+	Whole-clip statistics do not guarantee that apex frames receive the
+	highest weights.
+\end{enumerate}
+
+The value $\lambda = 10^{-4}$ is likewise inherited rather than derived: Yang
+et al. sweep $\lambda$ from $10^{-1}$ to $10^{-6}$ and select $10^{-4}$ for
+CIFAR, repeating the selection separately for ImageNet and choosing $0.1$. It
+is a dataset-selected operating point, not a universal setting justified by
+the formula.
+
+% -----------------------------------------------------------------------------
+\subsection{Focal loss}
+\label{eq:focal}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:imbalance-focal}, and at
+\autoref{sec:focal-loss} in Chapter~2.
+
+\[
+	\text{FL}(p_t) = -\alpha_t (1 - p_t)^{\gamma}\log p_t
+\]
+
+\textbf{Symbols.} $p_t$ is the model's predicted probability for the true
+class; $\gamma$ is the focusing exponent, described by Zhao et al. as ``the
+balance factor for loss''; $\alpha_t$ is a per-class multiplier, ``the weight
+balance factor for samples''. With $\alpha_t = 1$ and $\gamma = 0$ the
+expression reduces to ordinary cross-entropy, $-\log p_t$.
+
+\textbf{What it does.} Two independent corrections, which are easy to
+conflate and which this thesis keeps separate deliberately. The modulating
+factor $(1-p_t)^{\gamma}$ re-weights by \textbf{difficulty}: for $\gamma > 0$
+it shrinks the contribution of confident, correct examples relative to hard
+ones. It does not inspect class frequency at all, so a difficult example from
+any class retains a large contribution --- though under skew the examples it
+up-weights are disproportionately from the minority classes. The separate
+$\alpha_t$ multiplier re-weights by \textbf{class frequency}. Zhao et al.
+treat $\gamma$ as a constant and $\alpha$ as dataset-specific, to be set by
+cross-validation.
+
+\textbf{Source.} Zhao et al.~\cite{zhaoS2021}, who bring focal loss into
+micro-expression recognition ``to alleviate the inefficient model training
+caused by the class imbalance in the MEs Datasets''. They adopt the
+formulation developed for one-stage object detection, where the imbalance
+being corrected is between foreground and background regions rather than
+between emotion classes. Per the bibliography's stated policy, the original
+detection paper carries no entry here and the formulation is attributed to the
+reviewed paper that reports it.
+
+\textbf{As implemented.} Partly. The difficulty term is used as written, with
+$\gamma = 2$ fixed throughout, matching Zhao et al.'s reported exponent --- an
+inherited setting, not a measured optimum for this corpus. The implementation
+computes $p_t$ from the hard target label using log-softmax, then multiplies a
+\emph{label-smoothed} cross-entropy term (\autoref{eq:label-smoothing}) by
+$(1-p_t)^{\gamma}$, with the class weight applied afterwards and optionally.
+The frequency term $\alpha_t$ is where this thesis departs: frequency
+correction is assigned to the sampler instead, and when balanced sampling is
+active a runtime guard disables the loss-side class weights, leaving focal
+difficulty weighting in place. Conflating the two factors is precisely the
+error recorded at \autoref{sec:imbalance-double-correction}.
+
+% -----------------------------------------------------------------------------
+\subsection{Inline quantities}
+\label{eq:ch3-inline}
+% -----------------------------------------------------------------------------
+
+Three quantities in Chapter~3 are not set as display mathematics but carry the
+same evidential weight.
+
+\textbf{Flow magnitude, $\sqrt{u^2+v^2}$} (\autoref{sec:brightness-constancy}).
+The scalar magnitude of the flow field, described by Zhao et
+al.~\cite{zhaoS2021} alongside the component fields $u(x,y)$ and $v(x,y)$.
+This thesis retains the two components as separate input channels rather than
+reducing them to this magnitude, so the direction of motion is preserved.
+
+\textbf{Effective frame rate, $6600/N$ fps} (\autoref{sec:tim-implications}).
+Sampling 33 frames from a clip of $N$ frames recorded at 200~fps yields this
+effective rate: \textbf{100~fps} at the median clip length $N=66$, which is
+SMIC's recording rate and half what CASME~II was built to provide, and roughly
+\textbf{52~fps} for the longest clip at $N=126$, below the original CASME
+database's 60~fps~\cite{yan2014}. Eighty-one of the 156 clips are downsampled
+by a factor of two or more. No reviewed paper reports this cost.
+
+\textbf{True inter-frame interval, $N/(200 \times 32)$ seconds}
+(\autoref{sec:tim-implications}). Magnification runs on the 33 sampled frames
+at the nominal 200~fps, but those frames span the clip's full duration, so the
+real interval between them is this rather than $1/200$. A band specified as
+5--25~Hz therefore corresponds to roughly 2.5--12.5~Hz physically at the
+median, and the discrepancy grows with clip length. The realised pass-band is
+consequently clip-dependent --- neither the 5--25~Hz derived from the duration
+rule of Bai et al.~\cite{bai2021} nor constant across the corpus. This is a
+declared divergence; magnifying before subsampling is declared as further
+work.
+
+
+% =============================================================================
+\section{Chapter 4 --- Methodology}
+\label{sec:eq-ch4}
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+\subsection{Sinusoidal positional encoding}
+\label{eq:posenc}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:transformer-config}.
+
+\[
+	\mathrm{PE}(p, 2i) = \sin\!\left(\frac{p}{10000^{2i/96}}\right), \qquad \mathrm{PE}(p, 2i+1) = \cos\!\left(\frac{p}{10000^{2i/96}}\right).
+\]
+
+\textbf{Symbols.} $p$ is the position in the sequence, one of the 32 time
+steps; $i$ indexes feature pairs within the embedding, so $2i$ and $2i+1$ are
+the even and odd feature positions; 96 is $d_{\text{model}}$, the embedding
+width, appearing here as a literal rather than a symbol because the
+configuration fixes it.
+
+\textbf{What it does.} It supplies the order information that self-attention
+cannot recover on its own. Without it, attention is permutation-equivariant:
+permuting the input tokens permutes the outputs correspondingly, so a shuffled
+clip is indistinguishable from an ordered one (\autoref{sec:self-attention}).
+Each feature pair oscillates at a different frequency, geometrically spaced by
+the $10000^{2i/96}$ denominator, so the vector at each position is distinct
+and positions at a fixed offset stand in a consistent linear relation.
+
+\textbf{Source.} No corpus source. The encoding is Vaswani et al.'s, from the
+original transformer, which the bibliography deliberately omits under the
+policy described at the head of this appendix; Chapter~4 states it as the
+standard form without attribution. The thesis reaches the architecture through
+Zhang et al.'s SLSTT~\cite{zhang2022} and its Vision Transformer
+foundation~\cite{dosovitskiy2021}, as traced at
+\autoref{sec:transformer-review}. Note that ViT itself uses \emph{learned}
+positional embeddings, not these fixed sinusoids.
+
+\textbf{As implemented.} Yes, as written. It is a fixed buffer, not a learned
+parameter, and contributes nothing to any parameter count. Two details of the
+surrounding configuration are easily missed: the positional-encoding stage
+applies its own \texttt{Dropout(p=0.1)} to the sequence \emph{after} the
+encoding is added, which is a separate application from the encoder layers'
+dropout at the same rate; and although the sinusoids could be evaluated at
+arbitrary positions, the implementation uses a finite precomputed buffer, so
+generalisation to unseen sequence lengths is neither exercised nor guaranteed.
+
+% -----------------------------------------------------------------------------
+\subsection{The mean-of-folds macro F1 ceiling}
+\label{eq:fold-ceiling}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:mean-of-folds-rejected}.
+
+\[
+	\frac{10 \cdot \tfrac13 + 8 \cdot \tfrac23 + 7 \cdot 1}{25} = \frac{3.333\ldots + 5.333\ldots + 7}{25} \approx 0.627.
+\]
+
+\textbf{Symbols.} The three numerator terms are the 25 leave-one-subject-out
+folds grouped by how many of the three classes appear in each fold's held-out
+ground truth: \textbf{10} folds contain one class, \textbf{8} contain two,
+\textbf{7} contain all three. The fractions $\tfrac13$, $\tfrac23$ and $1$ are
+the maximum macro F1 each group can attain. The denominator is the fold count.
+
+\textbf{What it does.} It computes an upper bound, fixed by protocol
+structure before any model is trained. A macro F1 computed \emph{within} a
+fold is the unweighted mean of that fold's three per-class F1 scores, and a
+class absent from that fold's ground truth contributes zero no matter what the
+model predicts. A single-class fold is therefore capped at $1/3$ and a
+two-class fold at $2/3$. Averaging across folds averages seventeen sub-unity
+ceilings into every score, bounding the mean-of-folds macro F1 at
+approximately \textbf{0.627} --- a property of which subjects were held out,
+identical for all twelve configurations.
+
+Pooling avoids the ceiling entirely: accumulating $TP$, $FP$ and $FN$ across
+all 25 folds and all 156 clips before computing any per-class F1 means a class
+locally absent from one fold no longer forces a zero into its contribution.
+That is the construction of \autoref{eq:uf1}.
+
+\textbf{Source.} This thesis's own arithmetic over the fold composition of
+\autoref{fig:fold-composition}. It is not a published result.
+
+\textbf{As implemented.} Not applicable --- this is an argument for rejecting
+a metric, not a component. Its consequence is directly implemented: pooled
+macro F1 is the primary reported metric, and the mean-of-folds quantity stored
+under \texttt{macro\_f1} in the run artefacts is not. A metric with a hard
+ceiling below 0.7 cannot serve as a headline result. The same fold composition
+biases mean-of-folds \emph{accuracy} in the same direction without imposing a
+hard ceiling; for the full configuration it exceeds pooled accuracy by
+\textbf{6.3 points}.
+
+% -----------------------------------------------------------------------------
+\subsection{Inline quantities}
+\label{eq:ch4-inline}
+% -----------------------------------------------------------------------------
+
+\textbf{Sampler weight, $1/n_c$} (\autoref{sec:sampler-config}). Every
+training example is assigned this weight by the
+\texttt{WeightedRandomSampler}, where $n_c$ is the number of training examples
+of that example's class \emph{within the current fold's training split}.
+Sampling proceeds with \texttt{replacement=True}, drawing as many indices per
+epoch as the split contains, which makes each represented class equally likely
+in expectation while leaving individual batches uneven. This changes class
+exposure during training, not the number of distinct recorded expressions.
+It is also what makes the class-weighting rule well founded rather than merely
+convenient: because the skew correction genuinely happens here, disabling its
+loss-side equivalent avoids double-counting rather than removing the
+correction (\autoref{eq:focal}).
+
+\textbf{Parameter counts} (\autoref{sec:parameter-counts}). Four components
+combine to give any configuration's total: the convolutional backbone
+(\texttt{ThreeStreamCNNBackbone}, all three streams) \textbf{14,544}; the
+transformer encoder (\texttt{SLSTTTransformer}) \textbf{348,736};
+\texttt{RawPatchEmbedding}, the no-CNN fallback, \textbf{4,704}; and the
+classifier head \textbf{483}. Their sums give the four distinct totals of
+\autoref{tab:parameter-totals}. Neither SimAM nor EVM appears as a row: SimAM
+contributes zero parameters by construction (\autoref{eq:simam}), and
+magnification is a preprocessing step rather than a network component. Of the
+transformer's total, 192 belong to the final \texttt{LayerNorm(96)} applied
+after its four encoder layers.
+
+
+% =============================================================================
+\section{Chapter 2 --- Background}
+\label{sec:eq-ch2}
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+\subsection{Eulerian magnification: the small-motion approximation}
+\label{eq:evm-taylor}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:eulerian-idea}.
+
+\[
+    I(x,t)=f(x+\delta(t))
+       \approx f(x)+\delta(t)\frac{\partial f}{\partial x}.
+\]
+
+\textbf{Symbols.} $f$ is the image intensity profile; $x$ is spatial
+position; $\delta(t)$ is a small time-varying displacement; $I(x,t)$ is the
+observed intensity at a \emph{fixed} location $x$ at time $t$.
+
+\textbf{What it does.} It is the first-order Taylor expansion that licenses
+the entire Eulerian approach. Eulerian magnification examines intensity
+changes at fixed image locations rather than explicitly tracking moving
+points, and this approximation is what connects the two: for sufficiently
+small displacement, the intensity change observed at a fixed pixel is
+proportional to the displacement times the local spatial gradient. Motion can
+therefore be manipulated by manipulating intensity.
+
+\textbf{Source.} Bai et al.~\cite{bai2021}, describing the amplitude-based
+mechanism. The technique originates with Wu et al., who carry no bibliography
+entry under the policy described above and are attributed through the reviewed
+paper that reports them.
+
+\textbf{As implemented.} Yes --- but note that the approximation holds only
+for small $\delta(t)$. It does not imply that arbitrary intensity changes
+represent facial movement, nor that larger amplification always improves
+recognition.
+
+% -----------------------------------------------------------------------------
+\subsection{Eulerian magnification: the amplified signal}
+\label{eq:evm-amplified}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:eulerian-idea}.
+
+\[
+    \widetilde I(x,t)\approx
+       f(x)+(1+\alpha)\delta(t)\frac{\partial f}{\partial x}.
+\]
+
+\textbf{Symbols.} As above, with $\alpha$ the magnification factor and
+$\widetilde I$ the reconstructed signal.
+
+\textbf{What it does.} Adding $\alpha$ times the band-passed motion-related
+variation back to the original produces a signal that, under the same
+first-order approximation, resembles what would have been observed had the
+displacement itself been $(1+\alpha)$ times larger. The mechanism is entirely
+photometric; nothing is tracked or warped.
+
+\textbf{Source.} Bai et al.~\cite{bai2021}, as above.
+
+\textbf{As implemented.} \textbf{Not in the temporal filter.} The magnitude
+relation above is implemented, but the band-pass stage that isolates
+$\delta(t)$ differs: Bai et al. describe a Butterworth filter, whereas this
+implementation masks Fourier coefficients outside the selected band and
+applies the inverse transform (\autoref{sec:temporal-filtering}). The spatial
+decomposition uses a Laplacian pyramid with the separable blur kernel
+$[1,4,6,4,1]/16$ and factor-two downsampling. A second and larger divergence
+concerns \emph{when} magnification is applied: it runs after subsampling, which
+makes the realised pass-band clip-dependent (\autoref{eq:ch3-inline}).
+
+% -----------------------------------------------------------------------------
+\subsection{Brightness constancy}
+\label{eq:brightness}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:optical-flow}.
+
+\[
+    I(x,y,t)=I(x+u\Delta t,y+v\Delta t,t+\Delta t).
+\]
+
+\textbf{Symbols.} $I$ is image intensity; $(x,y)$ is spatial position; $t$ is
+time; $u$ and $v$ are the horizontal and vertical components of local
+velocity, for the continuous derivation.
+
+\textbf{What it does.} It states the assumption on which optical flow rests:
+a moving point retains its intensity as it moves. Everything estimated as
+``motion'' downstream is motion only insofar as this holds.
+
+\textbf{Source.} OFF-ApexNet, Liong et al.~\cite{liong2019a}.
+
+\textbf{As implemented.} Yes, as the assumption underlying the Farneb\"ack
+estimator used here --- with two caveats the thesis states rather than
+assumes away. In the discrete pipeline $u$ and $v$ denote displacement in
+pixels between selected frames rather than physical velocity per second. And
+illumination changes or large inter-frame displacement can violate the
+approximation outright, which the clip-dependent effective frame rate
+(\autoref{eq:ch3-inline}) makes a live concern for the longer clips.
+
+% -----------------------------------------------------------------------------
+\subsection{The optical flow constraint}
+\label{eq:flow-constraint}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:optical-flow}.
+
+\[
+    I_xu+I_yv+I_t=0.
+\]
+
+\textbf{Symbols.} $I_x$, $I_y$ and $I_t$ are the partial derivatives of
+intensity with respect to $x$, $y$ and $t$; $u$ and $v$ are as above.
+
+\textbf{What it does.} It is the first-order expansion of brightness
+constancy, and it is \textbf{one equation in two unknowns}. This
+underdetermination is the \textbf{aperture problem}: a local edge constrains
+motion normal to the edge, along the intensity gradient, but leaves motion
+parallel to the edge entirely undetermined. Every practical estimator must
+therefore add something --- a neighbourhood assumption, a local motion model,
+or explicit regularisation. Flow fields are consequently never pure
+measurements; they carry the assumptions of whichever estimator produced them.
+
+\textbf{Source.} Liong et al.~\cite{liong2019a}.
+
+\textbf{As implemented.} Yes. The constraint is resolved by Farneb\"ack's
+polynomial expansion, following the estimator choice reported by Zhao et
+al.~\cite{zhaoS2021}, with OpenCV settings: pyramid scale 0.5, three levels,
+window size 15, three iterations, polynomial neighbourhood 5, polynomial
+smoothing 1.2, flags 0. Flow is computed for the 32 adjacent pairs among the
+33 sampled frames.
+
+% -----------------------------------------------------------------------------
+\subsection{The symmetric displacement-gradient tensor}
+\label{eq:strain-tensor}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:optical-strain}. Its normal and shear
+components are also named at \autoref{sec:strain-tensor} in Chapter~3.
+
+\[
+    \varepsilon=\tfrac12\left(\nabla\mathbf{u}
+                         +(\nabla\mathbf{u})^{\mathsf T}\right),
+    \qquad
+    \varepsilon_{xx}=\frac{\partial u}{\partial x},\quad
+    \varepsilon_{yy}=\frac{\partial v}{\partial y},
+\]
+\[
+    \varepsilon_{xy}=\varepsilon_{yx}
+       =\tfrac12\left(\frac{\partial u}{\partial y}
+                    +\frac{\partial v}{\partial x}\right).
+\]
+
+\textbf{Symbols.} $\mathbf{u}=[u,v]^{\mathsf T}$ is the displacement field;
+$\nabla\mathbf{u}$ is its gradient; the superscript $\mathsf{T}$ denotes
+transpose. Symmetrising the gradient makes $\varepsilon_{xy}=\varepsilon_{yx}$
+by construction.
+
+\textbf{What it does.} It converts displacement into \emph{deformation}.
+Flow describes how much things moved; strain describes how neighbouring
+displacements \emph{differ}. The normal components describe local stretching or
+compression along each axis, and the off-diagonal terms describe shear. The
+consequence that motivates using it at all: a spatially uniform translation
+has zero displacement gradient and therefore zero strain, so rigid head
+movement is suppressed while differential skin motion survives.
+
+\textbf{Source.} The small-strain approximation used for optical strain,
+Shreve et al.~\cite{shreve2011}.
+
+\textbf{As implemented.} Yes, with the discretisation as a stated modelling
+choice rather than a neutral detail, since it sets the scale at which local
+variation is measured. Shreve et al. approximate the spatial derivatives by
+central differences with offsets of approximately two to three pixels; Liong
+et al.~\cite{liong2014a} use one-pixel offsets, and this implementation
+follows the latter via NumPy's \texttt{gradient}. Two limits are declared
+rather than argued away: zero strain under uniform translation does not imply
+immunity to head \emph{rotation}, projection effects or flow-estimation error,
+and differentiation may amplify noise. The reduction of this tensor to a
+scalar is where the thesis diverges from the literature --- see
+\autoref{eq:strain-implemented}.
+
+% -----------------------------------------------------------------------------
+\subsection{Convolution parameter count}
+\label{eq:conv-params}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:convolution}.
+
+\[
+    N_{\mathrm{params}}=C_{\mathrm{out}}
+       (C_{\mathrm{in}}k_Hk_W+1).
+\]
+
+\textbf{Symbols.} $C_{\mathrm{in}}$ and $C_{\mathrm{out}}$ are the input and
+output channel counts; $k_H$ and $k_W$ are the kernel height and width; the
+$+1$ is one bias per output channel.
+
+\textbf{What it does.} It makes weight sharing quantitative. Each output
+channel's kernel spans all input channels over its local window, and the same
+kernel is applied at every position --- so the parameter count is
+\textbf{independent of image dimensions}. That independence is the point of
+convolution: no separate detector is learned for each image location. What
+does scale with image size is computation and activation memory, since both
+grow with the number of positions processed.
+
+\textbf{Source.} Standard; no corpus source and no citation.
+
+\textbf{As implemented.} Yes. The implemented streams use $(1,3,3)$ kernels
+with $(0,1,1)$ padding followed by $(1,2,2)$ max-pooling, so the convolutions
+preserve temporal length and learn purely spatial filters while pooling halves
+height and width. Because $k_T = 1$, \textbf{no temporal convolution is
+performed} --- the use of \texttt{Conv3d} does not by itself establish
+otherwise. The complete stream can still depend on multiple frames through
+BatchNorm during training and through SimAM whenever it is enabled, both of
+which use statistics spanning time.
+
+% -----------------------------------------------------------------------------
+\subsection{Batch normalisation}
+\label{eq:batchnorm}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:normalisation}.
+
+\[
+    \widehat x=\frac{x-\mu_c}{\sqrt{\sigma_c^2+\epsilon}},
+    \qquad y=\gamma_c\widehat x+\beta_c.
+\]
+
+\textbf{Symbols.} $\mu_c$ and $\sigma_c^2$ are the mean and variance for
+channel $c$; $\epsilon$ is a small constant preventing division by zero;
+$\gamma_c$ and $\beta_c$ are the learned per-channel scale and shift;
+$\widehat x$ is the standardised activation and $y$ the output.
+
+\textbf{What it does.} It rescales each channel's activations to a
+standardised distribution and then lets the network learn to undo or reshape
+that standardisation through $\gamma_c$ and $\beta_c$ --- so normalisation is
+imposed but not forced to be retained.
+
+\textbf{Source.} \textbf{None.} Batch normalisation is Ioffe and Szegedy's,
+but no paper in this thesis's corpus introduces or examines it, so it is
+presented as standard practice and carries no citation. Adding one would
+require a new bibliography entry, which the citation policy of this thesis
+excludes.
+
+\textbf{As implemented.} Yes. \texttt{BatchNorm3d} computes training
+statistics over $(B,T,H,W)$ for each channel, and evaluation uses running
+estimates accumulated during training. These activation statistics are a
+distinct thing from the per-sample input standardisation performed by the
+dataset loader, and the two should not be conflated. Related regularisers in
+the same configuration: \texttt{Dropout3d} removes entire feature channels for
+a sample rather than masking individual spatial values, and layer
+normalisation --- which standardises a token's feature dimension independently
+of other samples --- appears inside the transformer and in the classifier
+head.
+
+% -----------------------------------------------------------------------------
+\subsection{Scaled dot-product attention}
+\label{eq:attention}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:self-attention}.
+
+\[
+    \operatorname{Attention}(Q,K,V)
+      =\operatorname{softmax}\left(\frac{QK^{\mathsf T}}{\sqrt{d_k}}\right)V.
+\]
+
+\textbf{Symbols.} $Q$, $K$ and $V$ are the query, key and value matrices,
+each a projection of the input tokens; $d_k$ is the key dimension; the
+softmax is taken row-wise.
+
+\textbf{What it does.} Queries and keys determine \emph{which} values
+contribute to each output, and by how much: the dot product $QK^{\mathsf T}$
+scores every token pair, the softmax turns those scores into weights summing
+to one, and the result mixes the values accordingly. The $\sqrt{d_k}$ divisor
+moderates dot-product magnitude as the key dimension grows, keeping the
+softmax out of its saturated regime. Multiple heads learn projections into
+different subspaces, whose outputs are concatenated and linearly mixed.
+
+The property that matters most here is negative: without position
+information, attention is \textbf{permutation-equivariant}. Permuting the
+input tokens permutes the outputs correspondingly, so the operation cannot
+identify temporal order on its own. That is what
+\autoref{eq:posenc} exists to supply.
+
+\textbf{Source.} Vaswani et al.'s transformer, attributed through Dosovitskiy
+et al.~\cite{dosovitskiy2021}, whose Vision Transformer is the foundation this
+thesis reaches the architecture through, together with Zhang et al.'s
+SLSTT~\cite{zhang2022} (\autoref{sec:transformer-review}). The original
+transformer paper carries no bibliography entry under the stated policy.
+
+\textbf{As implemented.} Yes, within \texttt{nn.TransformerEncoder}, but over
+a different axis than in the published SLSTT. Here attention operates over
+\textbf{32 time steps} of 96-dimensional features, not over spatial patches:
+ViT splits an image into patches and relates them spatially, whereas the
+sequence here is produced by collapsing both spatial dimensions with
+\texttt{AdaptiveAvgPool3d((32,1,1))}. The configuration is $d_{\text{model}} =
+96$, $n_{\text{head}} = 8$, four encoder layers, feed-forward dimension 256,
+dropout 0.1, pre-norm ordering, GELU activation.
+
+% -----------------------------------------------------------------------------
+\subsection{Label smoothing}
+\label{eq:label-smoothing}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:label-smoothing}.
+
+\[
+    L_{\mathrm{smooth}}
+      =-(1-\epsilon)\log p_t
+        -\frac{\epsilon}{C}\sum_{c=1}^{C}\log p_c.
+\]
+
+\textbf{Symbols.} $\epsilon$ is the smoothing strength; $C$ is the number of
+classes; $p_t$ is the predicted probability of the true class and $p_c$ of
+class $c$. The target it corresponds to is
+$q_c=(1-\epsilon)\mathbf{1}[c=t]+\epsilon/C$, the one-hot vector blended with
+uniform mass.
+
+\textbf{What it does.} It removes the incentive to drive the true-class
+probability to exactly one. Because a share $\epsilon$ of the target mass sits
+on every class, the loss is minimised by a confident but not saturated
+prediction. The effect is on \emph{calibration}, not on class balance: it
+discourages extreme confidence uniformly and does not preferentially weight a
+rare class.
+
+\textbf{Source.} Named, but not examined, by Dosovitskiy et
+al.~\cite{dosovitskiy2021}, who list it among the regularisation parameters
+they tune. \textbf{No reviewed micro-expression paper uses it, discusses it,
+or reports what it does under class skew.}
+
+\textbf{As implemented.} Yes, with $\epsilon = 0.05$, applied \emph{before}
+focal modulation --- the focal factor of \autoref{eq:focal} still uses the
+unsmoothed true-class probability. Neither the smoothing strength nor the
+focal exponent is varied across the architectural comparisons. Because the
+corpus supports the choice neither way, it is declared as a choice rather than
+defended as a finding, and it appears as such in the divergence ledger.
+
+% -----------------------------------------------------------------------------
+\subsection{Precision, recall and per-class F1}
+\label{eq:prf}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:confusion-matrix}. The $F1_c$ term also
+appears within \autoref{eq:uf1}.
+
+\[
+    P_c=\frac{TP_c}{TP_c+FP_c},\qquad
+    R_c=\frac{TP_c}{TP_c+FN_c},\qquad
+    F1_c=\frac{2TP_c}{2TP_c+FP_c+FN_c}.
+\]
+
+\textbf{Symbols.} In a confusion matrix, entry $(i,j)$ counts examples whose
+true class is $i$ and predicted class is $j$; the diagonal holds correct
+predictions. For class $c$: $TP_c$ counts correct predictions of $c$, $FP_c$
+counts incorrect predictions of $c$, and $FN_c$ counts missed examples of $c$.
+
+\textbf{What it does.} Precision penalises false alarms and recall penalises
+misses --- each is trivially maximised at the other's expense, which is why
+neither is reported alone. F1 is their harmonic mean, so a high value requires
+both to be reasonably high; the form above is the algebraic simplification
+that avoids computing $P_c$ and $R_c$ separately.
+
+\textbf{Source.} Standard; no corpus source and no citation.
+
+\textbf{As implemented.} Yes, with one convention made explicit because it is
+load-bearing under this fold structure: a degenerate denominator, which occurs
+whenever a class is absent from a fold, is assigned \textbf{zero} rather than
+the class being omitted from the score. That convention is exactly what
+produces the ceiling of \autoref{eq:fold-ceiling}, and exactly what pooling
+across folds avoids.
+
+% -----------------------------------------------------------------------------
+\subsection{Macro-averaged F1}
+\label{eq:macro-f1}
+% -----------------------------------------------------------------------------
+
+\textbf{Appears at} \autoref{sec:macro-micro}.
+
+\[
+    F1_{\mathrm{macro}}=\frac1C\sum_{c=1}^{C}F1_c.
+\]
+
+\textbf{Symbols.} $C$ is the number of classes and $F1_c$ is the per-class F1
+of \autoref{eq:prf}.
+
+\textbf{What it does.} It gives every class equal weight regardless of how
+many examples it has, which is the whole reason for preferring it here.
+Contrast micro F1, which first sums $TP$, $FP$ and $FN$ \emph{across classes}:
+in single-label multiclass classification each error supplies one false
+positive and one false negative, so micro F1 equals accuracy exactly, and can
+therefore be dominated by a frequent class. Macro F1 and accuracy describe
+different aspects of performance, and reporting both does not remove the need
+to inspect per-class errors directly.
+
+\textbf{Source.} Standard. See et al.~\cite{see2019} define the \emph{pooled}
+variant, MEGC's UF1, which is the construction this thesis uses
+(\autoref{eq:uf1}).
+
+\textbf{As implemented.} Yes, and it is the primary metric --- but only in
+its pooled form. Pooling the confusion matrices across folds before computing
+any per-class F1 is a genuinely different estimator from computing macro F1
+within each fold and averaging the results (\autoref{sec:pooled-vs-fold}). The
+distinction is the subject of \autoref{eq:fold-ceiling}, and no run artefact
+stores the pooled quantity under any key: it is derived afterwards by the
+reporting scripts under \texttt{tools/}.

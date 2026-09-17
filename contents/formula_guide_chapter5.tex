@@ -1,0 +1,251 @@
+% Standalone formula guide, companion volume: Chapter 5.
+% Source: contents/chapter5_shortened.tex.
+% Compile this file as the main document. Bibliography is embedded.
+%
+% NO-REPETITION RULE: Chapter 5 contains NO displayed mathematics. Every
+% general formula it applies is defined in formula_guide_chapters1_4.tex and is
+% referred to here by name and number, never reprinted. The equations below are
+% either (a) quantities Chapter 5 states in prose and this guide promotes, or
+% (b) numeric evaluations of an earlier formula at specific counts.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\numberwithin{equation}{section}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\allowdisplaybreaks
+\title{Formula Guide: Chapter 5}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\textbf{Scope.} This companion volume covers the shortened results chapter,
+\texttt{contents/chapter5\_shortened.tex}. Section and equation numbers
+continue those of \texttt{formula\_guide\_chapters1\_4.tex}, so a reference of
+the form ``Equation (2.14)'' points into that document.
+
+\textbf{Finding, stated plainly.} \textbf{Chapter 5 contains no displayed
+equation blocks and defines no new formula.} This was verified by scanning the
+source for displayed-math delimiters and equation environments; the count is
+zero for both. What the chapter contains is fourteen inline mathematical
+spans, and all but two of those are notation rather than formulas: tensor
+shapes, configuration-pair arrows and a difference symbol.
+
+That is what a results chapter should look like. Its work is to report
+measured numbers, and the formulas that produce them were defined in
+Chapters~2 to~4.
+
+\textbf{What this volume therefore does.} Three things, none of which involves
+restating an earlier formula:
+
+\begin{enumerate}
+	\item Promotes the two aggregation rules the chapter uses throughout but
+	only ever states in prose --- the matched-pair difference and the mean
+	marginal effect.
+	\item Works through the one genuine calculation the chapter performs, the
+	all-Negative reference classifier, as a numeric evaluation of metric
+	formulas defined earlier.
+	\item Indexes the chapter's notation, and records which earlier equation
+	each restated quantity belongs to.
+\end{enumerate}
+
+\tableofcontents
+\clearpage
+
+\setcounter{section}{4}
+\section{Chapter 5: Results}
+\label{fg5:chapter5}
+
+\subsection{Aggregation rules used throughout the chapter}
+
+\subsubsection{The matched-pair difference}
+\label{fg5:pair-difference}
+\textbf{Thesis locations:} 5.2--5.5, every ``The six pairs'' and ``The four
+pairs'' table.
+
+The chapter's central quantity is written in its tables as
+``$\Delta$ pooled macro F1'' and in its prose as a signed change, but never as
+an equation. Promoted, it is
+\begin{equation}
+    \Delta_j = S\!\left(\mathrm{on}_j\right) - S\!\left(\mathrm{off}_j\right),
+    \label{fg5:eq:pair-difference}
+\end{equation}
+where $j$ indexes a matched pair, $S(\cdot)$ is pooled macro F1 as constructed
+in Equation~(2.26) and pooled per Equation~(2.28), and
+$\mathrm{on}_j$ and $\mathrm{off}_j$ are the two configurations of pair $j$ ---
+identical in every flag except the one under test.
+
+The construction is what gives the chapter its evidential standing. Because
+the two members differ in exactly one flag, and because every non-varied
+factor, seed and fold assignment is held identical, $\Delta_j$ isolates that
+flag within that architectural context. The chapter's arrow notation,
+$\texttt{config\_1} \rightarrow \texttt{config\_2}$, names the pair by its off
+and on members in that order.
+
+Two cautions the chapter states explicitly. Differences are calculated from
+\emph{unrounded} results, so subtracting the displayed four-decimal scores can
+disagree in the last digit. And a single seed means $\Delta_j$ is a point
+estimate carrying no uncertainty interval; it cannot establish statistical
+significance.
+
+\textbf{Source.} Project design. The matched-pair form is the study's own
+construction, not an aggregation rule imported from a reviewed paper.
+
+\subsubsection{The mean marginal effect}
+\label{fg5:mean-effect}
+\textbf{Thesis locations:} 5.2.1, 5.3.1, 5.4.1, 5.5.1, each ``The effect''.
+
+Each component's headline number is the mean of its pair differences:
+\begin{equation}
+    \overline{\Delta} = \frac1J \sum_{j=1}^{J} \Delta_j,
+    \label{fg5:eq:mean-effect}
+\end{equation}
+with $J = 6$ for the transformer and for EVM, and $J = 4$ for SimAM and for
+the convolutional stem. The counts differ because the validity rule of
+Equation~(4.1) removes the four cells that pair SimAM with no CNN, so those
+two components have fewer architecturally valid pairs to toggle within.
+
+The chapter is careful about what this average can carry, and the guide
+repeats that care rather than the algebra. A mean over four or six
+single-seed differences has no distributional interpretation: it does not
+estimate a population effect, and its spread across pairs is evidence about
+architectural dependence rather than sampling noise. Chapter~5's own
+subsection ``Why the mean is not the finding'' makes this argument for SimAM,
+where the sign varies across pairs.
+
+For the transformer, $\overline{\Delta} = +0.2173$ with all six differences
+positive, ranging $+0.1578$ to $+0.2786$. Consistency of sign across six of
+six pairs is a stronger observation than the mean itself, because it does not
+depend on the magnitudes.
+
+\textbf{Source.} Project design, as above.
+
+\subsection{The all-Negative reference classifier: thesis section 5.1.3}
+
+\subsubsection{Numeric evaluation of the metric definitions}
+\label{fg5:all-negative}
+\textbf{Thesis location:} 5.1.3, \texttt{sec:all-negative-reference}.
+
+\textbf{No new formula.} This is the chapter's one genuine calculation, and it
+evaluates formulas already defined: accuracy via
+Equation~(2.27), per-class F1 via Equation~(2.25) and the macro average via
+Equation~(2.26). Only the arithmetic is new.
+
+Consider a classifier that ignores its input and predicts Negative for every
+one of the 156 clips, 99 of which are Negative. Then
+\begin{equation}
+\begin{aligned}
+    \text{accuracy} &= \frac{99}{156} = 0.6346,\\
+    F1_{\mathrm{Negative}} &= \frac{2\times 99}{156+99} = 0.7765,\\
+    F1_{\mathrm{macro}} &= \frac{0.7765+0+0}{3} = 0.2588.
+    \end{aligned}
+    \label{fg5:eq:all-negative}
+\end{equation}
+
+The middle line is Equation~(2.25) with $TP = 99$, $FP = 57$ and $FN = 0$:
+every Negative clip is found, so there are no false negatives, and every
+non-Negative clip is wrongly called Negative, giving
+$2TP + FP + FN = 198 + 57 = 255 = 156 + 99$. The third line is the macro
+average with the Positive and Surprise scores at zero, since the classifier
+never predicts either, and the project convention of Equation~(2.25) assigns
+zero rather than omitting an undefined class.
+
+\textbf{What it establishes, and what it does not.} All twelve configurations
+exceed 0.2588 on pooled macro F1. That is a real but weak reference: it
+rules out one specific degenerate rule, not every input-independent rule, and
+it does not establish generalisation. The accuracy line carries the sharper
+warning --- \textbf{0.6346 accuracy is attainable without discriminating among
+expressions at all}, which is why accuracy is not the primary metric and why
+configuration~8's accuracy lead over configuration~2 (0.7500 against 0.7436,
+117 against 116 correct clips) does not settle the ranking.
+
+\textbf{Source.} This thesis's own arithmetic over its class distribution. The
+metric definitions are attributed at their own equations; See et
+al.~\cite{see2019} supply the pooled construction.
+
+\subsubsection{The mean-of-folds ceiling, restated}
+\label{fg5:ceiling-ch5}
+\textbf{Thesis location:} 5.1.3.
+
+\textbf{No new formula.} Chapter~5 reports a \textbf{0.6267} ceiling on
+mean-of-folds macro F1 imposed by fold composition. This is
+Equation~(4.4), which Chapter~4 states as $\approx 0.627$; the two agree, the
+results chapter simply carrying one more digit. The ceiling applies with all
+three classes retained and undefined class F1 set to zero, and it does not
+apply to pooled macro F1. Figure 5.2 of the thesis plots the two aggregations
+against each other with that ceiling marked.
+
+\textbf{Source.} As Equation~(4.4): this thesis's own arithmetic over its fold
+composition.
+
+\subsection{Notation index}
+\label{fg5:notation}
+
+The chapter's remaining mathematical spans are notation, not formulas. They
+are listed here so the index is complete.
+
+\textbf{$\rightarrow$ (configuration pairs).} In
+$\texttt{config\_1} \rightarrow \texttt{config\_2}$ and the abbreviated forms
+$2\rightarrow12$, $9\rightarrow7$, $5\rightarrow16$, $13\rightarrow16$,
+$9\rightarrow6$ and $2\rightarrow9$, the arrow separates the off member from
+the on member of a matched pair, in the sense of
+Equation~\eqref{fg5:eq:pair-difference}. The numerals are configuration
+identifiers, not ranks or magnitudes.
+
+\textbf{$\Delta$.} The difference of
+Equation~\eqref{fg5:eq:pair-difference}, used as a column heading.
+
+\textbf{$-$.} A typeset minus sign on negative differences, written
+explicitly so that a leading minus is not mistaken for a hyphen.
+
+\textbf{$(1,3,3)$.} The convolutional kernel of the stem, in the
+$(k_T,k_H,k_W)$ convention set out in Chapter 2's entry on
+three-dimensional tensor and kernel notation. Because $k_T = 1$, the stem performs \textbf{no temporal
+convolution}; Chapter~5 relies on this when it describes the transformer-free
+control as order-blind. The control is nevertheless not independent across
+frames at every operation, since batch normalisation during training and
+SimAM whenever enabled both use statistics spanning time.
+
+\textbf{$224\times224$ and $28\times28$.} Spatial input dimensions in pixels,
+in the width-by-height pixel convention of Chapter 2's image-dimensions
+entry. The comparison is raised as one of three unresolved candidate
+explanations for the stem's weak contribution: this pipeline's
+$224\times224$ input is large relative to STSTNet's
+$28\times28$~\cite{liong2019b}. The chapter declines to conclude from it,
+noting that other reviewed systems also use $224\times224$ and that shallow
+models need not share deeper models' resolution sensitivity. No universal
+literature threshold is established.
+
+\subsection{Coverage boundary}
+
+All fourteen inline mathematical spans in the shortened Chapter 5 are
+accounted for above: two promoted aggregation rules, one numeric evaluation
+across three lines, one restated ceiling, and ten notation items. The chapter
+has \textbf{no displayed equation blocks}, so none has been omitted, and no
+formula from Chapters 1 to 4 has been reprinted here.
+
+Quantities the chapter reports without expressing as a calculation --- pooled
+macro F1 scores, peak VRAM, extrapolated GPU-hours, per-class F1 tables and
+confusion matrices --- are measurements, not formulas, and have not been
+reverse-engineered into equations.
+
+\begin{thebibliography}{9}
+\bibitem{see2019}
+John See, Moi Hoon Yap, Jingting Li, Xiaopeng Hong and Su-Jing Wang,
+``MEGC 2019 --- The Second Facial Micro-Expression Grand Challenge,''
+\emph{14th IEEE International Conference on Automatic Face and Gesture
+Recognition (FG 2019)}, 2019.
+
+\bibitem{liong2019b}
+Sze-Teng Liong, Y. S. Gan, John See, Huai-Qian Khor and Yen-Chang Huang,
+``Shallow Triple Stream Three-Dimensional CNN (STSTNet) for Micro-Expression
+Recognition,'' \emph{14th IEEE International Conference on Automatic Face and
+Gesture Recognition (FG 2019)}, 2019.
+\end{thebibliography}
+
+\end{document}
