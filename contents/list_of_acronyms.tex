@@ -1,15 +1,18 @@
 % =============================================================================
 % List of Acronyms -- front matter
 % =============================================================================
-% Include from the front matter, after the List of Figures:
-%     \chapter*{List of Acronyms}
-%     \addcontentsline{toc}{chapter}{List of Acronyms}
-%     \input{contents/list_of_acronyms}
+% Requires \usepackage{acronym} and \usepackage{multicol} in the master file.
 %
-% Supersedes the four per-batch Chapter 3 lists, which should no longer be
-% included:
-%   chapter3_short_parts34_acronyms.tex   chapter3_short_parts56_acronyms.tex
-%   chapter3_short_parts78_acronyms.tex   chapter3_short_parts910_acronyms.tex
+% usage:
+%	\ac{acronym}  first occurrence: complete text. thereafter, short form.
+%	in footnotes: always short form (first time with foot note)
+%	\acf{acronym} long form
+%	\acs{acronym} short form
+%	\acl{acronym} long form without link (to acronym section)
+%	\acp, \acfp, \acsp and \aclp create plural versions
+%
+% Include from the front matter, after the List of Figures:
+%     \input{contents/list_of_acronyms}
 %
 % Compiled by extracting every capitalised token from the six chapter sources
 % (introduction, 2, 3, 4, 5, 6) and keeping those that are genuine acronyms
@@ -19,108 +22,117 @@
 % itself is listed), tensor-axis labels (XY, XT, YT, H, W, T), and units
 % (MB, GB).
 %
-% This is a portable description list, because the thesis master's glossary
-% setup is not in this checkout. If the master loads `glossaries` or
-% `acronym`, translate each row into that package's declaration rather than
-% inserting a second, competing list.
+% Keys containing characters the acronym package cannot use as a label
+% (spaces, $, ^, (, ), +, -) are declared with \acro{key}[display]{long}, so
+% the label is a plain identifier while the printed short form matches the
+% literature exactly (e.g. \acro{CASME2}[CAS(ME)$^2$]{...}).
 % =============================================================================
 
-\begin{description}
-
+\chapter{List of Acronyms}
+\label{sec:acronyms}
+%
+\begin{multicols}{2}
+\begin{acronym}[OFF-ApexNet]		% enter the longest acronym in short form here in the braces
+%
 	% --- corpora and datasets ---
-	\item[CASME II] Chinese Academy of Sciences Micro-Expression database II
-	\item[CAS(ME)$^2$] Chinese Academy of Sciences Macro- and Micro-Expression database
-	\item[CIFAR] Canadian Institute for Advanced Research (dataset family)
-	\item[CK+] Extended Cohn--Kanade dataset
-	\item[JAFFE] Japanese Female Facial Expression database
-	\item[MMEW] Micro-and-Macro Expression Warehouse
-	\item[MMI] MMI Facial Expression Database
-	\item[MUG] Multimedia Understanding Group facial expression database
-	\item[Multi-PIE] Multi Pose, Illumination and Expression database
-	\item[SAMM] Spontaneous Actions and Micro-Movements dataset
-	\item[SMIC] Spontaneous Micro-Expression Corpus
-	\item[USF-HD] University of South Florida High-Definition dataset
+	\acro{CASMEII}[CASME II]{Chinese Academy of Sciences Micro-Expression database II}
+	\acro{CASME2}[CAS(ME)$^2$]{Chinese Academy of Sciences Macro- and Micro-Expression database}
+	\acro{CIFAR}{Canadian Institute for Advanced Research (dataset family)}
+	\acro{CKplus}[CK+]{Extended Cohn--Kanade dataset}
+	\acro{JAFFE}{Japanese Female Facial Expression database}
+	\acro{MMEW}{Micro-and-Macro Expression Warehouse}
+	\acro{MMI}{MMI Facial Expression Database}
+	\acro{MUG}{Multimedia Understanding Group facial expression database}
+	\acro{MultiPIE}[Multi-PIE]{Multi Pose, Illumination and Expression database}
+	\acro{SAMM}{Spontaneous Actions and Micro-Movements dataset}
+	\acro{SMIC}{Spontaneous Micro-Expression Corpus}
+	\acro{USFHD}[USF-HD]{University of South Florida High-Definition dataset}
 
 	% --- benchmarks and evaluation protocols ---
-	\item[CDE] Composite Database Evaluation
-	\item[LOSO] Leave-one-subject-out (cross-validation)
-	\item[MEGC] Micro-Expression Grand Challenge
-	\item[SDE] Sole Database Evaluation
+	\acro{CDE}{Composite Database Evaluation}
+	\acro{LOSO}{Leave-one-subject-out (cross-validation)}
+	\acro{MEGC}{Micro-Expression Grand Challenge}
+	\acro{SDE}{Sole Database Evaluation}
 
 	% --- metrics ---
-	\item[F1] Harmonic mean of precision and recall
-	\item[FN] False negative
-	\item[FP] False positive
-	\item[TP] True positive
-	\item[UAR] Unweighted average recall
-	\item[UF1] Unweighted F1
+	\acro{F1}{Harmonic mean of precision and recall}
+	\acro{FN}{False negative}
+	\acro{FP}{False positive}
+	\acro{TP}{True positive}
+	\acro{UAR}{Unweighted average recall}
+	\acro{UF1}{Unweighted F1}
 
 	% --- the phenomenon, annotation and capture ---
-	\item[AU] Action Unit (plural AUs)
-	\item[FACS] Facial Action Coding System
-	\item[fps] Frames per second
-	\item[ME] Micro-expression (plural MEs)
-	\item[SD] Standard deviation
+	\acro{AU}{Action Unit (plural AUs)}
+	\acro{FACS}{Facial Action Coding System}
+	\acro{fps}{Frames per second}
+	\acro{ME}{Micro-expression (plural MEs)}
+	\acro{SD}{Standard deviation}
 
 	% --- hand-crafted features and preprocessing ---
-	\item[AMM] Amplitude-based motion magnification
-	\item[ASM] Active Shape Model
-	\item[Bi-WOOF] Bi-Weighted Oriented Optical Flow
-	\item[EVM] Eulerian Video Magnification
-	\item[FFT] Fast Fourier transform
-	\item[HIGO] Histogram of Image Gradient Orientation
-	\item[HOG] Histogram of Oriented Gradients
-	\item[JCFDA] Joint cascade face detection and alignment
-	\item[LBP] Local Binary Patterns
-	\item[LBP-TOP] Local Binary Patterns on Three Orthogonal Planes
-	\item[OFF] Optical flow features
-	\item[OFW] Optical flow weighted features
-	\item[OSF] Optical strain features
-	\item[OSW] Optical strain weighted features
-	\item[PMM] Phase-based motion magnification
-	\item[TIM] Temporal Interpolation Model (TIM10: interpolated to ten frames)
-	\item[TV-L1] Total-variation regularisation with an L1 data term
+	\acro{AMM}{Amplitude-based motion magnification}
+	\acro{ASM}{Active Shape Model}
+	\acro{BiWOOF}[Bi-WOOF]{Bi-Weighted Oriented Optical Flow}
+	\acro{EVM}{Eulerian Video Magnification}
+	\acro{FFT}{Fast Fourier transform}
+	\acro{HIGO}{Histogram of Image Gradient Orientation}
+	\acro{HOG}{Histogram of Oriented Gradients}
+	\acro{JCFDA}{Joint cascade face detection and alignment}
+	\acro{LBP}{Local Binary Patterns}
+	\acro{LBPTOP}[LBP-TOP]{Local Binary Patterns on Three Orthogonal Planes}
+	\acro{OFF}{Optical flow features}
+	\acro{OFW}{Optical flow weighted features}
+	\acro{OSF}{Optical strain features}
+	\acro{OSW}{Optical strain weighted features}
+	\acro{PMM}{Phase-based motion magnification}
+	\acro{TIM}{Temporal Interpolation Model (TIM10: interpolated to ten frames)}
+	\acro{TVL1}[TV-L1]{Total-variation regularisation with an L1 data term}
 
 	% --- network architectures and modules ---
-	\item[C3D] Three-dimensional convolutional network
-	\item[CBAM] Convolutional Block Attention Module
-	\item[CNN] Convolutional neural network
-	\item[DenseNet] Densely Connected Convolutional Network
-	\item[ECA] Efficient Channel Attention
-	\item[EMME] Extended Magnified Micro-Expression database
-	\item[EMR] Expression Magnification and Reduction
-	\item[GC] Global Context (attention module)
-	\item[LSTM] Long short-term memory
-	\item[OFF-ApexNet] Optical Flow Features from Apex frame Network
-	\item[RCN] Recurrent convolutional network
-	\item[ResNet] Residual Network
-	\item[SE] Squeeze-and-Excitation
-	\item[SimAM] Simple, parameter-free attention module
-	\item[SLSTT] Short and Long range relation based Spatio-Temporal Transformer
-	\item[SRM] Style-based Recalibration Module
-	\item[STRCN] Spatiotemporal Recurrent Convolutional Network
-	\item[STSTNet] Shallow Triple Stream Three-dimensional CNN
-	\item[VGG-Face] VGG face-recognition network (VGGFace2: its successor dataset and model)
-	\item[ViT] Vision Transformer
-	\item[XBM] Cross-Batch Memory
+	\acro{C3D}{Three-dimensional convolutional network}
+	\acro{CBAM}{Convolutional Block Attention Module}
+	\acro{CNN}{Convolutional neural network}
+	\acro{DenseNet}{Densely Connected Convolutional Network}
+	\acro{ECA}{Efficient Channel Attention}
+	\acro{EMME}{Extended Magnified Micro-Expression database}
+	\acro{EMR}{Expression Magnification and Reduction}
+	\acro{GC}{Global Context (attention module)}
+	\acro{LSTM}{Long short-term memory}
+	\acro{OFFApexNet}[OFF-ApexNet]{Optical Flow Features from Apex frame Network}
+	\acro{RCN}{Recurrent convolutional network}
+	\acro{ResNet}{Residual Network}
+	\acro{SE}{Squeeze-and-Excitation}
+	\acro{SimAM}{Simple, parameter-free attention module}
+	\acro{SLSTT}{Short and Long range relation based Spatio-Temporal Transformer}
+	\acro{SRM}{Style-based Recalibration Module}
+	\acro{STRCN}{Spatiotemporal Recurrent Convolutional Network}
+	\acro{STSTNet}{Shallow Triple Stream Three-dimensional CNN}
+	\acro{VGGFace}[VGG-Face]{VGG face-recognition network (VGGFace2: its successor dataset and model)}
+	\acro{ViT}{Vision Transformer}
+	\acro{XBM}{Cross-Batch Memory}
 
 	% --- training, optimisation and numerics ---
-	\item[AdamW] Adam optimiser with decoupled weight decay
-	\item[AMP] Automatic mixed precision
-	\item[BN] Batch normalisation
-	\item[FL] Focal loss
-	\item[GELU] Gaussian error linear unit
-	\item[Grad-CAM++] Generalised gradient-based class activation mapping
-	\item[NaN] Not a Number (invalid floating-point value)
-	\item[RBF] Radial basis function
-	\item[ReLU] Rectified linear unit
-	\item[SVM] Support vector machine
+	\acro{AdamW}{Adam optimiser with decoupled weight decay}
+	\acro{AMP}{Automatic mixed precision}
+	\acro{BN}{Batch normalisation}
+	\acro{FL}{Focal loss}
+	\acro{GELU}{Gaussian error linear unit}
+	\acro{GradCAMpp}[Grad-CAM++]{Generalised gradient-based class activation mapping}
+	\acro{NaN}{Not a Number (invalid floating-point value)}
+	\acro{RBF}{Radial basis function}
+	\acro{ReLU}{Rectified linear unit}
+	\acro{SVM}{Support vector machine}
 
 	% --- computing environment ---
-	\item[CPU] Central processing unit
-	\item[CUDA] Compute Unified Device Architecture
-	\item[GPU] Graphics processing unit
-	\item[RAM] Random-access memory
-	\item[VRAM] Video memory (on-device GPU memory)
-
-\end{description}
+	\acro{CPU}{Central processing unit}
+	\acro{CUDA}{Compute Unified Device Architecture}
+	\acro{GPU}{Graphics processing unit}
+	\acro{RAM}{Random-access memory}
+	\acro{VRAM}{Video memory (on-device GPU memory)}
+%
+\end{acronym}
+\end{multicols}
+%
+%
+% EOF
+%
