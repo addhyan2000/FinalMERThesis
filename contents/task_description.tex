@@ -1,0 +1,44 @@
+% =============================================================================
+% Task Description
+% =============================================================================
+% Source: docs/topic.pdf (thesis topic sheet).
+% Bibliography keys: xie2022, adegun2020, li2022survey, xia2020a, bai2021,
+% liong2018, zhang2022 (bib/thesis.bib)
+% =============================================================================
+
+\thispagestyle{empty}
+\chapter*{Task Description}
+
+\noindent\textbf{Improving Micro-Expression Recognition through Temporal and Motion Modeling}
+
+\bigskip
+
+Recognizing facial micro-expressions (MEs) \cite{xie2022} is a particularly difficult
+task because these expressions are extremely brief, subtle, and dynamic. Traditional
+approaches \cite{adegun2020} based on hand-crafted descriptors often depend on manually
+selecting key frames, such as the onset or apex, while deep learning methods
+\cite{li2022survey} require large and diverse datasets that are still scarce in this
+field. Both directions therefore face limitations, and recognition accuracy remains
+modest even on widely used datasets such as CASME-II, SAMM, CAS(ME)$^2$, and SMIC.
+
+Two main factors explain these difficulties. First, accurate temporal localization is
+essential, since identifying the exact onset, apex, and offset frames of a
+micro-expression is critical for reliable classification. Even small errors in phase
+alignment can reduce recognition accuracy \cite{xia2020a}. Second, micro-expressions
+involve very weak motion signals, consisting of subtle muscle movements that are easily
+confused with neutral expressions, background variations, or camera noise. Prior
+studies have attempted to address these challenges through motion magnification to
+amplify subtle changes \cite{bai2021}, optical-flow--based motion descriptors
+\cite{liong2018}, and spatio-temporal networks \cite{zhang2022}. While these methods
+have produced incremental improvements, their impact remains limited, highlighting the
+need for a more systematic investigation of temporal and motion modeling strategies.
+
+This thesis will investigate whether improved temporal modeling and motion
+representations can enhance recognition of micro-expressions in dynamic facial
+expression recognition (FER). The central research question is: how can modeling of
+temporal phases and motion cues improve recognition accuracy for subtle and short-lived
+expressions? The work will build on established supervised models and evaluate
+practical strategies such as temporal attention or hybrid motion representations. The
+expected outcome is a contribution that provides a clearer understanding of current
+limitations and demonstrates approaches for improving sensitivity to fine-grained
+dynamics while maintaining robustness to noise.
