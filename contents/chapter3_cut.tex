@@ -29,9 +29,9 @@
 \chapter{Literature Review}
 \label{ch:literature}
 
-This chapter reviews the published evidence for each component of the recognition pipeline evaluated in this thesis. \autoref{sec:evm-review} reviews Eulerian video magnification, \autoref{sec:flow-review} optical flow, \autoref{sec:strain-review} optical strain and \autoref{sec:tim-review} temporal normalisation. \autoref{sec:cnn-review}, \autoref{sec:simam-review} and \autoref{sec:transformer-review} review the learned components: the convolutional backbone, parameter-free attention and the temporal transformer. \autoref{sec:imbalance-review} reviews training under class imbalance. For each component, the review states what the published studies found and what their evidence does not establish. \autoref{sec:synthesis-and-gap} combines these findings into the research gap and lists every point at which the implemented system departs from the reviewed methods.
+This chapter reviews the published evidence for each component of the recognition pipeline evaluated in this thesis. Section~\ref{sec:evm-review} reviews Eulerian video magnification, \autoref{sec:flow-review} optical flow, \autoref{sec:strain-review} optical strain and \autoref{sec:tim-review} temporal normalisation. Section~\ref{sec:cnn-review}, \autoref{sec:simam-review} and \autoref{sec:transformer-review} review the learned components: the convolutional backbone, parameter-free attention and the temporal transformer. Section~\ref{sec:imbalance-review} reviews training under class imbalance. For each component, the review states what the published studies found and what their evidence does not establish. Section~\ref{sec:synthesis-and-gap} combines these findings into the research gap and lists every point at which the implemented system departs from the reviewed methods.
 
-\autoref{fig:mer-pipeline} shows the general micro-expression recognition pipeline as organised in the survey of Xie et al.~\cite{xie2022}. The components reviewed in this chapter belong to its preprocessing, feature extraction and recognition stages.
+Figure~\ref{fig:mer-pipeline} shows the general micro-expression recognition pipeline as organised in the survey of Xie et al.~\cite{xie2022}. The components reviewed in this chapter belong to its preprocessing, feature extraction and recognition stages.
 
 \begin{figure}[htbp]
 	\centering
@@ -101,7 +101,7 @@ Dense optical flow~\cite{horn1981} supplies the horizontal and vertical displace
 
 Xu et al.~\cite{xu2017} motivate motion descriptors by the difficulty of interpreting micro-expressions through texture alone: flow describes apparent movement directly, whereas image intensity also records appearance and illumination. This does not make flow independent of identity or recording conditions, since facial geometry, alignment and brightness changes still affect the estimate. The benchmark evidence supports the choice: the three highest-ranked MEGC 2019 submissions used optical flow~\cite{see2019}, OFF-ApexNet~\cite{liong2019a} uses horizontal and vertical flow as network inputs, STSTNet~\cite{liong2019b} adds strain, and Zhao et al.~\cite{zhaoS2021} use a sequence of flow fields. This convergence is, however, not a controlled demonstration that motion always outperforms appearance.
 
-\autoref{fig:flow-strain} illustrates both representations on a CASME~II sequence: optical flow and optical strain computed from onset to offset~\cite{liong2018,xie2022}, together with a histogram of oriented optical flow derived from them.
+Figure~\ref{fig:flow-strain} illustrates both representations on a CASME~II sequence: optical flow and optical strain computed from onset to offset~\cite{liong2018,xie2022}, together with a histogram of oriented optical flow derived from them.
 
 \begin{figure}[htbp]
 	\centering
@@ -186,7 +186,7 @@ By 2019 the field had converged on optical flow as the input~\cite{see2019}; the
 
 \textbf{The term ``3D CNN''~\cite{ji2013,tran2015} denotes three different architectures in this literature.} STSTNet~\cite{liong2019b}, the reference shallow model, describes itself as a ``Shallow Triple Stream Three-dimensional CNN'', but its input is a single $28 \times 28 \times 3$ tensor whose third dimension holds horizontal flow, vertical flow and strain, \textbf{not time}. Its three parallel single-layer streams~\cite{liong2019b}, with 3, 5 and 8 kernels, compensate for ``the small scale input data \ldots to avoid the problem of underfitting''; the clip has already been reduced to one frame pair. STRCN~\cite{xia2020a}, by contrast, extends convolutional connectivity ``across temporal domain'' with recurrent convolutional layers, and Zhao et al.~\cite{zhaoS2021} apply a C3D-style network~\cite{tran2015} to a ten-frame flow sequence, in which the temporal axis is present but short. Results reported under the same label are therefore not directly comparable.
 
-\autoref{fig:tsnn} shows a further variant surveyed by Xie et al.~\cite{xie2022}: TSNN-LF, a three-stream network in which 3D convolutional kernels share the same spatial size but differ in temporal length, followed by 2D convolutional blocks.
+Figure~\ref{fig:tsnn} shows a further variant surveyed by Xie et al.~\cite{xie2022}: TSNN-LF, a three-stream network in which 3D convolutional kernels share the same spatial size but differ in temporal length, followed by 2D convolutional blocks.
 
 \begin{figure}[htbp]
 	\centering
@@ -241,7 +241,7 @@ The protocol labels require care. Zhang et al.~\cite{zhang2022} describe three-c
 \subsection{Implementation and Declared Divergences}
 \label{sec:transformer-implications}
 
-The evaluated component receives 32 tokens of width 96, produced either by the convolutional stem or by spatial pooling followed by a learned linear projection. The encoder has four pre-norm layers, eight heads, a feed-forward width of 256 and a dropout rate of 0.1. Fixed sinusoidal positional encodings~\cite{vaswani2017} are added before attention, and mean pooling follows it. When the encoder is disabled, the input tokens are averaged directly. \autoref{tab:slstt-divergences} lists the six differences from published SLSTT.
+The evaluated component receives 32 tokens of width 96, produced either by the convolutional stem or by spatial pooling followed by a learned linear projection. The encoder has four pre-norm layers, eight heads, a feed-forward width of 256 and a dropout rate of 0.1. Fixed sinusoidal positional encodings~\cite{vaswani2017} are added before attention, and mean pooling follows it. When the encoder is disabled, the input tokens are averaged directly. Table~\ref{tab:slstt-divergences} lists the six differences from published SLSTT.
 
 \begin{table}[htbp]
 	\centering
@@ -262,7 +262,7 @@ The evaluated component receives 32 tokens of width 96, produced either by the c
 	\label{tab:slstt-divergences}
 \end{table}
 
-Six matched pairs evaluate the encoder with all other components fixed within each pair. They test the complete encoder, including positional encoding, feed-forward layers and normalisation, against direct mean pooling; they do not isolate self-attention from these operations or compare it with another learned temporal model. \autoref{tab:slstt-divergences} suggests three untested follow-ups: an LSTM aggregator, onset-referenced rather than consecutive-frame flow, and learned rather than fixed positional encodings. This thesis therefore establishes a matched comparison of the implemented encoder against an order-blind baseline within this pipeline; it neither validates SLSTT nor ranks attention, recurrence and convolution in general.
+Six matched pairs evaluate the encoder with all other components fixed within each pair. They test the complete encoder, including positional encoding, feed-forward layers and normalisation, against direct mean pooling; they do not isolate self-attention from these operations or compare it with another learned temporal model. Table~\ref{tab:slstt-divergences} suggests three untested follow-ups: an LSTM aggregator, onset-referenced rather than consecutive-frame flow, and learned rather than fixed positional encodings. This thesis therefore establishes a matched comparison of the implemented encoder against an order-blind baseline within this pipeline; it neither validates SLSTT nor ranks attention, recurrence and convolution in general.
 
 
 % =============================================================================
@@ -276,7 +276,7 @@ The 99 : 32 : 25 class distribution of \autoref{sec:label-taxonomy} reflects wha
 
 \textbf{At the data.} Xia et al.~\cite{xia2020a} combine ``temporal data augmentation strategies as well as a balanced loss \ldots jointly'' to address ``limited and imbalanced training samples''. Their ablation~\cite{xia2020a} removes each correction in turn and finds that the balanced loss improves performance only ``slightly'', by at most about two points and in one case at a cost in accuracy. This is the only controlled study of combining two corrections in the reviewed literature, and no reviewed paper reports the combination failing.
 
-\textbf{At the metric.} \autoref{sec:megc-metrics} describes the pooled macro-averaged metric. Liong et al.~\cite{liong2016} add an argument from the subject level, reporting F1, precision and recall because these ``provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples.'' Both arguments apply here, where the classes are imbalanced \textbf{and} subjects contribute between 1 and 33 clips.
+\textbf{At the metric.} Section~\ref{sec:megc-metrics} describes the pooled macro-averaged metric. Liong et al.~\cite{liong2016} add an argument from the subject level, reporting F1, precision and recall because these ``provide a more meaningful perspective than accuracy rates when the datasets used are naturally imbalanced since each subject has a different number of video samples.'' Both arguments apply here, where the classes are imbalanced \textbf{and} subjects contribute between 1 and 33 clips.
 
 \textbf{Label smoothing}~\cite{szegedy2016} \textbf{has not been examined for this task.} Dosovitskiy et al.~\cite{dosovitskiy2021} list it among the regularisers they tune, but no reviewed micro-expression study uses it or reports its effect under class imbalance.
 
@@ -331,7 +331,7 @@ This gap has practical consequences. A practitioner assembling this pipeline has
 
 The review identified twelve points at which the implemented system departs from the work on which it draws, several of which were discovered only through the review. They are listed in \autoref{tab:divergence-ledger} so that no result rests on an unstated assumption.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 	\centering
 	\footnotesize
 	\begin{tabular}{@{}p{0.85cm} p{6.0cm} p{6.6cm}@{}}
@@ -359,6 +359,10 @@ The review identified twelve points at which the implemented system departs from
 Three of these divergences (the strain formula, the order of magnification and sampling, and the input resolution) were identified by the review itself rather than being deliberate design decisions. None invalidates the ablation, because every configuration shares them. They constrain the \textit{wording} of the conclusions: what is measured is the contribution of a spatial stem at $224\times224$ and of temporal self-attention within this pipeline, not a verdict on temporal convolution or on SLSTT.
 
 
+% The ledger table is too tall to fit beside the preceding text; flush it here
+% so that it is printed before the Summary rather than after it.
+\clearpage
+
 % =============================================================================
 \section{Summary}
 \label{sec:ch3-conclusion}
@@ -366,4 +370,4 @@ Three of these divergences (the strain formula, the order of magnification and s
 
 This chapter reviewed the published evidence for each component of the pipeline: Eulerian video magnification, optical flow, optical strain, temporal normalisation, the convolutional backbone, parameter-free attention, the temporal transformer and training under class imbalance. For each component, it identified what the reviewed studies establish and where their evidence stops. It then combined these findings into four common limitations and a single research gap: the stages of the standard pipeline have never been varied jointly under one protocol, so their relative contributions are unknown. Finally, it listed the points at which the implemented system departs from the reviewed methods.
 
-\autoref{ch:methodology} describes the study designed to address this gap: a factorial ablation of four pipeline components on CASME~II, together with the configurations, model architecture, training procedure and evaluation protocol used to carry it out.
+Chapter~\ref{ch:methodology} describes the study designed to address this gap: a factorial ablation of four pipeline components on CASME~II, together with the configurations, model architecture, training procedure and evaluation protocol used to carry it out.

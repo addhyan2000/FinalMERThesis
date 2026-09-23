@@ -22,7 +22,7 @@
 \chapter{Background}
 \label{ch:background}
 
-This chapter presents the concepts on which the remainder of the thesis builds. \autoref{sec:phenomenon} defines micro-expressions and their characteristics, and \autoref{sec:corpus} reviews the datasets used to study them, including CASME~II, the dataset used in this thesis. \autoref{sec:recording-to-input} describes the preparation of its recordings as model input. \autoref{sec:motion-magnification} introduces Eulerian video magnification, and \autoref{sec:video-to-motion} the optical flow and optical strain representations derived from the magnified video. \autoref{sec:nn-fundamentals} and \autoref{sec:building-blocks} cover the neural network concepts and building blocks used by the model. \autoref{sec:scarcity-skew} addresses training with limited and imbalanced data, and \autoref{sec:evaluation} presents the evaluation methodology.
+This chapter presents the concepts on which the remainder of the thesis builds. Section~\ref{sec:phenomenon} defines micro-expressions and their characteristics, and \autoref{sec:corpus} reviews the datasets used to study them, including CASME~II, the dataset used in this thesis. Section~\ref{sec:recording-to-input} describes the preparation of its recordings as model input. Section~\ref{sec:motion-magnification} introduces Eulerian video magnification, and \autoref{sec:video-to-motion} the optical flow and optical strain representations derived from the magnified video. Section~\ref{sec:nn-fundamentals} and \autoref{sec:building-blocks} cover the neural network concepts and building blocks used by the model. Section~\ref{sec:scarcity-skew} addresses training with limited and imbalanced data, and \autoref{sec:evaluation} presents the evaluation methodology.
 
 
 \section{Micro-Expressions}
@@ -30,7 +30,7 @@ This chapter presents the concepts on which the remainder of the thesis builds. 
 
 Facial expressions are commonly divided into macro-expressions and micro-expressions. Macro-expressions are the ordinary expressions of everyday interaction; they typically last between 0.5 and 4 seconds and involve a large area of the face~\cite{ben2021,xie2022,adegun2020}. Micro-expressions are brief, involuntary and local facial movements that tend to occur when a person attempts to conceal or suppress an emotion, particularly in high-stakes situations~\cite{yan2014,ben2021,xie2022,li2022survey}. Ekman and Friesen described such movements as a form of nonverbal leakage~\cite{ekman1969}, and they have since been studied empirically in concealed and falsified emotional expressions~\cite{porter2008}. Their involuntary character distinguishes them from expressions deliberately posed for a camera~\cite{qu2016}. Comprehensive reviews of automatic micro-expression analysis are provided by Oh et al.~\cite{oh2018}, Ben et al.~\cite{ben2021}, Li et al.~\cite{li2022survey} and Xie et al.~\cite{xie2022}.
 
-\autoref{fig:casme2-sequence} shows an example from CASME~II: a lowering of the inner brow (AU~4, together with AU~9) labelled as disgust, whose apex occurs approximately 110~ms after onset~\cite{yan2014}. The change between frames is barely visible at full-face scale, which illustrates why the phenomenon is difficult to perceive. An observed movement is nevertheless neither proof of deception nor an unambiguous indicator of emotion; the recognition task depends on the annotations of the dataset.
+Figure~\ref{fig:casme2-sequence} shows an example from CASME~II: a lowering of the inner brow (AU~4, together with AU~9) labelled as disgust, whose apex occurs approximately 110~ms after onset~\cite{yan2014}. The change between frames is barely visible at full-face scale, which illustrates why the phenomenon is difficult to perceive. An observed movement is nevertheless neither proof of deception nor an unambiguous indicator of emotion; the recognition task depends on the annotations of the dataset.
 
 \begin{figure}[htbp]
 	\centering
@@ -73,7 +73,7 @@ General facial expression recognition developed on large datasets of \textit{pos
 \subsection{Widely Used Datasets}
 \label{sec:sibling-corpora}
 
-\autoref{tab:spontaneous-corpora} summarises the spontaneous micro-expression datasets most widely used for recognition.
+Table~\ref{tab:spontaneous-corpora} summarises the spontaneous micro-expression datasets most widely used for recognition.
 
 \begin{itemize}
 	\item \textbf{CASME}~\cite{yan2013casme}, the first dataset of the CASME family, contains 195 samples from 19 participants recorded at 60~fps~\cite{xie2022}.
@@ -231,7 +231,7 @@ The filter distinguishes frequencies, not causes. Head movement, illumination va
 \subsection{Implementation Details}
 \label{sec:evm-departures}
 
-\autoref{tab:ch2-evm-departures} summarises the implementation choices that affect the interpretation of the magnified input.
+Table~\ref{tab:ch2-evm-departures} summarises the implementation choices that affect the interpretation of the magnified input.
 
 \begin{table}[htbp]
     \centering
@@ -438,7 +438,7 @@ The temporal encoder alternates attention and position-wise feed-forward sublaye
 \subsection{Replacement Operations for Disabled Components}
 \label{sec:fallbacks}
 
-\autoref{tab:ch2-component-controls} defines the operation that replaces each component when it is disabled.
+Table~\ref{tab:ch2-component-controls} defines the operation that replaces each component when it is disabled.
 
 \begin{table}[htbp]
     \centering
@@ -570,4 +570,4 @@ Two further principles govern how such results can be interpreted. First, if the
 
 This chapter introduced the concepts on which the thesis builds. It defined micro-expressions and the properties that make them difficult to recognise: short duration and low intensity, and the relationship between action units and emotion labels. It reviewed the spontaneous micro-expression datasets in common use and described CASME~II, its benchmark protocols and its limitations. It then described the preparation of the recordings, Eulerian video magnification, and the optical flow and optical strain representations that form the model input. It then introduced the neural network concepts and building blocks used by the model, the methods used to train it on limited and imbalanced data, and the metrics and leave-one-subject-out protocol used to evaluate it.
 
-\autoref{ch:literature} reviews the published work on each of these components. For each stage of the pipeline, it examines the evidence for its reported contribution to micro-expression recognition and identifies the gap that this thesis addresses.
+Chapter~\ref{ch:literature} reviews the published work on each of these components. For each stage of the pipeline, it examines the evidence for its reported contribution to micro-expression recognition and identifies the gap that this thesis addresses.
