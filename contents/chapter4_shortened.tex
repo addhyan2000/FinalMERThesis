@@ -95,7 +95,7 @@ Every configuration is trained exactly once, under a single fixed random seed (\
 \section{Overview of the Pipeline}
 \label{sec:pipeline-overview}
 
-The pipeline combines the mechanisms described in \autoref{ch:background} into two stages, which are executed a different number of times. \textbf{Stage~1 (preprocessing)} converts each recorded clip into one motion tensor and saves it to disk; it runs once per clip. \textbf{Stage~2 (training and evaluation)} loads these tensors and fits a model; it runs once for every configuration and every held-out subject. Because Stage~1 is completed before any model is trained, all configurations are compared on identical inputs. \autoref{fig:pipeline-overview} shows the complete sequence, and \autoref{tab:pipeline-shapes} gives the data representation after each step.
+The pipeline combines the mechanisms described in \autoref{ch:background} into two stages, which are executed a different number of times. \textbf{Stage~1 (preprocessing)} converts each recorded clip into one motion tensor and saves it to disk; it runs once per clip. \textbf{Stage~2 (training and evaluation)} loads these tensors and fits a model; it runs once for every configuration and every held-out subject. Because Stage~1 is completed before any model is trained, all configurations are compared on identical inputs. Figure~\ref{fig:pipeline-overview} shows the complete sequence, and \autoref{tab:pipeline-shapes} gives the data representation after each step.
 
 % -----------------------------------------------------------------------------
 \begin{figure}[htbp]
@@ -213,7 +213,7 @@ The pipeline combines the mechanisms described in \autoref{ch:background} into t
 \subsection{The corpus used}
 \label{sec:corpus-used}
 
-This study trains and evaluates exclusively on CASME II~\cite{yan2014}. No other corpus --- not SAMM, not CAS(ME)$^2$, not the original CASME --- contributes a single clip to any of the twelve configurations; every number reported is a within-corpus result. \autoref{sec:corpus} reviews the corpus literature and the reasons CASME II is the standard single-corpus choice, and \autoref{sec:recording-to-input} describes what its recording hands the pipeline. What follows is what this study drew from it, and how that was reduced to the clips actually used.
+This study trains and evaluates exclusively on CASME II~\cite{yan2014}. No other corpus --- not SAMM, not CAS(ME)$^2$, not the original CASME --- contributes a single clip to any of the twelve configurations; every number reported is a within-corpus result. Section~\ref{sec:corpus} describes the dataset and the reasons CASME II is the standard single-dataset choice, and \autoref{sec:recording-to-input} describes what its recording hands the pipeline. What follows is what this study drew from it, and how that was reduced to the clips actually used.
 
 \subsection{From 255 rows to 156 clips}
 \label{sec:255-to-156}
@@ -243,7 +243,7 @@ Fold sizes are uneven by construction, since each held-out set is one subject's 
 
 Before reaching any ablatable component, each of the 156 clips is reduced to a three-channel motion tensor of fixed shape $[3, 32, 224, 224]$: 32 temporal frames, each $224 \times 224$, the channels holding horizontal optical flow, vertical optical flow and optical strain magnitude. The procedure converting a variable-length sequence of greyscale frames --- the corpus's original recordings, uncropped and unregistered (\autoref{sec:corpus-supplies}) --- into that tensor is given in \autoref{sec:recording-to-input} and \autoref{sec:video-to-motion}.
 
-The values it was run with are fixed throughout and are recorded here because reproducing the study requires them. Magnification, where enabled, uses amplification factor $\boldsymbol{\alpha = 10}$, a temporal band of \textbf{5--25 Hz} and \textbf{four pyramid levels}, with output clipped to $[0,255]$ and requantised to 8-bit (\autoref{sec:evm-departures} explains the band, \autoref{sec:evm-implications} the divergence it embodies). Frames spanning onset to offset are uniformly resampled to \textbf{33}, which is what yields the tensor's $T = 32$: flow is computed between \textit{adjacent} sampled frames, so 33 frames give 32 consecutive pairs. Flow and strain follow \autoref{sec:three-channel-tensor}, whose Farneb\"ack settings and gradient discretisation are not repeated, and each channel is min--max normalised to $[0,1]$ across the clip before storage.
+The values it was run with are fixed throughout and are recorded here because reproducing the study requires them. Magnification, where enabled, uses amplification factor $\boldsymbol{\alpha = 10}$, a temporal band of \textbf{5--25 Hz} and \textbf{four pyramid levels}, with output clipped to $[0,255]$ and requantised to 8-bit (\autoref{sec:evm-departures} lists how these settings depart from the reference formulation). Frames spanning onset to offset are uniformly resampled to \textbf{33}, which is what yields the tensor's $T = 32$: flow is computed between \textit{adjacent} sampled frames, so 33 frames give 32 consecutive pairs. Flow and strain follow \autoref{sec:three-channel-tensor}, whose Farneb\"ack settings and gradient discretisation are not repeated, and each channel is min--max normalised to $[0,1]$ across the clip before storage.
 
 None of these values is varied by the ablation, so every clip enters the network at the same fixed shape whichever configuration processes it.
 
@@ -254,7 +254,7 @@ None of these values is varied by the ablation, so every clip enters the network
 \subsection{The twelve trained configurations}
 \label{sec:twelve-trained}
 
-\autoref{tab:twelve-configs} lists the twelve configurations retained after the validity check of \autoref{sec:twelve-configs}, named exactly as in \texttt{Ablation\_Study/ablation\_config.py}. \texttt{T}/\texttt{F} stand for \texttt{True}/\texttt{False}.
+Table~\ref{tab:twelve-configs} lists the twelve configurations retained after the validity check of \autoref{sec:twelve-configs}, named exactly as in \texttt{Ablation\_Study/ablation\_config.py}. \texttt{T}/\texttt{F} stand for \texttt{True}/\texttt{False}.
 
 \begin{table}[htbp]
 	\centering
@@ -306,7 +306,7 @@ Two configurations are easily confused and serve different purposes:
 \subsection{Matched pairs}
 \label{sec:matched-pairs-table}
 
-\autoref{tab:matched-pairs} lists all twenty matched pairs, in the sense of \autoref{sec:matched-pairs}, written \texttt{off $\rightarrow$ on}.
+Table~\ref{tab:matched-pairs} lists all twenty matched pairs, in the sense of \autoref{sec:matched-pairs}, written \texttt{off $\rightarrow$ on}.
 
 \begin{table}[htbp]
 	\centering
@@ -426,7 +426,7 @@ In a full configuration the transformer accounts for roughly \textbf{96\,\%} of 
 \section{Training Procedure}
 \label{sec:training-procedure}
 
-Every one of the twelve valid configurations is trained by the same procedure --- the same loss, sampler, optimiser, schedule, safeguards and seed --- exactly as configured in \texttt{Ablation\_Study/ablation\_config.py} and implemented in \texttt{losses.py} and \texttt{run\_ablation\_experiments.py}. \autoref{sec:scarcity-skew} describes what each mechanism computes; that derivation is not repeated.
+Every one of the twelve valid configurations is trained by the same procedure --- the same loss, sampler, optimiser, schedule, safeguards and seed --- exactly as configured in \texttt{Ablation\_Study/ablation\_config.py} and implemented in \texttt{losses.py} and \texttt{run\_ablation\_experiments.py}. Section~\ref{sec:scarcity-skew} describes what each mechanism computes; that derivation is not repeated.
 
 \subsection{Loss}
 \label{sec:loss-config}
@@ -445,6 +445,8 @@ use_loss_weights = self.exp.use_class_weights and not self.exp.use_balanced_samp
 \texttt{use\_balanced\_sampler} also defaults to \texttt{True} (\autoref{sec:sampler-config}) and no reported run overrides either default, so \textbf{the $\alpha$ term is inactive in every run reported in this thesis}: \texttt{use\_loss\_weights} evaluates to \texttt{False}, \texttt{class\_weights} is never constructed, and \texttt{FocalLoss} is instantiated with \texttt{alpha=None}. The code logs this explicitly --- \texttt{"Class weights in loss disabled (balanced sampler already active)."} --- whenever both flags are on, which is every run here.
 
 The rule is not an oversight. The $\alpha$ term and the balanced sampler correct for the same skew at different points --- one re-weighting the loss, the other which examples a batch draws from --- so applying both corrects twice (\autoref{sec:combining-both}). What remains active once $\alpha$ is off must be stated precisely: focal loss still operates through its difficulty-focusing term $(1-p_t)^\gamma$, which down-weights confidently correct predictions regardless of class, and through label smoothing. Neither looks at class frequency. The loss used throughout is therefore focal loss with label smoothing and no per-class weighting, and every run's frequency correction comes entirely from the sampler.
+
+The rule was introduced after two failures in opposite directions, both recorded in the run history of this project. In an earlier version, the loss carried inverse-frequency class weights and no sampler was used; under this single correction, the proposed configuration stopped predicting the \textbf{Positive} class altogether, a failure initially misdiagnosed as overfitting. A later version added the sampler while keeping the loss weights, so both corrections operated together; the failure then reversed, and configurations stopped predicting the \textbf{Negative} majority class, one of them predicting a single class for every clip. With the rule in place, no configuration in the reported study abandons any class. No reviewed paper reports that combining corrections can reverse the intended effect rather than weaken it. The two failures, however, occurred in code versions that differ from the reported run in more than the correction rule, and the final experiment contains no matched condition with the rule disabled, so \textbf{the causal effect of the rule is not isolated}. Because every configuration uses the same sampler, loss and $\gamma$, the imbalance treatment is a constant of this study rather than an experimental factor.
 
 \subsection{Sampler}
 \label{sec:sampler-config}
@@ -486,7 +488,7 @@ Every value in this section --- the focal loss parameters, learning rate and wei
 \section{Evaluation Protocol}
 \label{sec:evaluation-protocol}
 
-Every configuration is scored by the same protocol --- the same fold structure, checkpoint-selection rule, cross-fold aggregation and persisted outputs --- as implemented in \texttt{Ablation\_Study/dataset.py}, \texttt{run\_ablation\_experiments.py} and \texttt{metrics.py}. \autoref{sec:evaluation} gives the general mechanism behind macro-F1, pooling and subject-disjoint cross-validation, and \autoref{sec:megc-metrics} argues why this corpus calls for the choices below. This section states what was run.
+Every configuration is scored by the same protocol --- the same fold structure, checkpoint-selection rule, cross-fold aggregation and persisted outputs --- as implemented in \texttt{Ablation\_Study/dataset.py}, \texttt{run\_ablation\_experiments.py} and \texttt{metrics.py}. Section~\ref{sec:evaluation} gives the general mechanism behind macro-F1, pooling and subject-disjoint cross-validation, and \autoref{sec:megc-metrics} argues why this corpus calls for the choices below. This section states what was run.
 
 \subsection{Leave-one-subject-out folds}
 \label{sec:loso-folds}
@@ -537,7 +539,7 @@ Averaging across folds therefore averages seventeen sub-unity ceilings into ever
 
 No configuration, however accurately it classifies, can exceed approximately \textbf{0.627} on the metric stored under that name --- a property of the fold structure, applying identically to all twelve.
 
-Pooling the confusion matrices first avoids the ceiling entirely: TP, FP and FN accumulate across all 25 folds, all 156 clips, before any per-class F1 is computed, so a class locally absent from one fold no longer forces a zero into its contribution. \autoref{sec:megc-metrics} establishes that pooled macro F1 computed this way is identical in construction to the Unweighted F1 of the MEGC 2019 protocol~\cite{see2019}. The consequence is arithmetic: a metric with a hard ceiling below 0.7 cannot serve as the headline result.
+Pooling the confusion matrices first avoids the ceiling entirely: TP, FP and FN accumulate across all 25 folds, all 156 clips, before any per-class F1 is computed, so a class locally absent from one fold no longer forces a zero into its contribution. Section~\ref{sec:megc-metrics} establishes that pooled macro F1 computed this way is identical in construction to the Unweighted F1 of the MEGC 2019 protocol~\cite{see2019}. The consequence is arithmetic: a metric with a hard ceiling below 0.7 cannot serve as the headline result.
 
 The same composition biases mean-of-folds \textbf{accuracy} in the same direction without a hard ceiling, since one predicted label suffices to score well on a single-class fold, whereas pooled accuracy is computed once over the correctly distributed 156 clips. For the full configuration, mean-of-folds accuracy exceeds pooled accuracy by \textbf{6.3 points}. Both figures are properties of the protocol, fixed before any model is trained.
 
@@ -575,9 +577,9 @@ The protocol above is not the only evaluation this project ran over the ablation
 
 Every score in \autoref{tab:five-evaluations} is pooled macro F1, recomputed from each run's stored \texttt{per\_class\_f1} array; the \texttt{macro\_f1} and \texttt{accuracy} keys those files also carry are the mean-of-folds quantities rejected in \autoref{sec:mean-of-folds-rejected} and are used nowhere. Run E is the protocol specified above and the only one reported.
 
-\textbf{The imbalance treatment also changed across these runs, and that is the largest difference between them and run E.} The rule of \autoref{sec:class-weighting-rule} was absent for most of this history: the earliest runs applied inverse-frequency class weights in the loss unconditionally with no sampler at all, a later revision added the \texttt{WeightedRandomSampler} while leaving the loss weighting unconditional so both corrections acted at once, and the guard came only afterwards. Run E is the first full evaluation conducted under it. Runs A--D are therefore not comparable to E on the training regime either, independently of protocol (\autoref{sec:imbalance-double-correction}).
+\textbf{The imbalance treatment also changed across these runs, and that is the largest difference between them and run E.} The rule of \autoref{sec:class-weighting-rule} was absent for most of this history: the earliest runs applied inverse-frequency class weights in the loss unconditionally with no sampler at all, a later revision added the \texttt{WeightedRandomSampler} while leaving the loss weighting unconditional so both corrections acted at once, and the guard came only afterwards. Run E is the first full evaluation conducted under it. Runs A--D are therefore not comparable to E on the training regime either, independently of protocol (\autoref{sec:class-weighting-rule}).
 
-Runs A and B carry the data-routing defect of \autoref{sec:evm-implications}: all six magnification matched pairs are bit-identical in run A, as are both pairs its eight configurations contain in run B, so one half of the matrix duplicated the other and the magnification variable was never exercised --- run A's leading score is a tie between a configuration and its own duplicate. Runs C and D show all six pairs differing, so the repair preceded run C.
+Runs A and B carry a data-routing defect in which the magnification-enabled and magnification-disabled configurations read the same tensor directory: all six magnification matched pairs are bit-identical in run A, as are both pairs its eight configurations contain in run B, so one half of the matrix duplicated the other and the magnification variable was never exercised --- run A's leading score is a tie between a configuration and its own duplicate. Runs C and D show all six pairs differing, so the repair preceded run C.
 
 They also lack usable class support. Run A's Surprise class contains one clip --- its pooled confusion matrix is \verb|[[23, 6, 0], [5, 4, 0], [0, 0, 1]]| --- classified correctly, so a per-class F1 of 1.0 contributes a full third of the macro mean on a single example. That is why run A's 0.7427 stands above run E's 0.7122 while resting on a fraction of the data. Run B contains no Surprise clips at all.
 
@@ -626,7 +628,7 @@ What each \texttt{configuration\_summary.txt} does record is a training time and
 \subsection{The convolutional stem, not the transformer, sets the cost}
 \label{sec:stem-sets-cost}
 
-\autoref{tab:compute-per-config} splits cleanly in two. The four configurations without the 3D-CNN backbone run their last fold in \textbf{56--69 seconds} at \textbf{165--174 MB} of peak VRAM; the eight carrying it run in \textbf{831--931 seconds} at \textbf{14.7--20.0 GB} --- roughly \textbf{thirteen times the time and over one hundred times the memory}. The split tracks \texttt{use\_cnn} exactly, with no exception either way.
+Table~\ref{tab:compute-per-config} splits cleanly in two. The four configurations without the 3D-CNN backbone run their last fold in \textbf{56--69 seconds} at \textbf{165--174 MB} of peak VRAM; the eight carrying it run in \textbf{831--931 seconds} at \textbf{14.7--20.0 GB} --- roughly \textbf{thirteen times the time and over one hundred times the memory}. The split tracks \texttt{use\_cnn} exactly, with no exception either way.
 
 This is set by the stem, not the transformer, even though the transformer holds about 96\,\% of a full configuration's parameters (\autoref{sec:parameter-counts}). Parameter count and activation memory are different quantities. Per stream, the stem's second convolution reaches 32 channels while spatial resolution is still the full $224 \times 224$ (\autoref{sec:conv-stem}); with three unshared streams and 32 time steps carried through untouched, the activations produced before the stem's single pooling step are correspondingly large, and peak VRAM measures activation memory, not weight count. The transformer operates on a sequence of only 32 steps at width 96, after the stem or its fallback has already collapsed the spatial extent. A component can dominate compute and memory while holding a small fraction of the parameters.
 
