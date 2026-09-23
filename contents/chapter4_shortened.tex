@@ -402,7 +402,7 @@ All twelve configurations are trained with the same procedure, summarised in \au
 
 The loss can apply per-class weights ($\alpha_t$ in \eqref{eq:focal-loss}), but they are enabled only when the class-balanced sampler is inactive. Because the sampler is active in every reported run, the loss carries \textbf{no class weights}, and the frequency correction comes entirely from the sampler, which gives each training example a weight inversely proportional to the size of its class in the training split of the current fold \eqref{eq:sampler-weight}. The loss weights and the sampler correct the same imbalance at different points, so applying both would correct it twice (Section~\ref{sec:combining-both}). The focal term $(1-p_t)^\gamma$ and label smoothing remain active; neither depends on class frequency.
 
-The rule was introduced after two failures in opposite directions, both recorded in the run history of this project. In an earlier version, the loss carried inverse-frequency class weights and no sampler was used; under this single correction, the proposed configuration stopped predicting the \textbf{Positive} class altogether. A later version added the sampler while keeping the loss weights, so both corrections operated together; the failure then reversed, and configurations stopped predicting the \textbf{Negative} majority class, one of them predicting a single class for every clip. With the rule in place, no configuration in the reported study abandons any class. The only reviewed study that combines two corrections reports a weakened, not a reversed, effect~\cite{xia2020a}. The two failures, however, occurred in code versions that differ from the reported run in more than the correction rule, so \textbf{the causal effect of the rule is not isolated}.
+The rule was introduced after two failures in opposite directions, both recorded in the run history of this project. In an earlier version, the loss carried inverse-frequency class weights and no sampler was used; under this single correction, the proposed configuration stopped predicting the \textbf{Positive} class altogether. A later version added the sampler while keeping the loss weights, so both corrections operated together; the failure then reversed, and configurations stopped predicting the \textbf{Negative} majority class, one of them predicting a single class for every clip. With the rule in place, no configuration in the reported study abandons any class. The only reviewed study that combines two corrections reports that the balanced loss adds only a slight improvement, not that the combination reverses its effect~\cite{xia2020a}. The two failures, however, occurred in code versions that differ from the reported run in more than the correction rule, so \textbf{the causal effect of the rule is not isolated}.
 
 \subsection{Optimisation}
 \label{sec:optimiser-config}
@@ -477,7 +477,7 @@ This section combines, for each component, the research gap left by the reviewed
 
 \textbf{Research gap.} Optical flow is the preferred input of the strongest benchmark systems~\cite{see2019}, but the choice of estimator is not settled: Farneb\"ack and TV-L1 are both used~\cite{zhaoS2021,liong2019a}, and no controlled comparison of their recognition performance exists. Whether a single onset-to-apex flow field~\cite{liong2019a,liong2019b} or a sequence of flow fields~\cite{zhaoS2021} is preferable has likewise not been measured.
 
-\textbf{Limitation.} Only the Farneb\"ack estimator~\cite{farneback2003} is used, and flow is computed between consecutive sampled frames rather than relative to the onset. No flow-based fine alignment is performed, although small registration errors can be comparable to the displacements being recognised~\cite{xu2017}.
+\textbf{Limitation.} Only the Farneb\"ack estimator~\cite{farneback2003} is used, and flow is computed between consecutive sampled frames rather than relative to the onset. No flow-based fine alignment is performed, although a small misalignment can considerably degrade micro-expression recognition~\cite{xu2017}.
 
 \subsubsection{Optical Strain}
 
@@ -487,7 +487,7 @@ This section combines, for each component, the research gap left by the reviewed
 
 \subsubsection{Convolutional Spatial Stem}
 
-\textbf{Research gap.} The reviewed studies add modules to a backbone that remains in place~\cite{xia2020b}; none removes the learned spatial stem and passes the motion representation directly to the classifier, so its contribution relative to its cost is unknown. Deeper models and higher input resolutions reduce performance on composite micro-expression data~\cite{xia2020b}.
+\textbf{Research gap.} The reviewed studies add modules to a backbone that remains in place~\cite{xia2020b}; none removes the learned spatial stem and passes the motion representation directly to the classifier, so its contribution is unknown. Deeper models and higher input resolutions reduce performance on composite micro-expression data~\cite{xia2020b}.
 
 \textbf{Limitation.} The stem contains only spatial kernels, so the ablation tests a learned spatial stem rather than spatio-temporal convolution~\cite{ji2013,tran2015}. Its input resolution of $224\times224$ exceeds the $100\times100$ threshold reported by Xia et al.~\cite{xia2020b}, so any effect measured for the stem may reflect resolution as much as architecture.
 
@@ -502,7 +502,7 @@ This section combines, for each component, the research gap left by the reviewed
 
 \subsubsection{Temporal Normalisation}
 
-\textbf{Research gap.} Sequence length is usually fixed at ten frames by convention~\cite{liX2013,lu2015}, and the studies that vary it report different optima~\cite{liX2018,ben2021,xu2017}. No reviewed study compares interpolation methods for a motion-based representation, for which synthesised frames produce synthesised displacements~\cite{xu2017}.
+\textbf{Research gap.} Sequence length is usually fixed at ten frames by convention~\cite{liX2013,lu2015}, and the studies that vary it report different optima~\cite{liX2018,ben2021,xu2017}. No reviewed study compares interpolation methods for a motion-based representation, in which synthesised frames would produce synthesised displacements; Xu et al. prefer linear interpolation for motion features but do not compare it with TIM~\cite{xu2017}.
 
 \textbf{Limitation.} Temporal normalisation is implemented as uniform sampling of existing frames rather than the Temporal Interpolation Model~\cite{pfister2011}, so short clips cannot be lengthened and three clips repeat frames. The length of 33 frames is not varied. Sampling reduces the effective frame rate to approximately 100~fps at the median clip length and 52~fps for the longest clip (Section~\ref{sec:three-channel-tensor}).
 
