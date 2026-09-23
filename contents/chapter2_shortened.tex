@@ -68,7 +68,7 @@ Because micro-expressions are involuntary, recognition research depends on datas
 \subsection{Spontaneous and Posed Data}
 \label{sec:why-spontaneous}
 
-General facial expression recognition developed on large datasets of \textit{posed} expressions and reported accuracies above 90\,\% on the six basic emotions by the early 2010s~\cite{yan2014}. Micro-expression research could not follow this route, because the phenomenon cannot be performed on instruction. Yan et al.~\cite{yan2014} and Li et al.~\cite{liX2013} both observe that deliberately produced ``micro-expressions'' differ systematically from spontaneous ones, so a model trained on posed data may learn to recognise fast deliberate movements rather than micro-expressions. Recording quality is a second requirement: Yan et al.~\cite{yan2014} argue that the 60~fps of the original CASME dataset samples a sub-second movement only coarsely, although they leave the benefit of higher rates unresolved, and that mains-frequency flicker affected earlier recordings. Elicitation is a third: deception paradigms produced samples contaminated by conversational movement, whereas the paradigm now in general use asks participants to watch emotionally arousing video while keeping a neutral face~\cite{liX2013}.
+General facial expression recognition developed on large datasets of \textit{posed} expressions and reported accuracies above 90\,\% on the six basic emotions by the early 2010s~\cite{yan2014}. Micro-expression research could not follow this route, because the phenomenon cannot be performed on instruction. Yan et al.~\cite{yan2014} and Li et al.~\cite{liX2013} both observe that deliberately produced ``micro-expressions'' differ systematically from spontaneous ones, so a model trained on posed data may learn to recognise fast deliberate movements rather than micro-expressions. Recording quality is a second requirement: Yan et al.~\cite{yan2014} argue that the 60~fps of the original CASME dataset samples a sub-second movement only coarsely, although they leave the benefit of higher rates unresolved, and that flicker from the mains supply affects high-speed recordings such as those of SMIC. Elicitation is a third: earlier high-speed recordings were posed, with participants asked to perform the expressions, whereas spontaneous micro-expressions are elicited by showing emotionally strong video clips to participants who are motivated to conceal their feelings~\cite{liX2013}.
 
 \subsection{Widely Used Datasets}
 \label{sec:sibling-corpora}
@@ -361,12 +361,12 @@ A convolution applies the same learned kernel at multiple spatial positions~\cit
 	(C_{\mathrm{in}}k_Hk_W+1),
 	\label{eq:conv-params}
 \end{equation}
-where $C_{\mathrm{in}}$ and $C_{\mathrm{out}}$ are the numbers of input and output channels, $k_H$ and $k_W$ are the kernel height and width, and the added one accounts for the bias of each output channel. The parameter count is independent of the image dimensions, but computation and activation memory increase with the number of positions processed. The stride sets the spacing between kernel applications, and padding controls boundary treatment and output size. Stacking layers enlarges the receptive field, that is, the input region that can influence a later activation.
+where $C_{\mathrm{in}}$ and $C_{\mathrm{out}}$ are the numbers of input and output channels, $k_H$ and $k_W$ are the kernel height and width, and the added one accounts for the bias of each output channel. The parameter count is independent of the image dimensions. The stride sets the spacing between kernel applications, and padding controls boundary treatment and output size. Stacking layers enlarges the receptive field, that is, the input region that can influence a later activation.
 
 \subsection{Pooling}
 \label{sec:pooling}
 
-Pooling replaces a neighbourhood with a fixed summary such as its maximum or mean~\cite{lecun1998,goodfellow2016}. A $2\times2$ max-pooling operation with stride two halves the spatial dimensions and retains the strongest response in each window. Adaptive average pooling instead produces a specified output grid. Neither operation learns weights. Both discard detail while reducing the computation of subsequent layers; any later learned projection is a separate operation with its own parameters.
+Pooling replaces a neighbourhood with a fixed summary such as its maximum or mean~\cite{lecun1998,goodfellow2016}. A $2\times2$ max-pooling operation with stride two halves the spatial dimensions and retains the strongest response in each window. Adaptive average pooling instead produces a specified output grid. Neither operation learns weights. Both discard spatial detail; any later learned projection is a separate operation with its own parameters.
 
 \subsection{Model Capacity and Small Datasets}
 \label{sec:capacity}
@@ -418,7 +418,7 @@ and each activation is re-weighted as
 \end{equation}
 where $x_i$ is the activation at position $i$ within a channel, $M$ is the number of positions in that channel, $\mu$ and $v$ are the mean and variance of the channel, $\lambda$ is a regularisation constant, $E_i^{-1}$ is the reciprocal of the minimal energy of position $i$, and $\widetilde x_i$ is the re-weighted activation. The reciprocal energy measures distinctiveness, and the sigmoid bounds the resulting multiplicative weight while preserving the order of the scores. The printed shared-variance definition in the paper uses $M$, whereas the code in its Figure~3 uses $M-1$; the implementation follows the latter.
 
-In this model, $M=THW$ within each channel, rather than the $HW$ of the original image formulation~\cite{yang2021}, and $\lambda=10^{-4}$. SimAM acts on each convolutional stream before concatenation. It adds no learned parameters but still performs reductions and element-wise computations. Whole-clip statistics do not guarantee that apex frames receive the highest weights, since unusual activation values may also reflect noise.
+In this model, $M=THW$ within each channel, rather than the $HW$ of the original image formulation~\cite{yang2021}, and $\lambda=10^{-4}$. SimAM acts on each convolutional stream before concatenation. It adds no learned parameters. Whole-clip statistics do not guarantee that apex frames receive the highest weights, since unusual activation values may also reflect noise.
 
 \subsection{Self-Attention and the Transformer Encoder}
 \label{sec:self-attention}
@@ -456,7 +456,7 @@ Table~\ref{tab:ch2-component-controls} defines the operation that replaces each 
     \label{tab:ch2-component-controls}
 \end{table}
 
-Pooling and direct temporal averaging have no learned weights. The projection used without the CNN stem does: including its bias, it contains $48\times96+96=4{,}704$ parameters. The replacements preserve the interfaces required by the experiment while changing the operations and the capacity. They do not isolate architecture independently of parameter count or computational cost.
+Pooling and direct temporal averaging have no learned weights. The projection used without the CNN stem does: including its bias, it contains $48\times96+96=4{,}704$ parameters. The replacements preserve the interfaces required by the experiment while changing the operations and the capacity. They do not isolate architecture independently of parameter count.
 
 
 \section{Training with Limited and Imbalanced Data}
@@ -522,7 +522,7 @@ Data augmentation enlarges the effective training set through label-preserving t
 \subsection{Optimisation}
 \label{sec:optimisation}
 
-AdamW~\cite{loshchilov2019}, a variant of Adam~\cite{kingma2015}, updates the parameters with weight decay decoupled from the gradient-based update. The learning rate is increased linearly during an initial warmup phase and then reduced by cosine annealing~\cite{loshchilov2017}, a schedule also used for micro-expression recognition by Zhang et al.~\cite{zhang2022}. Mixed-precision training~\cite{micikevicius2018} performs most computations in 16-bit floating point to reduce memory use, with gradient scaling to prevent small gradient values from underflowing.
+AdamW~\cite{loshchilov2019}, a variant of Adam~\cite{kingma2015}, updates the parameters with weight decay decoupled from the gradient-based update. The learning rate is increased linearly during an initial warmup phase and then reduced by cosine annealing~\cite{loshchilov2017}, a schedule also used for micro-expression recognition by Zhang et al.~\cite{zhang2022}. Mixed-precision training~\cite{micikevicius2018} performs most computations in 16-bit floating point, with gradient scaling to prevent small gradient values from underflowing.
 
 
 \section{Evaluation Methodology}
