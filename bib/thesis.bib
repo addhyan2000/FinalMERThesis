@@ -1,14 +1,15 @@
 % =============================================================================
 % Thesis bibliography — micro-expression recognition on CASME II
 % =============================================================================
-% Generated from BIBLIOGRAPHY.md. Keys match the citation keys used throughout
-% the chapter source, so \cite{yan2014} etc. resolve directly.
+% Keys match the citation keys used throughout the chapter source, so
+% \cite{yan2014} etc. resolve directly.
 %
-% Every entry here corresponds to a paper held in the project's docs/ folder.
-% Works cited only *inside* those papers (Ekman, FACS, Wu et al. on EVM,
-% Farneback, TV-L1, Pfister TIM, Lin et al. focal loss, SE/CBAM/ECA, Vaswani,
-% VGG/ResNet/DenseNet) are attributed in the text to the reviewed paper that
-% reports them and deliberately carry no entry here.
+% Part 1 (the original 30 entries) corresponds to papers held in docs/.
+% Part 2 (foundational sources, added 23 September 2026) cites the originators
+% of the standard techniques described in Chapter 2. Every Part 2 entry was
+% verified against Crossref (DOI entries) or Semantic Scholar/DBLP (conference
+% and arXiv entries without DOIs); the FACS manual and the Goodfellow et al.
+% textbook are standard book references.
 %
 % Capitals inside titles are brace-protected so the numeric styles (unsrt)
 % do not lowercase them. Non-ASCII names use LaTeX escapes for BibTeX safety.
@@ -16,7 +17,7 @@
 
 
 % ------------------------------------------------------------------------
-%     CORPORA AND BENCHMARKS
+%     DATASETS AND BENCHMARKS
 % ------------------------------------------------------------------------
 
 @article{yan2014,
@@ -321,4 +322,362 @@
 	number  = "4",
 	pages   = "2028--2046",
 	year    = "2022"
+}
+
+
+% =============================================================================
+%     PART 2: FOUNDATIONAL SOURCES
+% =============================================================================
+
+% ------------------------------------------------------------------------
+%     MICRO-EXPRESSIONS AND FACIAL CODING
+% ------------------------------------------------------------------------
+
+@article{ekman1969,
+	author  = "Ekman, Paul and Friesen, Wallace V.",
+	title   = "Nonverbal Leakage and Clues to Deception",
+	journal = "Psychiatry",
+	volume  = "32",
+	number  = "1",
+	pages   = "88--106",
+	doi     = "10.1080/00332747.1969.11023575",
+	year    = "1969"
+}
+
+@book{ekman1978,
+	author    = "Ekman, Paul and Friesen, Wallace V.",
+	title     = "Facial Action Coding System: A Technique for the Measurement of Facial Movement",
+	publisher = "Consulting Psychologists Press",
+	address   = "Palo Alto, CA",
+	year      = "1978"
+}
+
+@article{porter2008,
+	author  = "Porter, Stephen and ten Brinke, Leanne",
+	title   = "Reading Between the Lies: Identifying Concealed and Falsified Emotions in Universal Facial Expressions",
+	journal = "Psychological Science",
+	volume  = "19",
+	number  = "5",
+	pages   = "508--514",
+	doi     = "10.1111/j.1467-9280.2008.02116.x",
+	year    = "2008"
+}
+
+@article{oh2018,
+	author  = "Oh, Yee-Hui and See, John and Le Ngo, Anh Cat and Phan, Raphael C.-W. and Baskaran, Vishnu M.",
+	title   = "A Survey of Automatic Facial Micro-Expression Analysis: Databases, Methods, and Challenges",
+	journal = "Frontiers in Psychology",
+	volume  = "9",
+	pages   = "1128",
+	doi     = "10.3389/fpsyg.2018.01128",
+	year    = "2018"
+}
+
+@inproceedings{pfister2011,
+	author    = "Pfister, Tomas and Li, Xiaobai and Zhao, Guoying and Pietik{\"a}inen, Matti",
+	title     = "Recognising Spontaneous Facial Micro-Expressions",
+	booktitle = "{IEEE} International Conference on Computer Vision ({ICCV})",
+	pages     = "1449--1456",
+	doi       = "10.1109/ICCV.2011.6126401",
+	year      = "2011"
+}
+
+
+% ------------------------------------------------------------------------
+%     MOTION MAGNIFICATION AND MOTION ESTIMATION
+% ------------------------------------------------------------------------
+
+@article{wu2012,
+	author  = "Wu, Hao-Yu and Rubinstein, Michael and Shih, Eugene and Guttag, John and Durand, Fr{\'e}do and Freeman, William",
+	title   = "{E}ulerian Video Magnification for Revealing Subtle Changes in the World",
+	journal = "{ACM} Transactions on Graphics",
+	volume  = "31",
+	number  = "4",
+	pages   = "1--8",
+	doi     = "10.1145/2185520.2185561",
+	year    = "2012"
+}
+
+@article{burt1983,
+	author  = "Burt, Peter J. and Adelson, Edward H.",
+	title   = "The {L}aplacian Pyramid as a Compact Image Code",
+	journal = "{IEEE} Transactions on Communications",
+	volume  = "31",
+	number  = "4",
+	pages   = "532--540",
+	doi     = "10.1109/TCOM.1983.1095851",
+	year    = "1983"
+}
+
+@article{horn1981,
+	author  = "Horn, Berthold K. P. and Schunck, Brian G.",
+	title   = "Determining Optical Flow",
+	journal = "Artificial Intelligence",
+	volume  = "17",
+	number  = "1--3",
+	pages   = "185--203",
+	doi     = "10.1016/0004-3702(81)90024-2",
+	year    = "1981"
+}
+
+@inproceedings{farneback2003,
+	author    = "Farneb{\"a}ck, Gunnar",
+	title     = "Two-Frame Motion Estimation Based on Polynomial Expansion",
+	booktitle = "Image Analysis: 13th Scandinavian Conference ({SCIA} 2003)",
+	series    = "Lecture Notes in Computer Science",
+	volume    = "2749",
+	pages     = "363--370",
+	publisher = "Springer",
+	doi       = "10.1007/3-540-45103-X_50",
+	year      = "2003"
+}
+
+
+% ------------------------------------------------------------------------
+%     NEURAL NETWORK FUNDAMENTALS
+% ------------------------------------------------------------------------
+
+@article{rumelhart1986,
+	author  = "Rumelhart, David E. and Hinton, Geoffrey E. and Williams, Ronald J.",
+	title   = "Learning Representations by Back-Propagating Errors",
+	journal = "Nature",
+	volume  = "323",
+	number  = "6088",
+	pages   = "533--536",
+	doi     = "10.1038/323533a0",
+	year    = "1986"
+}
+
+@article{lecun1998,
+	author  = "LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick",
+	title   = "Gradient-Based Learning Applied to Document Recognition",
+	journal = "Proceedings of the {IEEE}",
+	volume  = "86",
+	number  = "11",
+	pages   = "2278--2324",
+	doi     = "10.1109/5.726791",
+	year    = "1998"
+}
+
+@article{lecun2015,
+	author  = "LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey",
+	title   = "Deep Learning",
+	journal = "Nature",
+	volume  = "521",
+	number  = "7553",
+	pages   = "436--444",
+	doi     = "10.1038/nature14539",
+	year    = "2015"
+}
+
+@book{goodfellow2016,
+	author    = "Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron",
+	title     = "Deep Learning",
+	publisher = "MIT Press",
+	address   = "Cambridge, MA",
+	year      = "2016"
+}
+
+@inproceedings{nair2010,
+	author    = "Nair, Vinod and Hinton, Geoffrey E.",
+	title     = "Rectified Linear Units Improve Restricted {B}oltzmann Machines",
+	booktitle = "27th International Conference on Machine Learning ({ICML})",
+	pages     = "807--814",
+	year      = "2010"
+}
+
+@misc{hendrycks2016,
+	author       = "Hendrycks, Dan and Gimpel, Kevin",
+	title        = "{G}aussian Error Linear Units ({GELUs})",
+	howpublished = "arXiv preprint arXiv:1606.08415",
+	year         = "2016"
+}
+
+@article{ji2013,
+	author  = "Ji, Shuiwang and Xu, Wei and Yang, Ming and Yu, Kai",
+	title   = "{3D} Convolutional Neural Networks for Human Action Recognition",
+	journal = "{IEEE} Transactions on Pattern Analysis and Machine Intelligence",
+	volume  = "35",
+	number  = "1",
+	pages   = "221--231",
+	doi     = "10.1109/TPAMI.2012.59",
+	year    = "2013"
+}
+
+@inproceedings{tran2015,
+	author    = "Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar",
+	title     = "Learning Spatiotemporal Features with {3D} Convolutional Networks",
+	booktitle = "{IEEE} International Conference on Computer Vision ({ICCV})",
+	pages     = "4489--4497",
+	doi       = "10.1109/ICCV.2015.510",
+	year      = "2015"
+}
+
+@inproceedings{ioffe2015,
+	author    = "Ioffe, Sergey and Szegedy, Christian",
+	title     = "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift",
+	booktitle = "32nd International Conference on Machine Learning ({ICML})",
+	pages     = "448--456",
+	year      = "2015"
+}
+
+@article{srivastava2014,
+	author  = "Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan",
+	title   = "Dropout: A Simple Way to Prevent Neural Networks from Overfitting",
+	journal = "Journal of Machine Learning Research",
+	volume  = "15",
+	number  = "56",
+	pages   = "1929--1958",
+	year    = "2014"
+}
+
+@inproceedings{tompson2015,
+	author    = "Tompson, Jonathan and Goroshin, Ross and Jain, Arjun and LeCun, Yann and Bregler, Christoph",
+	title     = "Efficient Object Localization Using Convolutional Networks",
+	booktitle = "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+	pages     = "648--656",
+	doi       = "10.1109/CVPR.2015.7298664",
+	year      = "2015"
+}
+
+@misc{ba2016,
+	author       = "Ba, Jimmy Lei and Kiros, Jamie Ryan and Hinton, Geoffrey E.",
+	title        = "Layer Normalization",
+	howpublished = "arXiv preprint arXiv:1607.06450",
+	year         = "2016"
+}
+
+@inproceedings{he2016,
+	author    = "He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian",
+	title     = "Deep Residual Learning for Image Recognition",
+	booktitle = "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+	pages     = "770--778",
+	doi       = "10.1109/CVPR.2016.90",
+	year      = "2016"
+}
+
+@inproceedings{vaswani2017,
+	author    = "Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia",
+	title     = "Attention Is All You Need",
+	booktitle = "Advances in Neural Information Processing Systems ({NeurIPS})",
+	volume    = "30",
+	pages     = "5998--6008",
+	year      = "2017"
+}
+
+@inproceedings{xiong2020,
+	author    = "Xiong, Ruibin and Yang, Yunchang and He, Di and Zheng, Kai and Zheng, Shuxin and Xing, Chen and Zhang, Huishuai and Lan, Yanyan and Wang, Liwei and Liu, Tie-Yan",
+	title     = "On Layer Normalization in the Transformer Architecture",
+	booktitle = "37th International Conference on Machine Learning ({ICML})",
+	pages     = "10524--10533",
+	year      = "2020"
+}
+
+
+% ------------------------------------------------------------------------
+%     TRAINING UNDER CLASS IMBALANCE AND OPTIMISATION
+% ------------------------------------------------------------------------
+
+@article{he2009,
+	author  = "He, Haibo and Garcia, Edwardo A.",
+	title   = "Learning from Imbalanced Data",
+	journal = "{IEEE} Transactions on Knowledge and Data Engineering",
+	volume  = "21",
+	number  = "9",
+	pages   = "1263--1284",
+	doi     = "10.1109/TKDE.2008.239",
+	year    = "2009"
+}
+
+@article{buda2018,
+	author  = "Buda, Mateusz and Maki, Atsuto and Mazurowski, Maciej A.",
+	title   = "A Systematic Study of the Class Imbalance Problem in Convolutional Neural Networks",
+	journal = "Neural Networks",
+	volume  = "106",
+	pages   = "249--259",
+	doi     = "10.1016/j.neunet.2018.07.011",
+	year    = "2018"
+}
+
+@inproceedings{lin2017,
+	author    = "Lin, Tsung-Yi and Goyal, Priya and Girshick, Ross and He, Kaiming and Doll{\'a}r, Piotr",
+	title     = "Focal Loss for Dense Object Detection",
+	booktitle = "{IEEE} International Conference on Computer Vision ({ICCV})",
+	pages     = "2999--3007",
+	doi       = "10.1109/ICCV.2017.324",
+	year      = "2017"
+}
+
+@inproceedings{szegedy2016,
+	author    = "Szegedy, Christian and Vanhoucke, Vincent and Ioffe, Sergey and Shlens, Jon and Wojna, Zbigniew",
+	title     = "Rethinking the {I}nception Architecture for Computer Vision",
+	booktitle = "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+	pages     = "2818--2826",
+	doi       = "10.1109/CVPR.2016.308",
+	year      = "2016"
+}
+
+@inproceedings{kingma2015,
+	author    = "Kingma, Diederik P. and Ba, Jimmy",
+	title     = "Adam: A Method for Stochastic Optimization",
+	booktitle = "International Conference on Learning Representations ({ICLR})",
+	year      = "2015"
+}
+
+@inproceedings{loshchilov2019,
+	author    = "Loshchilov, Ilya and Hutter, Frank",
+	title     = "Decoupled Weight Decay Regularization",
+	booktitle = "International Conference on Learning Representations ({ICLR})",
+	year      = "2019"
+}
+
+@inproceedings{loshchilov2017,
+	author    = "Loshchilov, Ilya and Hutter, Frank",
+	title     = "{SGDR}: Stochastic Gradient Descent with Warm Restarts",
+	booktitle = "International Conference on Learning Representations ({ICLR})",
+	year      = "2017"
+}
+
+@inproceedings{micikevicius2018,
+	author    = "Micikevicius, Paulius and Narang, Sharan and Alben, Jonah and Diamos, Gregory and Elsen, Erich and Garcia, David and Ginsburg, Boris and Houston, Michael and Kuchaiev, Oleksii and Venkatesh, Ganesh and Wu, Hao",
+	title     = "Mixed Precision Training",
+	booktitle = "International Conference on Learning Representations ({ICLR})",
+	year      = "2018"
+}
+
+
+% ------------------------------------------------------------------------
+%     EVALUATION
+% ------------------------------------------------------------------------
+
+@article{sokolova2009,
+	author  = "Sokolova, Marina and Lapalme, Guy",
+	title   = "A Systematic Analysis of Performance Measures for Classification Tasks",
+	journal = "Information Processing \& Management",
+	volume  = "45",
+	number  = "4",
+	pages   = "427--437",
+	doi     = "10.1016/j.ipm.2009.03.002",
+	year    = "2009"
+}
+
+@article{mcnemar1947,
+	author  = "McNemar, Quinn",
+	title   = "Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages",
+	journal = "Psychometrika",
+	volume  = "12",
+	number  = "2",
+	pages   = "153--157",
+	doi     = "10.1007/BF02295996",
+	year    = "1947"
+}
+
+@article{varma2006,
+	author  = "Varma, Sudhir and Simon, Richard",
+	title   = "Bias in Error Estimation When Using Cross-Validation for Model Selection",
+	journal = "{BMC} Bioinformatics",
+	volume  = "7",
+	pages   = "91",
+	doi     = "10.1186/1471-2105-7-91",
+	year    = "2006"
 }

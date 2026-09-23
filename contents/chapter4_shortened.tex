@@ -31,6 +31,10 @@
 %     tab:twelve-configs, tab:matched-pairs, tab:parameter-totals,
 %     tab:five-evaluations, tab:compute-per-config. The chapter has no figures.
 %   * Four citation keys: liX2018, see2019, yan2014, yang2021.
+%   * Section 4.2 (Overview of the Pipeline) was moved here from Chapter 2 on
+%     23 September 2026. It adds fig:pipeline-overview and tab:pipeline-shapes and
+%     needs \usepackage{tikz} with
+%     \usetikzlibrary{arrows.meta, positioning, fit, backgrounds} in the preamble.
 %
 % Conventions held throughout, following the shortened Chapter 3: no sentence
 % points at another chapter by name or number. Where this chapter refers to its
@@ -41,7 +45,7 @@
 \chapter{Methodology}
 \label{ch:methodology}
 
-This chapter specifies the study as it was carried out: the experimental design, the corpus and its preparation, the twelve configurations trained, the architecture and its ablatable components, the training procedure, the evaluation protocol, and the computational conditions under which the sweep ran. Mechanisms already explained are cross-referenced rather than re-derived; every parameter reported here is taken from the configuration and code that produced the results.
+This chapter specifies the study as it was carried out: the experimental design, an overview of the pipeline, the dataset and its preparation, the twelve configurations trained, the architecture and its ablatable components, the training procedure, the evaluation protocol, and the computational conditions under which the sweep ran. Mechanisms already explained are cross-referenced rather than re-derived; every parameter reported here is taken from the configuration and code that produced the results.
 
 
 \section{Research Approach and Experimental Design}
@@ -86,6 +90,121 @@ The counts differ by flag, and the asymmetry is arithmetic rather than oversight
 \label{sec:design-limitation}
 
 Every configuration is trained exactly once, under a single fixed random seed (\textbf{42}); none is retrained under multiple seeds and no across-seed variance is estimated. Every reported difference between configurations, including the matched-pair effects of \autoref{sec:matched-pairs}, is therefore a difference between two single point estimates, with no confidence interval and no significance test. A difference could narrow, widen or reverse under a different seed, and this design cannot separate a robust component effect from noise attributable to initialisation or batch ordering. It is stated here, where the design is fixed, because it is a property of the design rather than of any outcome.
+
+
+\section{Overview of the Pipeline}
+\label{sec:pipeline-overview}
+
+The pipeline combines the mechanisms described in \autoref{ch:background} into two stages, which are executed a different number of times. \textbf{Stage~1 (preprocessing)} converts each recorded clip into one motion tensor and saves it to disk; it runs once per clip. \textbf{Stage~2 (training and evaluation)} loads these tensors and fits a model; it runs once for every configuration and every held-out subject. Because Stage~1 is completed before any model is trained, all configurations are compared on identical inputs. \autoref{fig:pipeline-overview} shows the complete sequence, and \autoref{tab:pipeline-shapes} gives the data representation after each step.
+
+% -----------------------------------------------------------------------------
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}[
+		font=\scriptsize,
+		node distance=3.2mm,
+		box/.style={
+			draw, rounded corners=2pt, align=center,
+			text width=34mm, inner sep=3pt,
+			fill=black!4},
+		switch/.style={box, dashed, fill=black!10},
+		term/.style={box, fill=black!14, font=\scriptsize\bfseries},
+		arr/.style={-{Stealth[length=1.6mm]}, semithick}
+	]
+
+	% ---------------- Stage 1: preprocessing ----------------
+	\node[term] (a1) {CASME II dataset\\\normalfont 200\,fps, FACS-coded};
+	\node[box, below=of a1] (a2)
+		{Clip selection\\\normalfont 156 clips, 25 subjects};
+	\node[box, below=of a2] (a3)
+		{Frame preparation\\\normalfont greyscale, $224\times224$};
+	\node[box, below=of a3] (a4)
+		{Uniform sampling\\\normalfont 33 frames per clip};
+	\node[switch, below=of a4] (a5)
+		{Motion magnification\\\normalfont Eulerian, $\alpha=10$};
+	\node[box, below=of a5] (a6)
+		{Optical flow\\\normalfont Farneb\"ack, 32 pairs};
+	\node[box, below=of a6] (a7)
+		{Optical strain\\\normalfont spatial gradients};
+	\node[box, below=of a7] (a8)
+		{Stack and normalise\\\normalfont $[u,v,\varepsilon]$ to $[0,1]$};
+	\node[term, below=of a8] (a9)
+		{Saved motion tensor\\\normalfont $(3,32,224,224)$};
+
+	\foreach \i/\j in {a1/a2, a2/a3, a3/a4, a4/a5, a5/a6, a6/a7, a7/a8, a8/a9}
+		{\draw[arr] (\i) -- (\j);}
+
+	% ---------------- Stage 2: training and evaluation ----------------
+	\node[box, right=20mm of a2] (b1)
+		{Load and standardise\\\normalfont flip augmentation};
+	\node[switch, below=of b1] (b2)
+		{Convolutional stem\\\normalfont three streams};
+	\node[switch, below=of b2] (b3)
+		{SimAM\\\normalfont parameter-free gate};
+	\node[box, below=of b3] (b4)
+		{Pool to a sequence\\\normalfont 32 steps, 96 features};
+	\node[switch, below=of b4] (b5)
+		{Temporal transformer\\\normalfont 4 layers, 8 heads};
+	\node[box, below=of b5] (b6)
+		{Classifier head\\\normalfont three logits};
+	\node[box, below=of b6] (b7)
+		{Leave-one-subject-out\\\normalfont 25 folds, counts pooled};
+	\node[term, below=of b7] (b8)
+		{Pooled macro F1\\\normalfont the primary metric};
+
+	\foreach \i/\j in {b1/b2, b2/b3, b3/b4, b4/b5, b5/b6, b6/b7, b7/b8}
+		{\draw[arr] (\i) -- (\j);}
+
+	% ---------------- the hand-off ----------------
+	\draw[arr] (a9.east) -- ++(8mm,0) |- (b1.west);
+
+	% ---------------- stage brackets ----------------
+	\begin{scope}[on background layer]
+		\node[draw=black!45, dashed, rounded corners=3pt, inner sep=4.5mm,
+		      fit=(a1)(a9)] (s1) {};
+		\node[draw=black!45, dashed, rounded corners=3pt, inner sep=4.5mm,
+		      fit=(b1)(b8)] (s2) {};
+	\end{scope}
+	\node[above=0.5mm of s1, font=\scriptsize\bfseries] {Stage 1: preprocessing};
+	\node[above=0.5mm of s2, font=\scriptsize\bfseries] {Stage 2: training and evaluation};
+
+	\end{tikzpicture}
+	\caption[The data pipeline, end to end]{The pipeline from dataset to score. Stage~1 runs once per clip; Stage~2 runs once per configuration and fold. Solid boxes are always executed. \textbf{Dashed boxes are the four components switched on and off in the ablation}; each is replaced by a defined operation when disabled.}
+	\label{fig:pipeline-overview}
+\end{figure}
+% -----------------------------------------------------------------------------
+
+\subsection{Description of the Pipeline Stages}
+\label{sec:pipeline-in-words}
+
+\textbf{Stage~1 converts video into motion.} Clips are drawn from CASME~II and reduced to \textbf{156 clips from 25 subjects}. Each clip is loaded in greyscale, resized to $224\times224$ pixels and sampled at 33 evenly spaced frames between the annotated onset and offset. Magnification is applied at this point if enabled. Optical flow is computed for the 32 adjacent frame pairs, and optical strain is derived from its spatial gradients. The three fields are stacked and normalised into one saved tensor. The network therefore never receives pixel intensities; it receives displacement and deformation fields computed before training begins.
+
+\textbf{Stage~2 converts motion into a score.} A saved tensor is loaded, optionally flipped for augmentation, and standardised per channel. It then passes through the convolutional stem, the SimAM gate, a pooling step that removes the spatial dimensions while retaining time, the temporal encoder and a three-class classification head. Each of the four dashed components in \autoref{fig:pipeline-overview} can be disabled independently, in which case it is replaced by the operation given in \autoref{tab:ch2-component-controls}; every other step is identical across configurations and folds.
+
+\subsection{Data Representation at Each Stage}
+\label{sec:pipeline-shapes-discussion}
+
+\begin{table}[htbp]
+	\centering
+	\small
+	\begin{tabular}{@{}lll@{}}
+		\hline
+		\textbf{After this step} & \textbf{The data is} & \textbf{Shape} \\
+		\hline
+		Clip selection        & a set of clips                & 156 clips, 25 subjects \\
+		Frame preparation     & greyscale frames              & $N \times 224 \times 224$ \\
+		Uniform sampling      & a fixed-length sequence       & $33 \times 224 \times 224$ \\
+		Magnification         & the same, amplified           & $33 \times 224 \times 224$ \\
+		Flow and strain       & three motion fields per pair  & $3 \times 32 \times 224 \times 224$ \\
+		Pooling to a sequence & a sequence of feature vectors & $32 \times 96$ \\
+		Temporal encoding     & one vector per clip           & $96$ \\
+		Classifier head       & class scores                  & $3$ \\
+		Fold aggregation      & pooled confusion counts       & $3 \times 3$ \\
+		\hline
+	\end{tabular}
+	\caption[What the data is at each pipeline step]{The data representation after each pipeline step, where $N$ is the number of frames between onset and offset. The temporal axis falls from 33 frames to 32 pairs because flow is computed between \emph{adjacent} frames, and the spatial axes are removed at the pooling step rather than at the classifier.}
+	\label{tab:pipeline-shapes}
+\end{table}
 
 
 \section{The Corpus and Its Preparation}

@@ -1,0 +1,2217 @@
+[
+  {
+    "bib": {
+      "type": "article",
+      "key": "ekman1969",
+      "author": "Ekman, Paul and Friesen, Wallace V.",
+      "title": "Nonverbal Leakage and Clues to Deception",
+      "journal": "Psychiatry",
+      "volume": "32",
+      "number": "1",
+      "pages": "88--106",
+      "doi": "10.1080/00332747.1969.11023575",
+      "year": "1969"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1080/00332747.1969.11023575",
+      "title": [
+        "Nonverbal Leakage and Clues to Deception\n                    <sup>†</sup>"
+      ],
+      "author": [
+        {
+          "given": "Paul",
+          "family": "Ekman",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Wallace V.",
+          "family": "Friesen",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Psychiatry"
+      ],
+      "volume": "32",
+      "issue": "1",
+      "page": "88-106",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1969,
+            2
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1969,
+            2
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2016,
+            10,
+            26
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1080/00332747.1969.11023575",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1080/00332747.1969.11023575"
+  },
+  {
+    "bib": {
+      "type": "book",
+      "key": "ekman1978",
+      "author": "Ekman, Paul and Friesen, Wallace V.",
+      "title": "Facial Action Coding System: A Technique for the Measurement of Facial Movement",
+      "publisher": "Consulting Psychologists Press",
+      "address": "Palo Alto, CA",
+      "year": "1978"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "porter2008",
+      "author": "Porter, Stephen and ten Brinke, Leanne",
+      "title": "Reading Between the Lies: Identifying Concealed and Falsified Emotions in Universal Facial Expressions",
+      "journal": "Psychological Science",
+      "volume": "19",
+      "number": "5",
+      "pages": "508--514",
+      "doi": "10.1111/j.1467-9280.2008.02116.x",
+      "year": "2008"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1111/j.1467-9280.2008.02116.x",
+      "title": [
+        "Reading Between the Lies"
+      ],
+      "author": [
+        {
+          "given": "Stephen",
+          "family": "Porter",
+          "sequence": "first",
+          "affiliation": [
+            {
+              "name": "Dalhousie University"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Leanne",
+          "family": "ten Brinke",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Dalhousie University"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Psychological Science"
+      ],
+      "volume": "19",
+      "issue": "5",
+      "page": "508-514",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2008,
+            5
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2008,
+            5
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2008,
+            5,
+            1
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1111/j.1467-9280.2008.02116.x",
+      "abstract": "<jats:p>The widespread supposition that aspects of facial communication are uncontrollable and can betray a deceiver's true emotion has received little empirical attention. We examined the presence of inconsistent emotional expressions and “microexpressions” (1/25–1/5 of a second) in genuine and deceptive facial expressions. Participants viewed disgusting, sad, frightening, happy, and neutral images, responding to each with a genuine or deceptive (simulated, neutralized, or masked) expression. Each 1/30-s frame (104,550 frames in 697 expressions) was analyzed for the presence and duration of universal expressions, microexpressions, and blink rate. Relative to genuine emotions, masked emotions were associated with more inconsistent expressions and an elevated blink rate; neutralized emotions showed a decreased blink rate. Negative emotions were more difficult to falsify than happiness. Although untrained observers performed only slightly above chance at detecting deception, inconsistent emotional leakage occurred in 100% of participants at least once and lasted longer than the current definition of a microexpression suggests. Microexpressions were exhibited by 21.95% of participants in 2% of all expressions, and in the upper or lower face only.</jats:p>"
+    },
+    "source": "https://api.crossref.org/works/10.1111/j.1467-9280.2008.02116.x"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "oh2018",
+      "author": "Oh, Yee-Hui and See, John and Le Ngo, Anh Cat and Phan, Raphael C.-W. and Baskaran, Vishnu M.",
+      "title": "A Survey of Automatic Facial Micro-Expression Analysis: Databases, Methods, and Challenges",
+      "journal": "Frontiers in Psychology",
+      "volume": "9",
+      "pages": "1128",
+      "doi": "10.3389/fpsyg.2018.01128",
+      "year": "2018"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.3389/fpsyg.2018.01128",
+      "title": [
+        "A Survey of Automatic Facial Micro-Expression Analysis: Databases, Methods, and Challenges"
+      ],
+      "author": [
+        {
+          "given": "Yee-Hui",
+          "family": "Oh",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "John",
+          "family": "See",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Anh Cat",
+          "family": "Le Ngo",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Raphael C. -W.",
+          "family": "Phan",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Vishnu M.",
+          "family": "Baskaran",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Frontiers in Psychology"
+      ],
+      "volume": "9",
+      "issue": null,
+      "page": null,
+      "article-number": "1128",
+      "published": {
+        "date-parts": [
+          [
+            2018,
+            7,
+            10
+          ]
+        ]
+      },
+      "published-print": null,
+      "published-online": {
+        "date-parts": [
+          [
+            2018,
+            7,
+            10
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.3389/fpsyg.2018.01128",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.3389/fpsyg.2018.01128"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "pfister2011",
+      "author": "Pfister, Tomas and Li, Xiaobai and Zhao, Guoying and Pietik{\\\"a}inen, Matti",
+      "title": "Recognising Spontaneous Facial Micro-Expressions",
+      "booktitle": "{IEEE} International Conference on Computer Vision ({ICCV})",
+      "pages": "1449--1456",
+      "doi": "10.1109/ICCV.2011.6126401",
+      "year": "2011"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/iccv.2011.6126401",
+      "title": [
+        "Recognising spontaneous facial micro-expressions"
+      ],
+      "author": [
+        {
+          "given": "Tomas",
+          "family": "Pfister",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "family": "Xiaobai Li",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Guoying",
+          "family": "Zhao",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Matti",
+          "family": "Pietikainen",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2011 International Conference on Computer Vision"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "1449-1456",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2011,
+            11
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2011,
+            11
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/iccv.2011.6126401",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/ICCV.2011.6126401"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "wu2012",
+      "author": "Wu, Hao-Yu and Rubinstein, Michael and Shih, Eugene and Guttag, John and Durand, Fr{\\'e}do and Freeman, William",
+      "title": "{E}ulerian Video Magnification for Revealing Subtle Changes in the World",
+      "journal": "{ACM} Transactions on Graphics",
+      "volume": "31",
+      "number": "4",
+      "pages": "1--8",
+      "doi": "10.1145/2185520.2185561",
+      "year": "2012"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1145/2185520.2185561",
+      "title": [
+        "Eulerian video magnification for revealing subtle changes in the world"
+      ],
+      "author": [
+        {
+          "given": "Hao-Yu",
+          "family": "Wu",
+          "sequence": "first",
+          "affiliation": [
+            {
+              "name": "MIT CSAIL"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Michael",
+          "family": "Rubinstein",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "MIT CSAIL"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Eugene",
+          "family": "Shih",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "Quantat Research Cambridge Inc."
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "John",
+          "family": "Guttag",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "MIT CSAIL"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Frédo",
+          "family": "Durand",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "MIT CSAIL"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "William",
+          "family": "Freeman",
+          "sequence": "additional",
+          "affiliation": [
+            {
+              "name": "MIT CSAIL"
+            }
+          ],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "ACM Transactions on Graphics"
+      ],
+      "volume": "31",
+      "issue": "4",
+      "page": "1-8",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2012,
+            7
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2012,
+            8,
+            5
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2012,
+            7
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1145/2185520.2185561",
+      "abstract": "<jats:p>Our goal is to reveal temporal variations in videos that are difficult or impossible to see with the naked eye and display them in an indicative manner. Our method, which we call Eulerian Video Magnification, takes a standard video sequence as input, and applies spatial decomposition, followed by temporal filtering to the frames. The resulting signal is then amplified to reveal hidden information. Using our method, we are able to visualize the flow of blood as it fills the face and also to amplify and reveal small motions. Our technique can run in real time to show phenomena occurring at the temporal frequencies selected by the user.</jats:p>"
+    },
+    "source": "https://api.crossref.org/works/10.1145/2185520.2185561"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "burt1983",
+      "author": "Burt, Peter J. and Adelson, Edward H.",
+      "title": "The {L}aplacian Pyramid as a Compact Image Code",
+      "journal": "{IEEE} Transactions on Communications",
+      "volume": "31",
+      "number": "4",
+      "pages": "532--540",
+      "doi": "10.1109/TCOM.1983.1095851",
+      "year": "1983"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/tcom.1983.1095851",
+      "title": [
+        "The Laplacian Pyramid as a Compact Image Code"
+      ],
+      "author": [
+        {
+          "given": "P.",
+          "family": "Burt",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "E.",
+          "family": "Adelson",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "IEEE Transactions on Communications"
+      ],
+      "volume": "31",
+      "issue": "4",
+      "page": "532-540",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1983,
+            4
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1983,
+            4
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1109/tcom.1983.1095851",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/TCOM.1983.1095851"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "horn1981",
+      "author": "Horn, Berthold K. P. and Schunck, Brian G.",
+      "title": "Determining Optical Flow",
+      "journal": "Artificial Intelligence",
+      "volume": "17",
+      "number": "1--3",
+      "pages": "185--203",
+      "doi": "10.1016/0004-3702(81)90024-2",
+      "year": "1981"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1016/0004-3702(81)90024-2",
+      "title": [
+        "Determining optical flow"
+      ],
+      "author": [
+        {
+          "given": "Berthold K.P.",
+          "family": "Horn",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Brian G.",
+          "family": "Schunck",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Artificial Intelligence"
+      ],
+      "volume": "17",
+      "issue": "1-3",
+      "page": "185-203",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1981,
+            8
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1981,
+            8
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1016/0004-3702(81)90024-2",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1016/0004-3702%2881%2990024-2"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "farneback2003",
+      "author": "Farneb{\\\"a}ck, Gunnar",
+      "title": "Two-Frame Motion Estimation Based on Polynomial Expansion",
+      "booktitle": "Image Analysis: 13th Scandinavian Conference ({SCIA} 2003)",
+      "series": "Lecture Notes in Computer Science",
+      "volume": "2749",
+      "pages": "363--370",
+      "publisher": "Springer",
+      "doi": "10.1007/3-540-45103-X_50",
+      "year": "2003"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1007/3-540-45103-x_50",
+      "title": [
+        "Two-Frame Motion Estimation Based on Polynomial Expansion"
+      ],
+      "author": [
+        {
+          "given": "Gunnar",
+          "family": "Farnebäck",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Lecture Notes in Computer Science",
+        "Image Analysis"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "363-370",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2003
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2003
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2003,
+            6,
+            24
+          ]
+        ]
+      },
+      "type": "book-chapter",
+      "URL": "https://doi.org/10.1007/3-540-45103-x_50",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1007/3-540-45103-X_50"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "rumelhart1986",
+      "author": "Rumelhart, David E. and Hinton, Geoffrey E. and Williams, Ronald J.",
+      "title": "Learning Representations by Back-Propagating Errors",
+      "journal": "Nature",
+      "volume": "323",
+      "number": "6088",
+      "pages": "533--536",
+      "doi": "10.1038/323533a0",
+      "year": "1986"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1038/323533a0",
+      "title": [
+        "Learning representations by back-propagating errors"
+      ],
+      "author": [
+        {
+          "given": "David E.",
+          "family": "Rumelhart",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Geoffrey E.",
+          "family": "Hinton",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ronald J.",
+          "family": "Williams",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Nature"
+      ],
+      "volume": "323",
+      "issue": "6088",
+      "page": "533-536",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1986,
+            10
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1986,
+            10
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1038/323533a0",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1038/323533a0"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "lecun1998",
+      "author": "LeCun, Yann and Bottou, L{\\'e}on and Bengio, Yoshua and Haffner, Patrick",
+      "title": "Gradient-Based Learning Applied to Document Recognition",
+      "journal": "Proceedings of the {IEEE}",
+      "volume": "86",
+      "number": "11",
+      "pages": "2278--2324",
+      "doi": "10.1109/5.726791",
+      "year": "1998"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/5.726791",
+      "title": [
+        "Gradient-based learning applied to document recognition"
+      ],
+      "author": [
+        {
+          "given": "Y.",
+          "family": "Lecun",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "L.",
+          "family": "Bottou",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Y.",
+          "family": "Bengio",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "P.",
+          "family": "Haffner",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Proceedings of the IEEE"
+      ],
+      "volume": "86",
+      "issue": "11",
+      "page": "2278-2324",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1998
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1998
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1109/5.726791",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/5.726791"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "lecun2015",
+      "author": "LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey",
+      "title": "Deep Learning",
+      "journal": "Nature",
+      "volume": "521",
+      "number": "7553",
+      "pages": "436--444",
+      "doi": "10.1038/nature14539",
+      "year": "2015"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1038/nature14539",
+      "title": [
+        "Deep learning"
+      ],
+      "author": [
+        {
+          "given": "Yann",
+          "family": "LeCun",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Yoshua",
+          "family": "Bengio",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Geoffrey",
+          "family": "Hinton",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Nature"
+      ],
+      "volume": "521",
+      "issue": "7553",
+      "page": "436-444",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2015,
+            5,
+            27
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2015,
+            5,
+            28
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2015,
+            5,
+            27
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1038/nature14539",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1038/nature14539"
+  },
+  {
+    "bib": {
+      "type": "book",
+      "key": "goodfellow2016",
+      "author": "Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron",
+      "title": "Deep Learning",
+      "publisher": "MIT Press",
+      "address": "Cambridge, MA",
+      "year": "2016"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "nair2010",
+      "author": "Nair, Vinod and Hinton, Geoffrey E.",
+      "title": "Rectified Linear Units Improve Restricted {B}oltzmann Machines",
+      "booktitle": "27th International Conference on Machine Learning ({ICML})",
+      "pages": "807--814",
+      "year": "2010"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "misc",
+      "key": "hendrycks2016",
+      "author": "Hendrycks, Dan and Gimpel, Kevin",
+      "title": "{G}aussian Error Linear Units ({GELUs})",
+      "howpublished": "arXiv preprint arXiv:1606.08415",
+      "year": "2016"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "ji2013",
+      "author": "Ji, Shuiwang and Xu, Wei and Yang, Ming and Yu, Kai",
+      "title": "{3D} Convolutional Neural Networks for Human Action Recognition",
+      "journal": "{IEEE} Transactions on Pattern Analysis and Machine Intelligence",
+      "volume": "35",
+      "number": "1",
+      "pages": "221--231",
+      "doi": "10.1109/TPAMI.2012.59",
+      "year": "2013"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/tpami.2012.59",
+      "title": [
+        "3D Convolutional Neural Networks for Human Action Recognition"
+      ],
+      "author": [
+        {
+          "given": "Shuiwang",
+          "family": "Ji",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Wei",
+          "family": "Xu",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ming",
+          "family": "Yang",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Kai",
+          "family": "Yu",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "IEEE Transactions on Pattern Analysis and Machine Intelligence"
+      ],
+      "volume": "35",
+      "issue": "1",
+      "page": "221-231",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2013,
+            1
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2013,
+            1
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1109/tpami.2012.59",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/TPAMI.2012.59"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "tran2015",
+      "author": "Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar",
+      "title": "Learning Spatiotemporal Features with {3D} Convolutional Networks",
+      "booktitle": "{IEEE} International Conference on Computer Vision ({ICCV})",
+      "pages": "4489--4497",
+      "doi": "10.1109/ICCV.2015.510",
+      "year": "2015"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/iccv.2015.510",
+      "title": [
+        "Learning Spatiotemporal Features with 3D Convolutional Networks"
+      ],
+      "author": [
+        {
+          "given": "Du",
+          "family": "Tran",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Lubomir",
+          "family": "Bourdev",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Rob",
+          "family": "Fergus",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Lorenzo",
+          "family": "Torresani",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Manohar",
+          "family": "Paluri",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2015 IEEE International Conference on Computer Vision (ICCV)"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "4489-4497",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2015,
+            12
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2015,
+            12
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/iccv.2015.510",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/ICCV.2015.510"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "ioffe2015",
+      "author": "Ioffe, Sergey and Szegedy, Christian",
+      "title": "Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift",
+      "booktitle": "32nd International Conference on Machine Learning ({ICML})",
+      "pages": "448--456",
+      "year": "2015"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "srivastava2014",
+      "author": "Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan",
+      "title": "Dropout: A Simple Way to Prevent Neural Networks from Overfitting",
+      "journal": "Journal of Machine Learning Research",
+      "volume": "15",
+      "number": "56",
+      "pages": "1929--1958",
+      "year": "2014"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "tompson2015",
+      "author": "Tompson, Jonathan and Goroshin, Ross and Jain, Arjun and LeCun, Yann and Bregler, Christoph",
+      "title": "Efficient Object Localization Using Convolutional Networks",
+      "booktitle": "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+      "pages": "648--656",
+      "doi": "10.1109/CVPR.2015.7298664",
+      "year": "2015"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/cvpr.2015.7298664",
+      "title": [
+        "Efficient object localization using Convolutional Networks"
+      ],
+      "author": [
+        {
+          "given": "Jonathan",
+          "family": "Tompson",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ross",
+          "family": "Goroshin",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Arjun",
+          "family": "Jain",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Yann",
+          "family": "LeCun",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Christoph",
+          "family": "Bregler",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "648-656",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2015,
+            6
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2015,
+            6
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/cvpr.2015.7298664",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/CVPR.2015.7298664"
+  },
+  {
+    "bib": {
+      "type": "misc",
+      "key": "ba2016",
+      "author": "Ba, Jimmy Lei and Kiros, Jamie Ryan and Hinton, Geoffrey E.",
+      "title": "Layer Normalization",
+      "howpublished": "arXiv preprint arXiv:1607.06450",
+      "year": "2016"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "he2016",
+      "author": "He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian",
+      "title": "Deep Residual Learning for Image Recognition",
+      "booktitle": "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+      "pages": "770--778",
+      "doi": "10.1109/CVPR.2016.90",
+      "year": "2016"
+    },
+    "status": "verified_doi",
+    "source": "https://api.crossref.org/works/10.1109/CVPR.2016.90",
+    "record": {
+      "DOI": "10.1109/cvpr.2016.90",
+      "title": [
+        "Deep Residual Learning for Image Recognition"
+      ],
+      "author": [
+        {
+          "given": "Kaiming",
+          "family": "He",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Xiangyu",
+          "family": "Zhang",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Shaoqing",
+          "family": "Ren",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Jian",
+          "family": "Sun",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "770-778",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2016,
+            6
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2016,
+            6
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/cvpr.2016.90",
+      "abstract": null
+    }
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "vaswani2017",
+      "author": "Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\\L}ukasz and Polosukhin, Illia",
+      "title": "Attention Is All You Need",
+      "booktitle": "Advances in Neural Information Processing Systems ({NeurIPS})",
+      "volume": "30",
+      "pages": "5998--6008",
+      "year": "2017"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "xiong2020",
+      "author": "Xiong, Ruibin and Yang, Yunchang and He, Di and Zheng, Kai and Zheng, Shuxin and Xing, Chen and Zhang, Huishuai and Lan, Yanyan and Wang, Liwei and Liu, Tie-Yan",
+      "title": "On Layer Normalization in the Transformer Architecture",
+      "booktitle": "37th International Conference on Machine Learning ({ICML})",
+      "pages": "10524--10533",
+      "year": "2020"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "he2009",
+      "author": "He, Haibo and Garcia, Edwardo A.",
+      "title": "Learning from Imbalanced Data",
+      "journal": "{IEEE} Transactions on Knowledge and Data Engineering",
+      "volume": "21",
+      "number": "9",
+      "pages": "1263--1284",
+      "doi": "10.1109/TKDE.2008.239",
+      "year": "2009"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/tkde.2008.239",
+      "title": [
+        "Learning from Imbalanced Data"
+      ],
+      "author": [
+        {
+          "family": "Haibo He",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "E.A.",
+          "family": "Garcia",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "IEEE Transactions on Knowledge and Data Engineering"
+      ],
+      "volume": "21",
+      "issue": "9",
+      "page": "1263-1284",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2009,
+            9
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2009,
+            9
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1109/tkde.2008.239",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/TKDE.2008.239"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "buda2018",
+      "author": "Buda, Mateusz and Maki, Atsuto and Mazurowski, Maciej A.",
+      "title": "A Systematic Study of the Class Imbalance Problem in Convolutional Neural Networks",
+      "journal": "Neural Networks",
+      "volume": "106",
+      "pages": "249--259",
+      "doi": "10.1016/j.neunet.2018.07.011",
+      "year": "2018"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1016/j.neunet.2018.07.011",
+      "title": [
+        "A systematic study of the class imbalance problem in convolutional neural networks"
+      ],
+      "author": [
+        {
+          "ORCID": "https://orcid.org/0000-0003-3222-0203",
+          "authenticated-orcid": false,
+          "given": "Mateusz",
+          "family": "Buda",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Atsuto",
+          "family": "Maki",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Maciej A.",
+          "family": "Mazurowski",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Neural Networks"
+      ],
+      "volume": "106",
+      "issue": null,
+      "page": "249-259",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2018,
+            10
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2018,
+            10
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1016/j.neunet.2018.07.011",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1016/j.neunet.2018.07.011"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "lin2017",
+      "author": "Lin, Tsung-Yi and Goyal, Priya and Girshick, Ross and He, Kaiming and Doll{\\'a}r, Piotr",
+      "title": "Focal Loss for Dense Object Detection",
+      "booktitle": "{IEEE} International Conference on Computer Vision ({ICCV})",
+      "pages": "2999--3007",
+      "doi": "10.1109/ICCV.2017.324",
+      "year": "2017"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/iccv.2017.324",
+      "title": [
+        "Focal Loss for Dense Object Detection"
+      ],
+      "author": [
+        {
+          "given": "Tsung-Yi",
+          "family": "Lin",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Priya",
+          "family": "Goyal",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Ross",
+          "family": "Girshick",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Kaiming",
+          "family": "He",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Piotr",
+          "family": "Dollar",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2017 IEEE International Conference on Computer Vision (ICCV)"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "2999-3007",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2017,
+            10
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2017,
+            10
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/iccv.2017.324",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/ICCV.2017.324"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "szegedy2016",
+      "author": "Szegedy, Christian and Vanhoucke, Vincent and Ioffe, Sergey and Shlens, Jon and Wojna, Zbigniew",
+      "title": "Rethinking the {I}nception Architecture for Computer Vision",
+      "booktitle": "{IEEE} Conference on Computer Vision and Pattern Recognition ({CVPR})",
+      "pages": "2818--2826",
+      "doi": "10.1109/CVPR.2016.308",
+      "year": "2016"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1109/cvpr.2016.308",
+      "title": [
+        "Rethinking the Inception Architecture for Computer Vision"
+      ],
+      "author": [
+        {
+          "given": "Christian",
+          "family": "Szegedy",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Vincent",
+          "family": "Vanhoucke",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Sergey",
+          "family": "Ioffe",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Jon",
+          "family": "Shlens",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Zbigniew",
+          "family": "Wojna",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)"
+      ],
+      "volume": null,
+      "issue": null,
+      "page": "2818-2826",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2016,
+            6
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2016,
+            6
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "proceedings-article",
+      "URL": "https://doi.org/10.1109/cvpr.2016.308",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1109/CVPR.2016.308"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "kingma2015",
+      "author": "Kingma, Diederik P. and Ba, Jimmy",
+      "title": "Adam: A Method for Stochastic Optimization",
+      "booktitle": "International Conference on Learning Representations ({ICLR})",
+      "year": "2015"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "loshchilov2019",
+      "author": "Loshchilov, Ilya and Hutter, Frank",
+      "title": "Decoupled Weight Decay Regularization",
+      "booktitle": "International Conference on Learning Representations ({ICLR})",
+      "year": "2019"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "loshchilov2017",
+      "author": "Loshchilov, Ilya and Hutter, Frank",
+      "title": "{SGDR}: Stochastic Gradient Descent with Warm Restarts",
+      "booktitle": "International Conference on Learning Representations ({ICLR})",
+      "year": "2017"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "inproceedings",
+      "key": "micikevicius2018",
+      "author": "Micikevicius, Paulius and Narang, Sharan and Alben, Jonah and Diamos, Gregory and Elsen, Erich and Garcia, David and Ginsburg, Boris and Houston, Michael and Kuchaiev, Oleksii and Venkatesh, Ganesh and Wu, Hao",
+      "title": "Mixed Precision Training",
+      "booktitle": "International Conference on Learning Representations ({ICLR})",
+      "year": "2018"
+    },
+    "status": "no_doi"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "sokolova2009",
+      "author": "Sokolova, Marina and Lapalme, Guy",
+      "title": "A Systematic Analysis of Performance Measures for Classification Tasks",
+      "journal": "Information Processing \\& Management",
+      "volume": "45",
+      "number": "4",
+      "pages": "427--437",
+      "doi": "10.1016/j.ipm.2009.03.002",
+      "year": "2009"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1016/j.ipm.2009.03.002",
+      "title": [
+        "A systematic analysis of performance measures for classification tasks"
+      ],
+      "author": [
+        {
+          "given": "Marina",
+          "family": "Sokolova",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Guy",
+          "family": "Lapalme",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Information Processing &amp; Management"
+      ],
+      "volume": "45",
+      "issue": "4",
+      "page": "427-437",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            2009,
+            7
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2009,
+            7
+          ]
+        ]
+      },
+      "published-online": null,
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1016/j.ipm.2009.03.002",
+      "abstract": null
+    },
+    "source": "https://api.crossref.org/works/10.1016/j.ipm.2009.03.002"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "mcnemar1947",
+      "author": "McNemar, Quinn",
+      "title": "Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages",
+      "journal": "Psychometrika",
+      "volume": "12",
+      "number": "2",
+      "pages": "153--157",
+      "doi": "10.1007/BF02295996",
+      "year": "1947"
+    },
+    "status": "verified_doi",
+    "record": {
+      "DOI": "10.1007/bf02295996",
+      "title": [
+        "Note on the Sampling Error of the Difference Between Correlated Proportions or Percentages"
+      ],
+      "author": [
+        {
+          "given": "Quinn",
+          "family": "McNemar",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "Psychometrika"
+      ],
+      "volume": "12",
+      "issue": "2",
+      "page": "153-157",
+      "article-number": null,
+      "published": {
+        "date-parts": [
+          [
+            1947,
+            6
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            1947,
+            6
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2025,
+            1,
+            1
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1007/bf02295996",
+      "abstract": "<jats:p>Two formulas are presented for judging the significance of the difference between correlated proportions. The chi square equivalent of one of the developed formulas is pointed out.</jats:p>"
+    },
+    "source": "https://api.crossref.org/works/10.1007/BF02295996"
+  },
+  {
+    "bib": {
+      "type": "article",
+      "key": "varma2006",
+      "author": "Varma, Sudhir and Simon, Richard",
+      "title": "Bias in Error Estimation When Using Cross-Validation for Model Selection",
+      "journal": "{BMC} Bioinformatics",
+      "volume": "7",
+      "pages": "91",
+      "doi": "10.1186/1471-2105-7-91",
+      "year": "2006"
+    },
+    "status": "verified_doi",
+    "source": "https://api.crossref.org/works/10.1186/1471-2105-7-91",
+    "record": {
+      "DOI": "10.1186/1471-2105-7-91",
+      "title": [
+        "Bias in error estimation when using cross-validation for model selection"
+      ],
+      "author": [
+        {
+          "given": "Sudhir",
+          "family": "Varma",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Richard",
+          "family": "Simon",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container-title": [
+        "BMC Bioinformatics"
+      ],
+      "volume": "7",
+      "issue": "1",
+      "page": null,
+      "article-number": "91",
+      "published": {
+        "date-parts": [
+          [
+            2006,
+            2,
+            23
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2006,
+            12
+          ]
+        ]
+      },
+      "published-online": {
+        "date-parts": [
+          [
+            2006,
+            2,
+            23
+          ]
+        ]
+      },
+      "type": "journal-article",
+      "URL": "https://doi.org/10.1186/1471-2105-7-91",
+      "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>Cross-validation (CV) is an effective method for estimating the prediction error of a classifier. Some recent articles have proposed methods for optimizing classifiers by choosing classifier parameter values that minimize the CV error estimate. We have evaluated the validity of using the CV error estimate of the optimized classifier as an estimate of the true error expected on independent data.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>We used CV to optimize the classification parameters for two kinds of classifiers; Shrunken Centroids and Support Vector Machines (SVM). Random training datasets were created, with no difference in the distribution of the features between the two classes. Using these \"null\" datasets, we selected classifier parameter values that minimized the CV error estimate. 10-fold CV was used for Shrunken Centroids while Leave-One-Out-CV (LOOCV) was used for the SVM. Independent test data was created to estimate the true error. With \"null\" and \"non null\" (with differential expression between the classes) data, we also tested a nested CV procedure, where an inner CV loop is used to perform the tuning of the parameters while an outer CV is used to compute an estimate of the error.</jats:p>\n                    <jats:p>The CV error estimate for the classifier with the optimal parameters was found to be a substantially biased estimate of the true error that the classifier would incur on independent data. Even though there is no real difference between the two classes for the \"null\" datasets, the CV error estimate for the Shrunken Centroid with the optimal parameters was less than 30% on 18.5% of simulated training data-sets. For SVM with optimal parameters the estimated error rate was less than 30% on 38% of \"null\" data-sets. Performance of the optimized classifiers on the independent test set was no better than chance.</jats:p>\n                    <jats:p>The nested CV procedure reduces the bias considerably and gives an estimate of the error that is very close to that obtained on the independent testing set for both Shrunken Centroids and SVM classifiers for \"null\" and \"non-null\" data distributions.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>We show that using CV to compute an error estimate for a classifier that has itself been tuned using CV gives a significantly biased estimate of the true error. Proper use of CV for estimating true error of a classifier developed using a well defined algorithm requires that all steps of the algorithm, including classifier parameter tuning, be repeated in each CV loop. A nested CV procedure provides an almost unbiased estimate of the true error.</jats:p>\n                  </jats:sec>"
+    }
+  }
+]
