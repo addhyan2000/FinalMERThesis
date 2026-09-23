@@ -6,7 +6,6 @@
 % Cross-references used below (Structure of the Thesis only):
 %   ch:literature            -> Chapter 3 (Literature Review)
 %   sec:synthesis-and-gap    -> Section 3.10  (Synthesis and Gap)
-%   sec:excluded-evaluations -> Section 4.6.7 (earlier evaluations excluded)
 %
 % Labels defined here: ch:introduction, sec:motivation, sec:objectives,
 %   sec:intro-contributions, sec:structure
@@ -74,8 +73,6 @@ This thesis makes the following contributions.
 	\item \textbf{A measured account of the contribution of temporal and motion modelling.} Temporal modelling carries almost all of the measured effect: the temporal transformer improves pooled macro F1 by $+0.2173$ on average, and all six of its matched pairs are positive. The remaining components contribute far less. Eulerian video magnification has a small mean effect ($+0.0152$) whose direction varies across pairs; parameter-free attention has a mean effect ($+0.0034$) that cannot be distinguished from noise at this sample size; and the convolutional spatial stem, which consumes most of the computation in the study, is the only component with a negative mean effect ($-0.0310$).
 
 	\item \textbf{Evidence that the full pipeline is not the best configuration.} A temporal transformer applied directly to the motion representation achieves a pooled macro F1 of $0.7122$, compared with $0.6659$ for the complete configuration in which all four components are enabled. An evaluation of the complete system alone would have reported the lower of these figures, with no means of discovering that a subset of its own architecture performs better.
-
-	\item \textbf{A documented account of excluded evaluations.} Four earlier evaluations of the same configurations are reported together with the property that disqualifies each of them, so that the results rest on one complete protocol rather than on the most favourable of several.
 \end{enumerate}
 
 
@@ -91,7 +88,7 @@ The thesis proceeds in six chapters, each taking the pipeline as its organising 
 
 	\item \textbf{Chapter 3: Literature Review} reviews the literature bearing on each pipeline component as a single continuous argument, closing at \autoref{sec:synthesis-and-gap} with the consolidated research gap and every declared divergence from the reviewed methods.
 
-	\item \textbf{Chapter 4: Methodology} specifies the study as carried out: the experimental design, the dataset and its preparation, the twelve configurations, the architecture and its ablatable components, the training procedure, the evaluation protocol and the computational environment, together with \autoref{sec:excluded-evaluations}'s account of the earlier evaluations that are excluded, and why.
+	\item \textbf{Chapter 4: Methodology} specifies the study as carried out: the experimental design, the dataset and its preparation, the twelve configurations, the architecture and its ablatable components, the training procedure and the evaluation protocol, together with the research gaps and limitations of each motion- and temporal-modelling component.
 
 	\item \textbf{Chapter 5: Results} reports what the ablation found, taking each ablated component in turn over the matched pairs that isolate it, and then drawing the findings together against per-class behaviour and the published literature.
 
