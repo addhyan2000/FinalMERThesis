@@ -1,0 +1,390 @@
+{
+ "yan2014": {
+  "pages": 8,
+  "chars": 37550,
+  "first": "CASME II: An Improved Spontaneous Micro-Expression Database and the Baseline Evaluation Wen-Jing Yan1,2, Xiaobai Li3, Su-Jing Wang1, Guoying Zhao3, Yong-Jin Liu4, Yu-Hsin Chen1,2, Xiaolan Fu1* 1 State Key Laboratory of Brain and Cognitive Science, Institute of Psychology, Chinese Academy of Sciences, Beijing, China, 2 University of Chinese Academy of Sciences, Beijing, China, 3 Center for Machine Vision Research, Department of Computer Science and Engineering, University of Oulu, Oulu, Finland, 4 TNList, Department of Computer Science and Technology, Tsinghua University, Beijing, China Abstrac",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "title": "pone.0086041 1..8",
+   "creator": "3B2 Total Publishing System 7.51n/W",
+   "producer": "Acrobat Distiller 9.0.0 (Windows)",
+   "creationDate": "D:20140115171903+08'00'",
+   "modDate": "D:20140123110117+05'30'"
+  }
+ },
+ "liX2013": {
+  "pages": 6,
+  "chars": 35341,
+  "first": "A Spontaneous Micro-expression Database: Inducement, Collection and Baseline Xiaobai Li, Tomas Pﬁster, Xiaohua Huang, Guoying Zhao, Matti Pietikäinen Abstract— Micro-expressions are short, involuntary facial expressions which reveal hidden emotions. Micro-expressions are important for understanding humans’ deceitful behavior. Psychologists have been studying them since the 1960’s. Cur- rently the attention is elevated in both academic ﬁelds and in media. However, while general facial expression recognition (FER) has been intensively studied for years in computer vision, little research has bee",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "title": "A Spontaneous Micro-expression Database: Inducement, collection and baseline",
+   "subject": "2013 10th IEEE International Conference and Workshops on Automatic Face and Gesture Recognition (FG);2013; ; ;10.1109/FG.2013.6553717",
+   "creator": "'Certified by IEEE PDFeXpress at 01/11/2013 12:16:35 AM'",
+   "producer": "GPL Ghostscript 8.70; modified using iText® 7.1.1 ©2000-2018 iText Group NV (AGPL-version)",
+   "creationDate": "D:20130111101708+02'00'",
+   "modDate": "D:20181204224900-05'00'"
+  }
+ },
+ "davison2018": {
+  "pages": 14,
+  "chars": 76591,
+  "first": "SAMM: A Spontaneous Micro-Facial Movement Dataset Adrian K. Davison , Student Member, IEEE, Cliff Lansley, Nicholas Costen, Member, IEEE, Kevin Tan, and Moi Hoon Yap, Member, IEEE Abstract—Micro-facial expressions are spontaneous, involuntary movements of the face when a person experiences an emotion but attempts to hide their facial expression, most likely in a high-stakes environment. Recently, research in this ﬁeld has grown in popularity, however publicly available datasets of micro-expressions have limitations due to the difﬁculty of naturally inducing spontaneous micro- expressions. Othe",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "title": "SAMM: A Spontaneous Micro-Facial Movement Dataset",
+   "subject": "IEEE Transactions on Affective Computing;2018;9;1;10.1109/TAFFC.2016.2573832",
+   "creator": "Arbortext Advanced Print Publisher 10.0.1062/W Unicode",
+   "producer": "Acrobat Distiller 10.1.10 (Windows); modified using iText® 7.1.1 ©2000-2018 iText Group NV (AGPL-version)",
+   "creationDate": "D:20180214093811+05'30'",
+   "modDate": "D:20181127152644-05'00'"
+  }
+ },
+ "qu2016": {
+  "pages": 12,
+  "chars": 32312,
+  "first": "CAS(ME)2: A Database of Spontaneous Macro-expressions and Micro-expressions Fangbing Qu1,2, Su-Jing Wang3, Wen-Jing Yan4, and Xiaolan Fu1(&) 1 State Key Laboratory of Brain and Cognitive Science, Institute of Psychology, Chinese Academy of Sciences, Beijing, China {qufb,fuxl}@psych.ac.cn 2 University of Chinese Academy of Sciences, Beijing, China 3 Key Laboratory of Behavior Sciences, Institute of Psychology, Chinese Academy of Sciences, Beijing, China wangsujing@psych.ac.cn 4 Institute of Psychology and Behavioral Sciences, Wenzhou University, Wenzhou, China yanwj@wzu.edu.cn Abstract. Micro-e",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "creator": "Arbortext Advanced Print Publisher 9.0.114/W Unicode",
+   "producer": "Acrobat Distiller 10.0.0 (Windows)",
+   "creationDate": "D:20160512085459+05'30'",
+   "modDate": "D:20160512085745+05'30'"
+  }
+ },
+ "see2019": {
+  "pages": 5,
+  "chars": 26146,
+  "first": "MEGC 2019 – The Second Facial Micro-Expressions Grand Challenge John See1, Moi Hoon Yap2, Jingting Li3, Xiaopeng Hong4, Su-Jing Wang5 1 Faculty of Computing and Informatics, Multimedia University, Malaysia 2 Faculty of Science and Engineering, Manchester Metropolitan University, UK 3 CentraleSuplec, CNRS, IETR, UMR 6164, F-35000 Rennes, France 4 Center for Machine Vision and Signal Analysis, University of Oulu, Finland 5 Key Laboratory of Behavior Sciences, Institute of Psychology, Chinese Academy of Sciences, Beijing, China Abstract— Automatic facial micro-expression (ME) analysis is a growin",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "title": "MEGC 2019 &#x2013; The Second Facial Micro-Expressions Grand Challenge",
+   "subject": "2019 14th IEEE International Conference on Automatic Face & Gesture Recognition (FG 2019);2019; ; ; ",
+   "creator": "'Certified by IEEE PDFeXpress at 03/06/2019 4:53:41 PM'",
+   "producer": "pdfTeX-1.40.18; modified using iText® 7.1.1 ©2000-2018 iText Group NV (AGPL-version)",
+   "creationDate": "D:20190307005104Z",
+   "modDate": "D:20200324075256+02'00'",
+   "trapped": "False"
+  }
+ },
+ "liX2018": {
+  "pages": 14,
+  "chars": 86610,
+  "first": "1 Towards Reading Hidden Emotions: A Comparative Study of Spontaneous Micro-expression Spotting and Recognition Methods Xiaobai Li, Xiaopeng Hong, Antti Moilanen, Xiaohua Huang, Tomas Pﬁster, Guoying Zhao, and Matti Pietik¨ainen ! Abstract—Micro-expressions (MEs) are rapid, involuntary facial expres- sions which reveal emotions that people do not intend to show. Studying MEs is valuable as recognizing them has many important applications, particularly in forensic science and psychotherapy. However, analyzing spontaneous MEs is very challenging due to their short duration and low intensity. Aut",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.12",
+   "creationDate": "D:20170209012442Z",
+   "modDate": "D:20170209012442Z"
+  }
+ },
+ "ben2021": {
+  "pages": 21,
+  "chars": 129675,
+  "first": "TO APPEAR IN IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE, HTTPS://DOI.ORG/10.1109/TPAMI.2021.3067464 1 Video-based Facial Micro-Expression Analysis: A Survey of Datasets, Features and Algorithms Xianye Ben, Member, IEEE, Yi Ren, Junping Zhang, Member, IEEE, Su-Jing Wang, Senior Member, IEEE, Kidiyo Kpalma, Weixiao Meng, Senior Member, IEEE, Yong-Jin Liu, Senior Member, IEEE Abstract—Unlike the conventional facial expressions, micro-expressions are involuntary and transient facial expressions capable of revealing the genuine emotions that people attempt to hide. Therefore, th",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "TeX",
+   "producer": "pdfTeX-1.40.21",
+   "creationDate": "D:20220217033227Z",
+   "modDate": "D:20220217033227Z"
+  }
+ },
+ "zhaoG2007": {
+  "pages": 14,
+  "chars": 69459,
+  "first": "Dynamic Texture Recognition Using Local Binary Patterns with an Application to Facial Expressions Guoying Zhao and Matti Pietika¨inen, Senior Member, IEEE Abstract—Dynamic texture (DT) is an extension of texture to the temporal domain. Description and recognition of DTs have attracted growing attention. In this paper, a novel approach for recognizing DTs is proposed and its simplifications and extensions to facial image analysis are also considered. First, the textures are modeled with volume local binary patterns (VLBP), which are an extension of the LBP operator widely used in ordinary textu",
+  "pdfmeta": {
+   "format": "PDF 1.6",
+   "title": "untitled",
+   "creator": "3B2 Total Publishing System 8.07v/W",
+   "producer": "Acrobat Distiller 7.0.5 (Windows)",
+   "creationDate": "D:20070410065714-07'00'",
+   "modDate": "D:20070417111312-04'"
+  }
+ },
+ "shreve2011": {
+  "pages": 6,
+  "chars": 26172,
+  "first": "Macro- and Micro-Expression Spotting in Long Videos Using Spatio-temporal Strain Matthew Shreve, Sridhar Godavarthy, Dmitry Goldgof, and Sudeep Sarkar Abstract— We propose a method for the automatic spotting (temporal segmentation) of facial expressions in long videos comprising of macro- and micro-expressions. The method utilizes the strain impacted on the facial skin due to the non- rigid motion caused during expressions. The strain magnitude is calculated using the central difference method over the robust and dense optical ﬂow ﬁeld observed in several regions (chin, mouth, cheek, forehead)",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "title": "Macro- and micro-expression spotting in long videos using spatio-temporal strain",
+   "subject": "Face and Gesture 2011;2011; ; ;10.1109/FG.2011.5771451",
+   "creator": "TeX",
+   "producer": "Acrobat Distiller 8.0.0 (Windows); modified using iText® 7.1.1 ©2000-2018 iText Group NV (AGPL-version)",
+   "creationDate": "D:20110517085421+05'30'",
+   "modDate": "D:20181124203725-05'00'",
+   "trapped": "False"
+  }
+ },
+ "liong2014a": {
+  "pages": 5,
+  "chars": 25717,
+  "first": "Optical Strain based Recognition of Subtle Emotions Sze-Teng Liong∗‡, Raphael C.-W. Phan∗, John See†, Yee-Hui Oh∗and KokSheik Wong‡ ∗Faculty of Engineering, Multimedia University (MMU), Malaysia †Faculty of Computing & Informatics, Multimedia University (MMU), Malaysia ‡Faculty of Computer Science & Information Technology, University of Malaya (UM), Malaysia {∗‡szeteng1206@hotmail.com, ∗raphael@mmu.edu.my, †johnsee@mmu.edu.my, ∗yeehui716@gmail.com, ‡koksheik@um.edu.my} Abstract—This paper presents a novel method to recognize subtle emotions based on optical strain magnitude feature ex- tractio",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "TeX",
+   "producer": "pdfTeX-1.40.14",
+   "creationDate": "D:20141015065227Z",
+   "modDate": "D:20141015065227Z"
+  }
+ },
+ "liong2014b": {
+  "pages": 14,
+  "chars": 30981,
+  "first": "Subtle Expression Recognition using Optical Strain Weighted Features Sze-Teng Liong1, John See2, Raphael C.-W. Phan3, Anh Cat Le Ngo3, Yee-Hui Oh3, KokSheik Wong1 1 Faculty of Computer Science & Information Technology, University of Malaya, Kuala Lumpur, Malaysia szeteng1206@hotmail.com 2 Faculty of Computing & Informatics, Multimedia University, Cyberjaya, Malaysia johnsee@mmu.edu.my 3 Faculty of Engineering, Multimedia University, Cyberjaya, Malaysia raphael@mmu.edu.my, lengoanhcat@gmail.com, yeehui716@gmail.com Abstract. Optical strain characterizes the relative amount of displace- ment by ",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "TeX",
+   "producer": "pdfTeX-1.40.14",
+   "creationDate": "D:20140929181001Z",
+   "modDate": "D:20140929181001Z"
+  }
+ },
+ "liong2016": {
+  "pages": 13,
+  "chars": 64548,
+  "first": "Spontaneous subtle expression detection and recognition based on facial strain Sze-Teng Liong a,b,n, John See c, Raphael C.-W. Phan b, Yee-Hui Oh b, Anh Cat Le Ngo b, KokSheik Wong a, Su-Wei Tan b a Faculty of Computer Science and Information Technology, University of Malaya, 50603 Kuala Lumpur, Malaysia b Faculty of Engineering, Multimedia University, 63100 Cyberjaya, Malaysia c Faculty of Computing and Informatics, Multimedia University, 63100 Cyberjaya, Malaysia a r t i c l e i n f o Article history: Received 6 February 2016 Received in revised form 13 April 2016 Accepted 4 June 2016 Availa",
+  "pdfmeta": {
+   "format": "PDF 1.7",
+   "title": "Spontaneous subtle expression detection and recognition based on facial strain",
+   "author": "Sze-Teng Liong",
+   "subject": "Signal Processing : Image Communication, 47 + (2016) 170-182. doi:10.1016/j.image.2016.06.004",
+   "keywords": "Subtle expressions; Micro-expressions; Facial strain; Detection; Recognition",
+   "creator": "Elsevier",
+   "creationDate": "D:20160622164715+05'30'",
+   "modDate": "D:20160622164728+05'30'"
+  }
+ },
+ "lu2015": {
+  "pages": 14,
+  "chars": 33326,
+  "first": "A Delaunay-Based Temporal Coding Model for Micro-expression Recognition Zhaoyu Lu, Ziqi Luo, Huicheng Zheng(B), Jikai Chen, and Weihong Li School of Information Science and Technology, Sun Yat-sen University, Guangzhou 510006, China {luzhaoyu,luoziqi,chenjik,liweih3}@mail2.sysu.edu.cn, zhenghch@mail.sysu.edu.cn Abstract. Micro-expression recognition has been a challenging problem in computer vision research due to its briefness and subtlety. Previous psychological study shows that even human being can only recognize micro-expressions with low average recognition rates. In this paper, we propos",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "producer": "iLovePDF",
+   "modDate": "D:20260227125614Z"
+  }
+ },
+ "xu2017": {
+  "pages": 14,
+  "chars": 74581,
+  "first": "IEEE TRANSACTIONS ON AFFECTIVE COMPUTING, 2016 1 Microexpression Identiﬁcation and Categorization using a Facial Dynamics Map Feng Xu, Junping Zhang, James Z. Wang Abstract—Unlike conventional facial expressions, microexpres- sions are instantaneous and involuntary reﬂections of human emotion. Because microexpressions are ﬂeeting, lasting only a few frames within a video sequence, they are difﬁcult to perceive and interpret correctly, and they are highly challenging to identify and categorize automatically. Existing recognition methods are often ineffective at handling subtle face displacement",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.13",
+   "creationDate": "D:20160107213155-05'00'",
+   "modDate": "D:20160107213155-05'00'"
+  }
+ },
+ "liong2018": {
+  "pages": 14,
+  "chars": 60550,
+  "first": "Less is More: Micro-expression Recognition from Video using Apex Frame Sze-Teng Lionga, John Seeb, KokSheik Wongc,∗, Raphael C.-W. Phand aDepartment of Electronic Engineering, Feng Chia University, Taichung 40724, Taiwan R.O.C. bFaculty of Computing and Informatics, Multimedia University, 63100 Cyberjaya, Malaysia cSchool of Information Technology, Monash University Malaysia, 47500 Selangor, Malaysia dFaculty of Engineering, Multimedia University, 63100 Cyberjaya, Malaysia Abstract Despite recent interest and advances in facial micro-expression research, there is still plenty of room for impro",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.17",
+   "creationDate": "D:20180216015547Z",
+   "modDate": "D:20180216015547Z"
+  }
+ },
+ "liong2019a": {
+  "pages": 13,
+  "chars": 60636,
+  "first": "OFF-ApexNet on Micro-expression Recognition System Sze-Teng Lionga, Y.S. Ganb,∗, Wei-Chuen Yauc, Yen-Chang Huangd, Tan Lit Kene aDepartment of Electronic Engineering, Feng Chia University, Taichung 40724, Taiwan R.O.C. bDepartment of Mathematics, Xiamen University Malaysia, Jalan Sunsuria, 43900 Sepang, Selangor, Malaysia cSchool of Information Science & Engineering and Software, Xiamen University Malaysia, Jalan Sunsuria, 43900 Sepang, Selangor, Malaysia dSchool of Mathematics and Statistics, Xinyang Normal University, Henan, China eMalaysia-Japan International Institute of Technology (MJIIT)",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.17",
+   "creationDate": "D:20180523002625Z",
+   "modDate": "D:20180523002625Z"
+  }
+ },
+ "liY2018": {
+  "pages": 5,
+  "chars": 22538,
+  "first": "CAN MICRO-EXPRESSION BE RECOGNIZED BASED ON SINGLE APEX FRAME? Yante Li, Xiaohua Huang, Guoying Zhao* Center for Machine Vision and Signal Analysis, University of Oulu, Finland {yante.li, xiaohua.huang, guoying.zhao}@oulu.ﬁ ABSTRACT Micro-expressions are rapid and subtle facial movements such that they are difﬁcult to detect and recognize. Most of recent works have attempted to recognize micro-expression by using the spatial and dynamic information from the video clip. Physiological studies have demonstrated that the apex frame can convey the most emotion expressed in facial ex- pression. It m",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "TeX",
+   "producer": "MiKTeX pdfTeX-1.40.12",
+   "creationDate": "D:20180531213117+08'00'",
+   "modDate": "D:20190222124350+02'00'"
+  }
+ },
+ "liY2021": {
+  "pages": 15,
+  "chars": 70686,
+  "first": "1 Joint Local and Global Information Learning with Single Apex Frame Detection for Micro-expression Recognition Yante Li, Xiaohua Huang Member, IEEE, and Guoying Zhao* Senior Member, IEEE, Abstract—Micro-expressions (MEs) are rapid and subtle facial movements that are difﬁcult to detect and recognize. Most recent works have attempted to recognize MEs with spatial and tem- poral information from video clips. According to psychological studies, the apex frame conveys the most emotional information expressed in facial expressions. However, it is not clear how the single apex frame contributes to ",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "TeX",
+   "producer": "pdfTeX-1.40.21",
+   "creationDate": "D:20210312100242Z",
+   "modDate": "D:20210312100242Z"
+  }
+ },
+ "bai2021": {
+  "pages": 5,
+  "chars": 21525,
+  "first": "MICRO-EXPRESSION RECOGNITION BASED ON VIDEO MOTION MAGNIFICATION AND PRE-TRAINED NEURAL NETWORK Mengjiong Bai, Roland Goecke, and Damith Herath Human-Centred Technology, Faculty of Science and Technology, University of Canberra ABSTRACT This paper investigates the effects of using video motion magniﬁcation methods based on amplitude and phase, respec- tively, to amplify small facial movements. We hypothesise that this approach will assist in the micro-expression recog- nition task. To this end, we apply the pre-trained VGGFace2 model with its excellent facial feature capturing ability to trans",
+  "pdfmeta": {
+   "format": "PDF 1.6",
+   "title": "Micro-Expression Recognition Based On Video Motion Magnification And Pre-Trained Neural Network",
+   "author": "Mengjiong Bai; Roland Goecke; Damith Herath",
+   "subject": "2021 IEEE International Conference on Image Processing (ICIP);2021; ; ;10.1109/ICIP42928.2021.9506793",
+   "keywords": "Micro-expression recognition; Motion magnification; Spatio-temporal network",
+   "producer": "PDFlib+PDI 9.2.0 (Python 3.3.2/Win64); modified using iText® 7.1.9 ©2000-2019 iText Group NV (IEEE; licensed version)",
+   "creationDate": "D:20210803144837-04'00'",
+   "modDate": "D:20210831181016-04'00'"
+  }
+ },
+ "liong2019b": {
+  "pages": 5,
+  "chars": 26731,
+  "first": "Shallow Triple Stream Three-dimensional CNN (STSTNet) for Micro-expression Recognition Sze-Teng Liong1, Y.S. Gan2, John See3, Huai-Qian Khor3, Yen-Chang Huang4 1Department of Electronic Engineering, Feng Chia University, Taichung 40724, Taiwan R.O.C. 2 Department of Info. Management, National Taipei University of Nursing and Health Sciences, Taiwan R.O.C. 3 Faculty of Computing and Informatics, Multimedia University, 63100 Cyberjaya, Malaysia 4 School of Mathematics and Statistics, Xinyang Normal University, Henan, China Abstract— In the recent year, state-of-the-art for facial micro- expressi",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.17",
+   "creationDate": "D:20190822012420Z",
+   "modDate": "D:20190822012420Z"
+  }
+ },
+ "liu2019": {
+  "pages": 4,
+  "chars": 20782,
+  "first": "A Neural Micro-Expression Recognizer Yuchi Liu, Heming Du, Liang Zheng, Tom Gedeon Research School of Computer Science, Australian National University, Australia Abstract— Recognizing micro-expressions underpins signif- icant and critical research and signiﬁcant application. We speculate that this problem requires the understanding of the subtle face movement, integration of face structures and a solution of limited training data. In this paper, we build an effective micro-expression recognition system that leverages techniques stemming from these speculations. First, we intro- duce an optical",
+  "pdfmeta": {
+   "format": "PDF 1.6",
+   "title": "A Neural Micro-Expression Recognizer",
+   "subject": "2019 14th IEEE International Conference on Automatic Face & Gesture Recognition (FG 2019);2019; ; ; ",
+   "creator": "'Certified by IEEE PDFeXpress at 03/07/2019 3:32:10 AM'",
+   "producer": "Acrobat Distiller 17.0 (Windows); modified using iText® 7.1.1 ©2000-2018 iText Group NV (AGPL-version)",
+   "creationDate": "D:20190703163646+05'30'",
+   "modDate": "D:20190708082950-04'00'",
+   "trapped": "False"
+  }
+ },
+ "zhaoS2021": {
+  "pages": 14,
+  "chars": 74923,
+  "first": "A two-stage 3D CNN based learning method for spontaneous micro-expression recognition Sirui Zhao a,b, Hanqing Tao a, Yangsong Zhang b, Tong Xu a, Kun Zhang c, Zhongkai Hao a, Enhong Chen a,⇑ a School of Computer Science and Technology, University of Science and Technology of China (USTC), Hefei, China b School of Computer Science and Technology, Southwest University of Science and Technology (SWUST), Mianyang, China c School of Computer Science and Information Engineering, Hefei University of Technology (HFUT), Hefei, China a r t i c l e i n f o Article history: Received 20 June 2020 Revised 1",
+  "pdfmeta": {
+   "format": "PDF 1.7",
+   "title": "A two-stage 3D CNN based learning method for spontaneous micro-expression recognition",
+   "author": "Sirui Zhao",
+   "subject": "Neurocomputing, 448 (2021) 276-289. doi:10.1016/j.neucom.2021.03.058",
+   "creator": "Elsevier",
+   "producer": "Acrobat Distiller 8.0.0 (Windows)",
+   "creationDate": "D:20210509055937+05'30'",
+   "modDate": "D:20210509060059+05'30'"
+  }
+ },
+ "xia2020a": {
+  "pages": 13,
+  "chars": 69875,
+  "first": "ARXIV 1 Spatiotemporal Recurrent Convolutional Networks for Recognizing Spontaneous Micro-expressions Zhaoqiang Xia, Xiaopeng Hong, Xingyu Gao, Xiaoyi Feng, Guoying Zhao Abstract—Recently, the recognition task of spontaneous facial micro-expressions has attracted much attention with its various real-world applications. Plenty of handcrafted or learned features have been employed for a variety of classiﬁers and achieved promising performances for recognizing micro-expressions. How- ever, the micro-expression recognition is still challenging due to the subtle spatiotemporal changes of micro-expr",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.17",
+   "creationDate": "D:20190116014559Z",
+   "modDate": "D:20190116014559Z"
+  }
+ },
+ "xia2020b": {
+  "pages": 13,
+  "chars": 74432,
+  "first": "1 Revealing the Invisible with Model and Data Shrinking for Composite-database Micro-expression Recognition Zhaoqiang Xia, Wei Peng, Huai-Qian Khor, Xiaoyi Feng, Guoying Zhao Abstract—Composite-database micro-expression recognition is attracting increasing attention as it is more practical to real- world applications. Though the composite database provides more sample diversity for learning good representation models, the important subtle dynamics are prone to disappearing in the domain shift such that the models greatly degrade their perfor- mance, especially for deep models. In this paper, w",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.17",
+   "creationDate": "D:20200618005712Z",
+   "modDate": "D:20200618005712Z"
+  }
+ },
+ "zhang2022": {
+  "pages": 13,
+  "chars": 70182,
+  "first": "1 Short and Long Range Relation Based Spatio-Temporal Transformer for Micro-Expression Recognition Liangfei Zhang, Xiaopeng Hong, Member, Ognjen Arandjelovi´c, Member and Guoying Zhao, Fellow Abstract—Being spontaneous, micro-expressions are useful in the inference of a person’s true emotions even if an attempt is made to conceal them. Due to their short duration and low intensity, the recognition of micro-expressions is a difﬁcult task in affective computing. The early work based on handcrafted spatio-temporal features which showed some promise, has recently been superseded by different deep ",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref",
+   "producer": "pdfTeX-1.40.21",
+   "creationDate": "D:20221124020200Z",
+   "modDate": "D:20221124020200Z"
+  }
+ },
+ "dosovitskiy2021": {
+  "pages": 22,
+  "chars": 67154,
+  "first": "Published as a conference paper at ICLR 2021 AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE Alexey Dosovitskiy∗,†, Lucas Beyer∗, Alexander Kolesnikov∗, Dirk Weissenborn∗, Xiaohua Zhai∗, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, Neil Houlsby∗,† ∗equal technical contribution, †equal advising Google Research, Brain Team {adosovitskiy, neilhoulsby}@google.com ABSTRACT While the Transformer architecture has become the de-facto standard for natural language processing tasks, its applications to computer vision ",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "creator": "LaTeX with hyperref",
+   "producer": "pdfTeX-1.40.21",
+   "creationDate": "D:20210604001958Z",
+   "modDate": "D:20210604001958Z"
+  }
+ },
+ "yang2021": {
+  "pages": 12,
+  "chars": 51671,
+  "first": "SimAM: A Simple, Parameter-Free Attention Module for Convolutional Neural Networks Lingxiao Yang 1 2 3 Ru-Yuan Zhang 4 5 Lida Li 6 Xiaohua Xie 1 2 3 Abstract In this paper, we propose a conceptually simple but very effective attention module for Convolu- tional Neural Networks (ConvNets). In contrast to existing channel-wise and spatial-wise attention modules, our module instead infers 3-D atten- tion weights for the feature map in a layer with- out adding parameters to the original networks. Speciﬁcally, we base on some well-known neuro- science theories and propose to optimize an ener- gy fu",
+  "pdfmeta": {
+   "format": "PDF 1.5",
+   "title": "SimAM: A Simple, Parameter-Free Attention Module for  Convolutional Neural Networks",
+   "author": "Lingxiao Yang, Ru-Yuan Zhang, Lida Li, Xiaohua Xie",
+   "subject": "Proceedings of the International Conference on Machine Learning 2021",
+   "keywords": "Machine Learning, ICML",
+   "creator": "LaTeX with hyperref package",
+   "producer": "pdfTeX-1.40.12",
+   "creationDate": "D:20210609122741+08'00'",
+   "modDate": "D:20210609122741+08'00'"
+  }
+ },
+ "xie2022": {
+  "pages": 19,
+  "chars": 115876,
+  "first": "An Overview of Facial Micro-Expression Analysis: Data, Methodology and Challenge Hong-Xia Xie , Ling Lo , Hong-Han Shuai , and Wen-Huang Cheng , Senior Member, IEEE Abstract—Facial micro-expressions indicate brief and subtle facial movements that appear during emotional communication. In comparison to macro-expressions, micro-expressions are more challenging to be analyzed due to the short span of time and the ﬁne-grained changes. In recent years, micro-expression recognition (MER) has drawn much attention because it can beneﬁt a wide range of applications, e.g., police interrogation, clinical",
+  "pdfmeta": {
+   "format": "PDF 1.4",
+   "title": "An Overview of Facial Micro-Expression Analysis: Data, Methodology and Challenge",
+   "subject": "IEEE Transactions on Affective Computing;2023;14;3;10.1109/TAFFC.2022.3143100",
+   "creator": "Arbortext Advanced Print Publisher 10.0.1062/W Unicode",
+   "producer": "Acrobat Distiller 11.0 (Windows); modified using iText® Core 7.2.4 (AGPL version) ©2000-2022 iText Group NV",
+   "creationDate": "D:20230911110146+05'30'",
+   "modDate": "D:20230916202641-04'00'"
+  }
+ },
+ "adegun2020": {
+  "pages": 14,
+  "chars": 52097,
+  "first": "Scientiﬁc African 8 (2020) e00465 Contents lists available at ScienceDirect Scientiﬁc African journal homepage: www.elsevier.com/locate/sciaf Facial micro-expression recognition: A machine learning approach Iyanu Pelumi Adegun a , b , c , ∗, Hima Bindu Vadapalli c a Department of Computer Science, Federal University of Technology Akure, Nigeria b Department of Computer Science, Rufus Giwa Polytechnic, Owo, Nigeria c School of Computer Science, University of the Witwatersrand, Braamfontein 20 0 0, Johannesburg, South Africa a r t i c l e i n f o Article history: Received 29 February 2020 Revise",
+  "pdfmeta": {
+   "format": "PDF 1.7",
+   "title": "Facial micro-expression recognition: A machine learning approach",
+   "author": "Iyanu Pelumi Adegun",
+   "subject": "Scientific African, 8 (2020) e00465. doi:10.1016/j.sciaf.2020.e00465",
+   "keywords": "Micro-expressions; Feature extraction; Support vector machine; Emotions; Extreme learning machine",
+   "creator": "Elsevier",
+   "producer": "Acrobat Distiller 10.1.10 (Windows)",
+   "creationDate": "D:20200826140826+05'30'",
+   "modDate": "D:20200826140900+05'30'"
+  }
+ },
+ "li2022survey": {
+  "pages": 20,
+  "chars": 125057,
+  "first": "JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 1 Deep Learning for Micro-expression Recognition: A Survey Yante Li, Jinsheng Wei, Yang Liu, Janne Kauttonen and Guoying Zhao*, Fellow, IEEE Abstract—Micro-expressions (MEs) are involuntary facial movements revealing people’s hidden feelings in high-stake situations and have practical importance in various ﬁelds. Early methods for Micro-expression Recognition (MER) are mainly based on traditional features. Recently, with the success of Deep Learning (DL) in various tasks, neural networks have received increasing interest in MER. Differe",
+  "pdfmeta": {
+   "format": "PDF 1.5"
+  }
+ }
+}

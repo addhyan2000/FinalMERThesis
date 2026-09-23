@@ -122,3 +122,6 @@ local_settings.py
 # Ignore package lock files if not used
 poetry.lock
 Pipfile.lock
+
+# Regenerable cache of source-paper text (tools/extract_source_pdfs.py)
+tools/txt/
