@@ -89,6 +89,13 @@ Disgust, repression, sadness and fear are grouped into Negative, happiness forms
 
 The 255 clips come from 26 subjects. Subject 18 contributes only \texttt{Others} clips and is removed together with that category, so the working set contains 25 subjects, and leave-one-subject-out cross-validation produces \textbf{25 folds} rather than 26. Because subjects contribute unequal numbers of clips, the folds differ considerably in size and class composition (\autoref{fig:fold-composition}).
 
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=\textwidth]{fig3_2_fold_composition.png}
+	\caption[Class composition of the 25 leave-one-subject-out folds]{Class composition of the 25 leave-one-subject-out folds. Top: clips held out in each fold, by class, with the number of classes present above each bar. Bottom: the number of folds containing one, two or three classes, and the per-fold macro-F1 ceiling this implies.}
+	\label{fig:fold-composition}
+\end{figure}
+
 \subsection{Input Preparation}
 \label{sec:network-preparation}
 
@@ -429,7 +436,7 @@ The random seed is reset before every configuration and every fold, so the sampl
 \label{sec:evaluation-protocol}
 % =============================================================================
 
-All configurations are evaluated with the same fold structure, checkpoint selection rule and aggregation across folds. The underlying metrics are defined in Section~\ref{sec:evaluation}, and Section~\ref{sec:megc-metrics} explains why this dataset requires the choices below.
+All configurations are evaluated with the same fold structure, checkpoint selection rule and aggregation across folds. The underlying metrics are defined in Section~\ref{sec:evaluation}.
 
 \subsection{Leave-One-Subject-Out Folds}
 \label{sec:loso-folds}

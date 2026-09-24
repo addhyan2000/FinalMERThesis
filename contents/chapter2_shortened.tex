@@ -52,7 +52,7 @@ Suppressed facial movements may be difficult to perceive even when sufficient fr
 \subsection{Temporal Phases: Onset, Apex and Offset}
 \label{sec:onset-apex-offset}
 
-The \textbf{onset} marks the beginning of the movement, the \textbf{apex} its point of greatest annotated intensity, and the \textbf{offset} its end (\autoref{fig:casme2-sequence}). Apex-frame methods use the peak frame as a compact description~\cite{liY2018}. This pipeline instead uses the annotated onset and offset to bound a sequence. The apex annotation is neither read by the model nor used to select frames, so temporal features must be learned from the sampled sequence rather than supplied through a selected peak.
+The \textbf{onset} marks the beginning of the movement, the \textbf{apex} its point of greatest annotated intensity, and the \textbf{offset} its end (\autoref{fig:casme2-sequence}). Apex-frame methods use the peak frame as a compact description~\cite{liY2018}, although one of the stronger MEGC 2019 submissions used mid-position frames as a substitute for annotated apex frames~\cite{see2019}. This pipeline instead uses the annotated onset and offset to bound a sequence. The apex annotation is neither read by the model nor used to select frames, so temporal features must be learned from the sampled sequence rather than supplied through a selected peak.
 
 \subsection{Action Units and the Prediction Target}
 \label{sec:action-units}
@@ -125,28 +125,15 @@ The field therefore groups the labels by affective valence. This convention orig
 
 This grouping differs from the MEGC convention in one respect. MEGC 2019 reports the CASME~II part of its composite dataset as \textbf{145} samples, with the Negative class covering ``Disgust and Repression''~\cite{see2019}, because it builds on the five-category release in which sadness and fear fall under ``others''. This thesis uses the seven-label coding and assigns sadness and fear to Negative, following the mapping MEGC gives for SAMM. The result is an eleven-clip difference ($N = 156$ against 145; Negative 99 against 88). Nine of the eleven clips are the sadness and fear samples; the remaining two are unexplained, since disgust and repression together number 90 in the released coding against the 88 reported by the challenge. All nine added clips belong to the majority class and to the categories that coders found hardest to assign, so they make this task, if anything, slightly harder.
 
-\subsection{The Original Baseline}
+\subsection{Benchmark Protocols}
 \label{sec:original-baseline}
+\label{sec:megc-metrics}
 
 Yan et al.~\cite{yan2014} established the first baseline on CASME~II with LBP-TOP features~\cite{zhaoG2007} and a support vector machine. They swept the spatial and temporal radii but excluded a temporal radius of one, because the change between adjacent frames at 200~fps is negligible, which is an early indication that a high frame rate is not automatically an advantage. Five-class accuracies under leave-one-subject-out evaluation lie between the high fifties and low sixties, with a best result of \textbf{63.41\,\%}.
 
 Three observations follow. First, leave-one-subject-out is the native protocol of this benchmark rather than a stricter protocol adopted later. Second, the baseline is reported as accuracy alone: with ``others'' accounting for 102 of 247 samples, a classifier that always predicts the majority class reaches 41\,\%, so 63.41\,\% is not by itself evidence of a working system. Third, the sources disagree on the protocol behind this figure. Yan et al.~\cite{yan2014} state leave-one-subject-out in the abstract and results, but the caption of the corresponding table reads ``leave-one-out cross-validation'', and Li et al.~\cite{liX2018} reproduce the figure as leave-one-\textit{sample}-out, a considerably easier protocol. This thesis follows the prose of the original paper and records the discrepancy. Accuracy in the baseline also varies by several points across the radius sweep alone, so differences of similar size between architectures cannot be interpreted without an estimate of variance.
 
-\subsection{The MEGC 2019 Composite Protocol}
-\label{sec:megc-metrics}
-
-The Composite Database Evaluation of the Second Facial Micro-Expression Grand Challenge (MEGC 2019)~\cite{see2019} merges SMIC, CASME~II and SAMM into one dataset of \textbf{442 samples} (Negative 250, Positive 109, Surprise 83), of which CASME~II contributes 145, and evaluates it with leave-one-subject-out cross-validation. Accuracy is rejected because of class imbalance, and two balanced metrics are required: the \textbf{Unweighted F1 (UF1)}, the macro-averaged F1 of \autoref{sec:confusion-matrix}, and the \textbf{Unweighted Average Recall (UAR)}, or balanced accuracy.
-
-UF1 accumulates true positives, false positives and false negatives \textbf{over all folds} before any per-class F1 is computed, which differs from averaging per-fold macro F1 scores (\autoref{sec:pooled-vs-fold}). The difference matters for CASME~II: clips are distributed very unequally across subjects, and many single-subject folds contain only one of the three classes, so a per-fold macro F1 is bounded well below one by fold composition alone (\autoref{fig:fold-composition}). The primary metric of this thesis, pooled macro F1, is therefore identical in construction to UF1.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig3_2_fold_composition.png}
-	\caption[Class composition of the 25 leave-one-subject-out folds]{Class composition of the 25 leave-one-subject-out folds, and the per-fold macro-F1 ceiling it implies.}
-	\label{fig:fold-composition}
-\end{figure}
-
-The challenge results, which reach 0.7885 composite UF1 and 0.8764 on the CASME~II subset~\cite{see2019}, come from models trained on the \textit{composite} dataset of 442 samples from 68 subjects and scored on the CASME~II part of the pooled predictions. A CASME~II result from the challenge therefore describes a cross-dataset model evaluated on CASME~II clips, trained with approximately \textbf{2.8 times} the data available in a single-dataset fold of about 150 clips. Single-dataset results should not be compared with these figures without stating this difference. Two further findings of the challenge are relevant: the three highest-ranked submissions all used optical flow as their input representation, and one submission replaced annotated apex frames with mid-position frames with little loss of performance.
+The second benchmark is the Composite Database Evaluation of the Second Facial Micro-Expression Grand Challenge (MEGC 2019)~\cite{see2019}, which merges SMIC, CASME~II and SAMM into one dataset of 442 samples from 68 subjects, with CASME~II contributing 145, and evaluates it by leave-one-subject-out cross-validation. Because of class imbalance, accuracy is replaced by two balanced metrics, the Unweighted F1 (UF1) and the Unweighted Average Recall (UAR)~\cite{see2019}; UF1 accumulates the confusion counts over all folds before the per-class F1 scores are computed (\autoref{sec:pooled-vs-fold}). CASME~II results from the challenge therefore describe models trained on the composite dataset and evaluated on CASME~II clips, and are not directly comparable with single-dataset results.
 
 \subsection{Limitations of the Dataset}
 \label{sec:corpus-threats}
