@@ -22,27 +22,27 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-In the moment after a difficult question lands, a face can give something away. A tightening at the brow, a pull at one corner of the mouth: there and gone again before the person has registered producing it, and at odds with the composed expression held over the top of it. Movements of this kind are micro-expressions: brief, involuntary facial movements that betray an emotion its owner is working to keep hidden~\cite{yan2014}. They last under half a second, and they are faint enough that an observer watching in real time will ordinarily miss them entirely.
+Micro-expressions are brief, involuntary facial movements that reveal an emotion which a person is attempting to conceal~\cite{yan2014}. They last no longer than approximately half a second~\cite{yan2014}, and their intensity is so low that an observer watching in real time will usually fail to notice them. A micro-expression may consist, for example, of a slight tightening of the brow or a movement at one corner of the mouth that is inconsistent with the expression the person is deliberately displaying.
 
 This combination of informative content and near-invisibility has motivated sustained research into their automatic recognition. Yan et al.~\cite{yan2014} motivate the CASME II dataset on the grounds that a robust automatic recogniser ``would have broad applications in national safety, police interrogation, and clinical diagnosis''; the capability is likewise reported as promising for lie detection, business negotiation and psychoanalysis~\cite{xia2020a}. These are the motivating claims of the field rather than records of deployed systems, but they account for the continued research interest in the problem.
 
-The systems developed for this task are not single models. They are pipelines, assembled stage by stage from techniques that were introduced to the field separately and are now adopted together. This thesis decomposes one such pipeline and measures the contribution of each of its stages individually.
+Automatic recognition systems for this task are typically assembled as pipelines of techniques that were introduced to the field separately. This thesis decomposes one such pipeline and measures the contribution of each of its stages individually.
 
 
 \section{Research Motivation}
 \label{sec:motivation}
 
-Automatically recognising micro-expressions, the brief, low-intensity facial muscle movements described above, from video is not a matter of applying a classifier directly to a face. Three properties of the phenomenon work against it. The facial movement is short, so only a small number of video frames carry the information that distinguishes one emotion from another. It is faint, so the information those frames carry lies close to the noise level of ordinary video. And it cannot be produced on instruction, so the recordings that contain it must be elicited under controlled laboratory conditions, which limits the resulting datasets to a small size.
+Automatic recognition of micro-expressions from video cannot be achieved by applying a classifier directly to face images. Three properties of the phenomenon work against it. The facial movement is short, so only a small number of video frames carry the information that distinguishes one emotion from another. It is faint, so the information those frames carry lies close to the noise level of ordinary video. And it cannot be produced on instruction, so the recordings that contain it must be elicited under controlled laboratory conditions, which limits the resulting datasets to a small size.
 
-Systems built for the task have responded to these constraints in a consistent way. Rather than a single model operating on raw video, they are assembled as a sequence of stages: the small facial motion is amplified, the sequence of pixel intensities is re-expressed as a description of movement, and the clip is resampled to a fixed duration before any learned component receives it; a spatial feature extractor then reduces each frame, and a temporal model processes the resulting sequence. Each stage was introduced with its own justification and its own reported gain, and each tends to be adopted together with the others.
+Systems built for the task have responded to these constraints in a consistent way. The small facial motion is amplified, the sequence of pixel intensities is re-expressed as a description of movement, and the clip is resampled to a fixed duration before any learned component receives it; a spatial feature extractor then reduces each frame, and a temporal model processes the resulting sequence. Each stage was introduced with its own justification and its own reported gain, and each tends to be adopted together with the others.
 
-This arrangement is unproblematic when a pipeline is being published, but it becomes a practical difficulty when one is being built. Anyone assembling such a pipeline works within a finite budget of implementation effort and of the tuning required for preprocessing parameters that have no principled setting. The developer must decide which stages justify that investment. The published literature does not answer this question, because each component is almost always evaluated within a complete system that differs from its predecessor in more than one respect.
+This arrangement presents a practical difficulty for anyone building such a system. Implementation effort, and the tuning of preprocessing parameters that have no principled setting, are finite, so the developer must decide which stages justify that investment. The published literature does not answer this question, because each component is almost always evaluated within a complete system that differs from its predecessor in more than one respect.
 
 
 \section{Research Aim and Objectives}
 \label{sec:objectives}
 
-The aim of this thesis is to investigate whether improved temporal modelling and motion representations can enhance the recognition of micro-expressions in dynamic facial expression recognition. The central research question is accordingly: \textit{how can the modelling of temporal phases and motion cues improve recognition accuracy for subtle and short-lived facial expressions?}
+The aim of this thesis is to investigate whether improved temporal modelling and motion representations can enhance the recognition of micro-expressions in dynamic facial expression recognition. The central research question is accordingly: \textit{how can the modelling of temporal phases and motion cues improve recognition accuracy for subtle and short-lived facial expressions?} The intended outcome is a clearer understanding of the limitations of current approaches, and of how sensitivity to fine-grained facial dynamics can be improved while robustness to noise is maintained.
 
 The work builds on established supervised models and evaluates practical strategies for temporal and motion modelling. It does so by treating a standard micro-expression recognition pipeline as the object of study and measuring what each of its stages separately contributes under a single fixed protocol. Every configuration receives the same hybrid motion representation, in which each clip is encoded as horizontal optical flow, vertical optical flow and optical strain. Four components are then varied: Eulerian video magnification, which amplifies subtle facial motion before the motion representation is computed; a convolutional spatial stem, which learns spatial features from that representation; parameter-free attention (SimAM), which re-weights the learned features; and a temporal transformer, which models the sequence through temporal self-attention. The central research question is therefore addressed through three more specific questions:
 
@@ -79,18 +79,18 @@ This thesis makes the following contributions.
 \section{Structure of the Thesis}
 \label{sec:structure}
 
-The thesis proceeds in six chapters, each taking the pipeline as its organising object and treating it from a different perspective.
+The thesis is organised in six chapters.
 
 \begin{itemize}
 	\item \textbf{Chapter 1: Introduction} motivates the study, states its aim, research questions and objectives, and summarises its contributions.
 
-	\item \textbf{Chapter 2: Background} introduces the concepts on which the thesis builds, in the order in which the pipeline applies them: micro-expressions, data acquisition and preprocessing, Eulerian video magnification, optical flow and optical strain, neural network fundamentals and building blocks, training with limited and imbalanced data, and evaluation methodology, followed by an overview of the complete pipeline.
+	\item \textbf{Chapter 2: Background} introduces the concepts on which the thesis builds: micro-expressions and the datasets used to study them, including CASME~II; data acquisition and preprocessing; Eulerian video magnification; optical flow and optical strain; neural network fundamentals and building blocks; training with limited and imbalanced data; and evaluation methodology.
 
-	\item \textbf{Chapter 3: Literature Review} reviews the literature bearing on each pipeline component as a single continuous argument, closing at \autoref{sec:synthesis-and-gap} with the consolidated research gap and every declared divergence from the reviewed methods.
+	\item \textbf{Chapter 3: Literature Review} reviews the published evidence for each pipeline component and closes with the consolidated research gap and the declared divergences of the implemented system from the reviewed methods.
 
 	\item \textbf{Chapter 4: Methodology} specifies the study as carried out: the experimental design, the dataset and its preparation, the twelve configurations, the architecture and its ablatable components, the training procedure and the evaluation protocol, together with the research gaps and limitations of each motion- and temporal-modelling component.
 
-	\item \textbf{Chapter 5: Results} reports what the ablation found, taking each ablated component in turn over the matched pairs that isolate it, and then drawing the findings together against per-class behaviour and the published literature.
+	\item \textbf{Chapter 5: Results} reports the results of the ablation, taking each component in turn over the matched pairs that isolate it, and then examines per-class behaviour, compares the results with published work and discusses them.
 
 	\item \textbf{Chapter 6: Conclusion} answers the research questions and states the contributions, limitations and future work of the thesis.
 \end{itemize}
