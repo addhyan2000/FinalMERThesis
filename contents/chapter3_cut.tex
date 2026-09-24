@@ -182,7 +182,7 @@ Two caveats limit what these results imply for this thesis. The experiment of Be
 \label{sec:cnn-review}
 % =============================================================================
 
-By 2019 the field had converged on optical flow as the input~\cite{see2019}; the open question was which model should process it. A learned backbone offers what hand-crafted descriptors cannot~\cite{liong2019b}, but it is constrained by the small size of the available datasets~\cite{li2022survey} (\autoref{sec:corpus-threats}).
+By 2019 the highest-ranked challenge submissions all used optical flow as their input~\cite{see2019}; the open question was which model should process it. A learned backbone offers what hand-crafted descriptors cannot~\cite{liong2019b}, but it is constrained by the small size of the available datasets~\cite{li2022survey} (\autoref{sec:corpus-threats}).
 
 \textbf{The term ``3D CNN''~\cite{ji2013,tran2015} denotes three different architectures in this literature.} STSTNet~\cite{liong2019b}, the reference shallow model, describes itself as a ``Shallow Triple Stream Three-dimensional CNN'', but its input is a single $28 \times 28 \times 3$ tensor whose third dimension holds horizontal flow, vertical flow and strain, \textbf{not time}. Its three parallel single-layer streams~\cite{liong2019b}, with 3, 5 and 8 kernels, compensate for ``the small scale input data \ldots to avoid the problem of underfitting''; the clip has already been reduced to one frame pair. STRCN~\cite{xia2020a}, by contrast, extends convolutional connectivity ``across temporal domain'' with recurrent convolutional layers, and Zhao et al.~\cite{zhaoS2021} apply a C3D-style network~\cite{tran2015} to a ten-frame flow sequence, in which the temporal axis is present but short. Results reported under the same label are therefore not directly comparable.
 
@@ -212,7 +212,7 @@ Yang et al.~\cite{yang2021} motivate the module by spatial suppression in neuros
 
 Yang et al.~\cite{yang2021} evaluate SimAM with several network families on CIFAR and ImageNet and report performance competitive with learned attention modules. For CIFAR they sweep $\lambda$~\cite{yang2021} from $10^{-1}$ to $10^{-6}$ and select $10^{-4}$, whereas for ImageNet they select $0.1$. The value $10^{-4}$ is therefore selected for a particular dataset rather than being a general setting.
 
-\textbf{The transfer of these results is limited.} The original experiments~\cite{yang2021} concern natural images, different training-set sizes and different feature distributions. Here the input is flow and strain, so distinctiveness need not relate to useful evidence in the same way. The image experiments also do not indicate whether video statistics should be computed per frame or per clip, and the absence of learned weights does not remove the risk of overfitting.
+\textbf{The transfer of these results is limited.} The original experiments~\cite{yang2021} concern natural images, different training-set sizes and different feature distributions. Here the input is flow and strain, so distinctiveness need not relate to useful evidence in the same way, and the absence of learned weights does not remove the risk of overfitting.
 
 \subsection{Relevance and Scope}
 \label{sec:simam-gap}
@@ -241,7 +241,7 @@ The protocol labels require care. Zhang et al.~\cite{zhang2022} describe three-c
 \subsection{Implementation and Declared Divergences}
 \label{sec:transformer-implications}
 
-The evaluated component receives 32 tokens of width 96, produced either by the convolutional stem or by spatial pooling followed by a learned linear projection. The encoder has four pre-norm layers, eight heads, a feed-forward width of 256 and a dropout rate of 0.1. Fixed sinusoidal positional encodings~\cite{vaswani2017} are added before attention, and mean pooling follows it. When the encoder is disabled, the input tokens are averaged directly. Table~\ref{tab:slstt-divergences} lists the six differences from published SLSTT.
+The temporal encoder evaluated in this thesis differs from published SLSTT in six respects, listed in \autoref{tab:slstt-divergences}.
 
 \begin{table}[htbp]
 	\centering
@@ -262,7 +262,7 @@ The evaluated component receives 32 tokens of width 96, produced either by the c
 	\label{tab:slstt-divergences}
 \end{table}
 
-Six matched pairs evaluate the encoder with all other components fixed within each pair. They test the complete encoder, including positional encoding, feed-forward layers and normalisation, against direct mean pooling; they do not isolate self-attention from these operations or compare it with another learned temporal model. Table~\ref{tab:slstt-divergences} suggests three untested follow-ups: an LSTM aggregator, onset-referenced rather than consecutive-frame flow, and learned rather than fixed positional encodings. This thesis therefore establishes a matched comparison of the implemented encoder against an order-blind baseline within this pipeline; it neither validates SLSTT nor ranks attention, recurrence and convolution in general.
+Six matched pairs evaluate the encoder against direct mean pooling, with all other components fixed within each pair. This thesis therefore establishes a matched comparison of the implemented encoder against an order-blind baseline within this pipeline; it neither validates SLSTT nor ranks attention, recurrence and convolution in general.
 
 
 % =============================================================================
@@ -280,12 +280,10 @@ The 99 : 32 : 25 class distribution of \autoref{sec:label-taxonomy} reflects wha
 
 \textbf{Label smoothing}~\cite{szegedy2016} \textbf{has not been examined for this task.} Dosovitskiy et al.~\cite{dosovitskiy2021} list it among the regularisers they tune, but no reviewed micro-expression study uses it or reports its effect under class imbalance.
 
-Two techniques that belong to a fuller treatment of this pipeline are not part of the implemented system: \textbf{Grad-CAM++ visual inspection}, which would show whether the learned components attend to the regions of the coded action units, and \textbf{adversarial identity disentanglement}, which addresses the single-demographic limitation of \autoref{sec:corpus-threats}. Both were removed at earlier stages of this project.
-
 \subsection{Relevance and Scope}
 \label{sec:imbalance-gap}
 
-The corrections themselves are well established. The literature does not settle how two corrections interact, what value $\gamma$ should take for this task, or how over-correction manifests when it fails. This thesis contributes to the first and third questions by documenting two opposite class-collapse failures and the rule that resolved them (\autoref{sec:class-weighting-rule}). It does not address the second, since $\gamma = 2.0$ and label smoothing of 0.05 are held constant across all twelve configurations.
+The corrections themselves are well established. The literature does not settle how two corrections interact, what value $\gamma$ should take for this task, or how over-correction manifests when it occurs. This thesis holds the imbalance treatment, $\gamma = 2$ and label smoothing of 0.05 constant across all twelve configurations, so it does not measure their effects. The class-collapse failures observed during its development are reported as context rather than as a controlled finding (\autoref{sec:class-weighting-rule}).
 
 
 % =============================================================================
@@ -295,7 +293,7 @@ The corrections themselves are well established. The literature does not settle 
 
 This section combines the findings of the preceding sections into one research gap and lists every declared divergence between the implemented system and the reviewed literature.
 
-The reviewed literature establishes several points. The available datasets are small, demographically narrow, recorded in laboratories and inherently imbalanced~\cite{yan2014,davison2018,see2019}, and CASME~II remains the primary single-dataset benchmark under its native leave-one-subject-out protocol (\autoref{sec:corpus}). Motion is the appropriate input rather than appearance~\cite{see2019,liong2019a,zhaoS2021}; a strain field adds a further cue~\cite{liong2016}, although on CASME~II only weakly and under a protocol that is not subject-independent; and both the magnification factor and the sequence length have interior optima that can be located only by search~\cite{liX2018,ben2021}. At this data size, capacity added without parameters performs better than capacity added with them~\cite{xia2020b}, and self-attention is the best-performing mechanism reported~\cite{zhang2022}. Accuracy alone is inadequate under class imbalance~\cite{liong2016,see2019} and must be replaced by macro-averaged measures accumulated across folds~\cite{see2019}.
+The reviewed literature establishes several points. The available datasets are small, demographically narrow, recorded in laboratories and inherently imbalanced~\cite{yan2014,davison2018,see2019}, and CASME~II remains the primary single-dataset benchmark under its native leave-one-subject-out protocol (\autoref{sec:corpus}). Motion-based input is preferred by the strongest benchmark systems~\cite{see2019,liong2019a,zhaoS2021}; a strain field adds a further cue~\cite{liong2016}, although on CASME~II only weakly and under a protocol that is not subject-independent; and both the magnification factor and the sequence length have interior optima that can be located only by search~\cite{liX2018,ben2021}. At this data size, capacity added without parameters performs better than capacity added with them~\cite{xia2020b}, and the strongest reviewed CASME~II result is obtained with a transformer-based architecture~\cite{zhang2022}. Accuracy alone is inadequate under class imbalance~\cite{liong2016,see2019} and must be replaced by macro-averaged measures accumulated across folds~\cite{see2019}.
 
 \subsection{Four Limitations Common to the Reviewed Studies}
 \label{sec:four-limitations}
@@ -322,14 +320,14 @@ This gap has practical consequences. A practitioner assembling this pipeline has
 \subsection{How this Thesis Addresses the Gap}
 \label{sec:addressing-gap}
 
-\textbf{What it does.} This thesis treats the pipeline as a factorial experiment rather than a proposal. Four components are varied independently across every architecturally valid cell of a 2\textsuperscript{4} design, giving twelve configurations, each evaluated under \textbf{complete 25-fold leave-one-subject-out cross-validation on CASME~II} with all other factors held identical. This provides the joint measurement that limitation (a) identifies as missing; reporting the protocol in full addresses (b) for this study; and training from scratch is the condition that (c) identifies as lacking evidence. The marginal contribution of each component is obtained from pairs of runs that differ in that component alone, and the distribution of the four effects answers the research gap. A further contribution arises from the history of the project rather than the experiment: the documentation of \textbf{two opposite class-collapse failures} that no reviewed paper reports (\autoref{sec:class-weighting-rule}).
+\textbf{What it does.} This thesis treats the pipeline as a factorial experiment rather than a proposal. Four components are varied independently across every architecturally valid cell of a 2\textsuperscript{4} design, giving twelve configurations, each evaluated under \textbf{complete 25-fold leave-one-subject-out cross-validation on CASME~II} with all other factors held identical. This provides the joint measurement that limitation (a) identifies as missing; reporting the protocol in full addresses (b) for this study; and training from scratch is the condition that (c) identifies as lacking evidence. The marginal contribution of each component is obtained from pairs of runs that differ in that component alone, and the distribution of the four effects answers the research gap.
 
 \textbf{What it does not do.} Three of the four limitations are addressed only in part. For (b), this thesis reports its own protocol completely but cannot resolve the inconsistency of the field, and its sample size of 156 differs from the 145 of MEGC~\cite{see2019}. For (c), it establishes the behaviour of these components when trained from scratch on one dataset, which is a different question from their behaviour under composite training. For (d), it inherits parameter values rather than searching them: $\alpha = 10$, $T = 32$, $\lambda = 10^{-4}$ and $\gamma = 2.0$ are fixed throughout, so the ablation measures the architecture at a single point of the preprocessing parameter space.
 
 \subsection{Declared Divergences from the Reviewed Literature}
 \label{sec:divergence-ledger}
 
-The review identified twelve points at which the implemented system departs from the work on which it draws, several of which were discovered only through the review. They are listed in \autoref{tab:divergence-ledger} so that no result rests on an unstated assumption.
+The review identified twelve points at which the implemented system departs from the work on which it draws. They are listed in \autoref{tab:divergence-ledger} so that no result rests on an unstated assumption.
 
 \begin{table}[!htbp]
 	\centering
