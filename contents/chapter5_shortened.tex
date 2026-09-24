@@ -32,30 +32,30 @@ This chapter reports the results of the ablation. Section~\ref{sec:results-overv
 \subsection{Ranking of the Configurations}
 \label{sec:twelve-ranked}
 
-Table~\ref{tab:twelve-ranked} ranks the twelve configurations by pooled macro F1 and reports pooled accuracy and the number of correctly classified clips, and Figure~\ref{fig:headline} plots the ranking.
+Table~\ref{tab:twelve-ranked} ranks the twelve configurations by pooled macro F1 and reports pooled accuracy, and Figure~\ref{fig:headline} plots the ranking.
 
 \begin{table}[htbp]
 	\centering
 	\footnotesize
-	\begin{tabular}{c l c c c c r r r}
+	\begin{tabular}{c l c c c c r r}
 		\hline
-		\textbf{Rank} & \textbf{Config.} & \textbf{EVM} & \textbf{SimAM} & \textbf{CNN} & \textbf{TF} & \textbf{Macro F1} & \textbf{Accuracy} & \textbf{Correct} \\
+		\textbf{Rank} & \textbf{Config.} & \textbf{EVM} & \textbf{SimAM} & \textbf{CNN} & \textbf{TF} & \textbf{Macro F1} & \textbf{Accuracy} \\
 		\hline
-		1  & \texttt{config\_2}  & --         & --         & --         & \checkmark & 0.7122 & 0.7436 & 116 \\
-		2  & \texttt{config\_8}  & \checkmark & \checkmark & \checkmark & \checkmark & 0.6659 & 0.7500 & 117 \\
-		3  & \texttt{config\_7}  & \checkmark & --         & \checkmark & \checkmark & 0.6625 & 0.7051 & 110 \\
-		4  & \texttt{config\_12} & \checkmark & --         & --         & \checkmark & 0.6581 & 0.6795 & 106 \\
-		5  & \texttt{config\_6}  & --         & \checkmark & \checkmark & \checkmark & 0.6171 & 0.7308 & 114 \\
-		6  & \texttt{config\_9}  & --         & --         & \checkmark & \checkmark & 0.5830 & 0.7308 & 114 \\
-		7  & \texttt{config\_13} & \checkmark & --         & \checkmark & --         & 0.4480 & 0.4359 & 68 \\
-		8  & \texttt{config\_4}  & \checkmark & --         & --         & --         & 0.4386 & 0.4808 & 75 \\
-		9  & \texttt{config\_1}  & --         & --         & --         & --         & 0.4337 & 0.4615 & 72 \\
-		10 & \texttt{config\_5}  & --         & \checkmark & \checkmark & --         & 0.4302 & 0.4231 & 66 \\
-		11 & \texttt{config\_3}  & --         & --         & \checkmark & --         & 0.4252 & 0.4167 & 65 \\
-		12 & \texttt{config\_16} & \checkmark & \checkmark & \checkmark & --         & 0.4192 & 0.4038 & 63 \\
+		1  & C2  & --         & --         & --         & \checkmark & 0.7122 & 0.7436 \\
+		2  & C8  & \checkmark & \checkmark & \checkmark & \checkmark & 0.6659 & 0.7500 \\
+		3  & C7  & \checkmark & --         & \checkmark & \checkmark & 0.6625 & 0.7051 \\
+		4  & C12 & \checkmark & --         & --         & \checkmark & 0.6581 & 0.6795 \\
+		5  & C6  & --         & \checkmark & \checkmark & \checkmark & 0.6171 & 0.7308 \\
+		6  & C9  & --         & --         & \checkmark & \checkmark & 0.5830 & 0.7308 \\
+		7  & C13 & \checkmark & --         & \checkmark & --         & 0.4480 & 0.4359 \\
+		8  & C4  & \checkmark & --         & --         & --         & 0.4386 & 0.4808 \\
+		9  & C1  & --         & --         & --         & --         & 0.4337 & 0.4615 \\
+		10 & C5  & --         & \checkmark & \checkmark & --         & 0.4302 & 0.4231 \\
+		11 & C3  & --         & --         & \checkmark & --         & 0.4252 & 0.4167 \\
+		12 & C16 & \checkmark & \checkmark & \checkmark & --         & 0.4192 & 0.4038 \\
 		\hline
 	\end{tabular}
-	\caption[All twelve configurations, ranked by pooled macro F1]{All twelve configurations, ranked by pooled macro F1. Accuracy is pooled; correct counts are out of 156 clips. TF: temporal transformer.}
+	\caption[All twelve configurations, ranked by pooled macro F1]{All twelve configurations, ranked by pooled macro F1. Accuracy is pooled over all 156 clips. EVM: Eulerian video magnification; CNN: convolutional stem; TF: temporal transformer.}
 	\label{tab:twelve-ranked}
 \end{table}
 
@@ -111,12 +111,12 @@ Each matched pair holds magnification, SimAM and the convolutional stem fixed an
 		\hline
 		\textbf{Pair (off $\rightarrow$ on)} & \textbf{$\Delta$ pooled macro F1} \\
 		\hline
-		\texttt{config\_1} $\rightarrow$ \texttt{config\_2}  & +0.2786 \\
-		\texttt{config\_16} $\rightarrow$ \texttt{config\_8} & +0.2467 \\
-		\texttt{config\_4} $\rightarrow$ \texttt{config\_12} & +0.2195 \\
-		\texttt{config\_13} $\rightarrow$ \texttt{config\_7} & +0.2146 \\
-		\texttt{config\_5} $\rightarrow$ \texttt{config\_6}  & +0.1869 \\
-		\texttt{config\_3} $\rightarrow$ \texttt{config\_9}  & +0.1578 \\
+		C1 $\rightarrow$ C2  & +0.2786 \\
+		C16 $\rightarrow$ C8 & +0.2467 \\
+		C4 $\rightarrow$ C12 & +0.2195 \\
+		C13 $\rightarrow$ C7 & +0.2146 \\
+		C5 $\rightarrow$ C6  & +0.1869 \\
+		C3 $\rightarrow$ C9  & +0.1578 \\
 		\hline
 	\end{tabular}
 	\caption[Transformer matched pairs]{Transformer matched pairs.}
@@ -134,7 +134,7 @@ Each matched pair holds magnification, SimAM and the convolutional stem fixed an
 \label{sec:transformer-consistency}
 \label{sec:transformer-separation}
 
-Even the smallest transformer gain exceeds the absolute mean effect of every other component. The consistent positive direction holds across all tested architectural settings, but the six pairs share one dataset and one training protocol and are not independent replications. With a single seed and no retained per-clip predictions, neither a confidence interval nor a paired significance test can be derived from them. The separation of the ranking by the transformer is likewise a property of these twelve scores, not evidence that the same boundary would hold for another dataset, seed or training regime.
+Even the smallest transformer gain exceeds the absolute mean effect of every other component. The consistent positive direction holds across all tested architectural settings, but the six pairs share one dataset and one training protocol and are not independent replications. The separation of the ranking by the transformer is likewise a property of these twelve scores, not evidence that the same boundary would hold for another dataset, seed or training regime.
 
 
 % =============================================================================
@@ -155,12 +155,12 @@ Each matched pair holds the learned components fixed and toggles magnification. 
 		\hline
 		\textbf{Pair (off $\rightarrow$ on)} & \textbf{Other enabled components} & \textbf{$\Delta$ pooled macro F1} \\
 		\hline
-		\texttt{config\_9} $\rightarrow$ \texttt{config\_7}  & CNN + transformer         & +0.0795 \\
-		\texttt{config\_6} $\rightarrow$ \texttt{config\_8}  & CNN + SimAM + transformer & +0.0488 \\
-		\texttt{config\_3} $\rightarrow$ \texttt{config\_13} & CNN only                  & +0.0228 \\
-		\texttt{config\_1} $\rightarrow$ \texttt{config\_4}  & none                      & +0.0049 \\
-		\texttt{config\_5} $\rightarrow$ \texttt{config\_16} & CNN + SimAM               & $-$0.0109 \\
-		\texttt{config\_2} $\rightarrow$ \texttt{config\_12} & transformer only          & $-$0.0541 \\
+		C9 $\rightarrow$ C7  & CNN + transformer         & +0.0795 \\
+		C6 $\rightarrow$ C8  & CNN + SimAM + transformer & +0.0488 \\
+		C3 $\rightarrow$ C13 & CNN only                  & +0.0228 \\
+		C1 $\rightarrow$ C4  & none                      & +0.0049 \\
+		C5 $\rightarrow$ C16 & CNN + SimAM               & $-$0.0109 \\
+		C2 $\rightarrow$ C12 & transformer only          & $-$0.0541 \\
 		\hline
 	\end{tabular}
 	\caption[Motion-magnification matched pairs]{Motion-magnification matched pairs.}
@@ -197,10 +197,10 @@ SimAM is evaluated only in configurations with the convolutional stem, which lea
 		\hline
 		\textbf{Pair (off $\rightarrow$ on)} & \textbf{$\Delta$ pooled macro F1} \\
 		\hline
-		\texttt{config\_9} $\rightarrow$ \texttt{config\_6}   & +0.0341 \\
-		\texttt{config\_3} $\rightarrow$ \texttt{config\_5}   & +0.0050 \\
-		\texttt{config\_7} $\rightarrow$ \texttt{config\_8}   & +0.0034 \\
-		\texttt{config\_13} $\rightarrow$ \texttt{config\_16} & $-$0.0288 \\
+		C9 $\rightarrow$ C6   & +0.0341 \\
+		C3 $\rightarrow$ C5   & +0.0050 \\
+		C7 $\rightarrow$ C8   & +0.0034 \\
+		C13 $\rightarrow$ C16 & $-$0.0288 \\
 		\hline
 	\end{tabular}
 	\caption[SimAM matched pairs]{SimAM matched pairs.}
@@ -220,10 +220,10 @@ Table~\ref{tab:simam-per-class} shows the per-class F1 of the two pairs with the
 		\hline
 		\textbf{Configuration} & \textbf{Negative} & \textbf{Positive} & \textbf{Surprise} \\
 		\hline
-		\texttt{config\_9} (SimAM off)  & 0.8491 & 0.6000 & \textbf{0.3000} \\
-		\texttt{config\_6} (SimAM on)   & 0.8325 & 0.4286 & \textbf{0.5902} \\
-		\texttt{config\_13} (SimAM off) & 0.4127 & 0.5278 & 0.4035 \\
-		\texttt{config\_16} (SimAM on)  & 0.3500 & 0.5143 & 0.3934 \\
+		C9 (SimAM off)  & 0.8491 & 0.6000 & \textbf{0.3000} \\
+		C6 (SimAM on)   & 0.8325 & 0.4286 & \textbf{0.5902} \\
+		C13 (SimAM off) & 0.4127 & 0.5278 & 0.4035 \\
+		C16 (SimAM on)  & 0.3500 & 0.5143 & 0.3934 \\
 		\hline
 	\end{tabular}
 	\caption[Per-class F1 for the two most-affected SimAM pairs]{Per-class F1 for the two most-affected SimAM pairs.}
@@ -250,10 +250,10 @@ The convolutional stem is the only component with a negative mean effect: \textb
 		\hline
 		\textbf{Pair (off $\rightarrow$ on)} & \textbf{Other enabled components} & \textbf{$\Delta$ pooled macro F1} \\
 		\hline
-		\texttt{config\_4} $\rightarrow$ \texttt{config\_13} & EVM               & +0.0094 \\
-		\texttt{config\_12} $\rightarrow$ \texttt{config\_7} & EVM + transformer & +0.0044 \\
-		\texttt{config\_1} $\rightarrow$ \texttt{config\_3}  & none              & $-$0.0085 \\
-		\texttt{config\_2} $\rightarrow$ \texttt{config\_9}  & transformer       & \textbf{$-$0.1292} \\
+		C4 $\rightarrow$ C13 & EVM               & +0.0094 \\
+		C12 $\rightarrow$ C7 & EVM + transformer & +0.0044 \\
+		C1 $\rightarrow$ C3  & none              & $-$0.0085 \\
+		C2 $\rightarrow$ C9  & transformer       & \textbf{$-$0.1292} \\
 		\hline
 	\end{tabular}
 	\caption[Convolutional stem matched pairs]{Convolutional stem matched pairs.}
@@ -276,18 +276,18 @@ Table~\ref{tab:per-class-f1} reports the pooled per-class F1 of all twelve confi
 		\hline
 		\textbf{Configuration} & \textbf{Negative} & \textbf{Positive} & \textbf{Surprise} & \textbf{Pooled macro F1} \\
 		\hline
-		\texttt{config\_2}  & 0.8068 & 0.6506 & 0.6792 & 0.7122 \\
-		\texttt{config\_8}  & 0.8458 & 0.5556 & 0.5965 & 0.6659 \\
-		\texttt{config\_7}  & 0.7845 & 0.5479 & 0.6552 & 0.6625 \\
-		\texttt{config\_12} & 0.7485 & 0.5591 & 0.6667 & 0.6581 \\
-		\texttt{config\_6}  & 0.8325 & 0.4286 & 0.5902 & 0.6171 \\
-		\texttt{config\_9}  & 0.8491 & 0.6000 & 0.3000 & 0.5830 \\
-		\texttt{config\_13} & 0.4127 & 0.5278 & 0.4035 & 0.4480 \\
-		\texttt{config\_4}  & 0.5641 & 0.5055 & 0.2462 & 0.4386 \\
-		\texttt{config\_1}  & 0.5600 & 0.3714 & 0.3696 & 0.4337 \\
-		\texttt{config\_5}  & 0.3840 & 0.5227 & 0.3838 & 0.4302 \\
-		\texttt{config\_3}  & 0.3607 & 0.5227 & 0.3922 & 0.4252 \\
-		\texttt{config\_16} & 0.3500 & 0.5143 & 0.3934 & 0.4192 \\
+		C2  & 0.8068 & 0.6506 & 0.6792 & 0.7122 \\
+		C8  & 0.8458 & 0.5556 & 0.5965 & 0.6659 \\
+		C7  & 0.7845 & 0.5479 & 0.6552 & 0.6625 \\
+		C12 & 0.7485 & 0.5591 & 0.6667 & 0.6581 \\
+		C6  & 0.8325 & 0.4286 & 0.5902 & 0.6171 \\
+		C9  & 0.8491 & 0.6000 & 0.3000 & 0.5830 \\
+		C13 & 0.4127 & 0.5278 & 0.4035 & 0.4480 \\
+		C4  & 0.5641 & 0.5055 & 0.2462 & 0.4386 \\
+		C1  & 0.5600 & 0.3714 & 0.3696 & 0.4337 \\
+		C5  & 0.3840 & 0.5227 & 0.3838 & 0.4302 \\
+		C3  & 0.3607 & 0.5227 & 0.3922 & 0.4252 \\
+		C16 & 0.3500 & 0.5143 & 0.3934 & 0.4192 \\
 		\hline
 	\end{tabular}
 	\caption[Per-class F1 for all twelve configurations]{Per-class F1 for all twelve configurations.}
@@ -322,7 +322,7 @@ Negative F1 separates the configurations with a transformer (0.7485 to 0.8491) f
 \subsection{Reliability of Minority-Class Scores}
 \label{sec:minority-caution}
 
-A single changed prediction can alter a minority-class score noticeably, although the size of the change depends on the existing counts of true positives, false positives and false negatives. Similar scores also do not imply that two configurations classified the same clips correctly. Without retained per-clip predictions or repeated seeds, small differences between configurations cannot be tested for significance or reproducibility.
+A single changed prediction can alter a minority-class score noticeably, although the size of the change depends on the existing counts of true positives, false positives and false negatives. Similar scores also do not imply that two configurations classified the same clips correctly.
 
 
 % =============================================================================
@@ -376,7 +376,7 @@ Three differences prevent a direct comparison:
 \begin{itemize}
 	\item \textbf{Training data.} The Composite Database Evaluation pools SMIC, CASME~II and SAMM, with 442 samples from 68 subjects, compared with 156 clips from 25 subjects in this study; some entries also use additional macro-expression data~\cite{see2019}. The composite dataset is approximately 2.8 times larger and covers different recording conditions, but the effect of this difference on performance cannot be quantified here.
 	\item \textbf{Evaluation data.} The CASME~II subset of MEGC contains 145 clips, whereas this study uses 156, because sadness and fear are included in Negative (Section~\ref{sec:label-taxonomy}). The evaluated samples are therefore not identical.
-	\item \textbf{Checkpoint selection.} This study selects the epoch on the held-out subject that is later scored (Section~\ref{sec:checkpoint-selection}), which may bias its scores upwards by an unknown amount. This bias cannot explain the gap, nor can its size be estimated.
+	\item \textbf{Checkpoint selection.} This study selects the epoch on the held-out subject that is later scored (Section~\ref{sec:checkpoint-selection}), which may bias its scores upwards by an unknown amount. Because this bias can only raise the scores of this study, it cannot account for their shortfall relative to the published results.
 \end{itemize}
 
 The comparison therefore locates the results of this study within the range of published results while making the protocol differences explicit. It does not establish state-of-the-art performance or superiority over the two lower entries. The principal evidence of this thesis is the comparison of components within one pipeline under one protocol.
@@ -398,14 +398,14 @@ Table~\ref{tab:component-effects} collects the mean effect of each component, an
 
 \begin{table}[htbp]
 	\centering
-	\begin{tabular}{l r c c}
+	\begin{tabular}{l r c}
 		\hline
-		\textbf{Component} & \textbf{Mean effect (pooled macro F1)} & \textbf{Pairs} & \textbf{Positive} \\
+		\textbf{Component} & \textbf{Mean effect (pooled macro F1)} & \textbf{Positive pairs} \\
 		\hline
-		Temporal transformer      & \textbf{+0.2173}   & 6 & 6 / 6 \\
-		Motion magnification      & +0.0152            & 6 & 4 / 6 \\
-		Parameter-free attention  & +0.0034            & 4 & 3 / 4 \\
-		Convolutional stem        & \textbf{$-$0.0310} & 4 & 2 / 4 \\
+		Temporal transformer      & \textbf{+0.2173}   & 6 / 6 \\
+		Motion magnification      & +0.0152            & 4 / 6 \\
+		Parameter-free attention  & +0.0034            & 3 / 4 \\
+		Convolutional stem        & \textbf{$-$0.0310} & 2 / 4 \\
 		\hline
 	\end{tabular}
 	\caption[Mean marginal effect of each component on pooled macro F1]{Mean marginal effect of each component on pooled macro F1.}
@@ -427,7 +427,7 @@ Figure~\ref{fig:confusion-matrices} shows the pooled confusion matrices of three
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{fig5_6_confusion_matrices.png}
-	\caption[Pooled confusion matrices for three configurations]{Pooled confusion matrices, summed over all 25 folds, for \texttt{config\_1} (no components), \texttt{config\_8} (all four components) and \texttt{config\_2} (the best configuration). Rows are true classes and columns predicted classes; each cell gives the clip count and the row-normalised recall.}
+	\caption[Pooled confusion matrices for three configurations]{Pooled confusion matrices, summed over all 25 folds, for C1 (no components), C8 (all four components) and C2 (the best configuration). Rows are true classes and columns predicted classes; each cell gives the clip count and the row-normalised recall.}
 	\label{fig:confusion-matrices}
 \end{figure}
 
@@ -444,7 +444,7 @@ Figure~\ref{fig:confusion-matrices} shows the pooled confusion matrices of three
 
 \textbf{The convolutional stem shifts the predictions of the transformer configurations towards the majority class.} The four configurations with both the stem and the transformer predict Negative 82 to 113 times and have a Positive recall of only 0.28 to 0.63, whereas the two configurations with the transformer but without the stem predict Negative 72 and 77 times and reach a Positive recall of 0.81 and 0.84. In configuration 8, 13 of the 32 Positive clips are predicted as Negative (Figure~\ref{fig:confusion-matrices}, centre), and in configuration 9, 12 of the 25 Surprise clips are. This shift raises Negative recall and accuracy but lowers the minority-class scores, which explains why configuration 8 has the highest accuracy but not the highest macro F1.
 
-\textbf{Most confusions involve the Negative class.} In the transformer configurations, confusions between Negative and the other two classes are considerably more frequent than confusions between Positive and Surprise. This is consistent with Negative being the largest and most heterogeneous class, since it combines disgust, repression, sadness and fear (Section~\ref{sec:three-class-grouping}), and with the observation of Yan et al. that a single action unit can indicate several emotions, for example AU4 (frown) disgust, anger, attention or tension, so that the CASME~II labels are only partly based on action units~\cite{yan2014}. Because per-clip predictions were not retained, it cannot be determined which of the four original emotions account for these confusions.
+\textbf{Most confusions involve the Negative class.} In the transformer configurations, confusions between Negative and the other two classes are considerably more frequent than confusions between Positive and Surprise. This is consistent with Negative being the largest and most heterogeneous class, since it combines disgust, repression, sadness and fear (Section~\ref{sec:three-class-grouping}), and with the observation of Yan et al. that a single action unit can indicate several emotions (AU4, a frown, may indicate disgust, anger, attention or tension), so that the CASME~II labels are only partly based on action units~\cite{yan2014}. Because per-clip predictions were not retained, it cannot be determined which of the four original emotions account for these confusions.
 
 \subsection{Effect of the Temporal Transformer}
 \label{sec:transformer-interpretation}
@@ -456,7 +456,7 @@ Transformers can perform poorly when trained on insufficient data~\cite{dosovits
 \subsection{Effect of the Convolutional Stem}
 \label{sec:cnn-interpretation-result}
 
-Three architectural factors offer plausible explanations for the weak and sometimes negative effect of the stem. First, the stem's output is reduced to a single average per channel over the whole frame before it reaches the transformer, which discards where in the face a movement occurs. The replacement operation instead keeps a coarse $4\times4$ grid of the motion field. Because micro-expressions are local movements~\cite{ben2021}, their location may be more informative than the learned features that the stem provides; this is consistent with the largest loss occurring when the stem is added to configuration 2. Second, the input already consists of optical flow and strain, which make motion and deformation explicit, so there is little left for a shallow spatial extractor to add~\cite{liong2019b,see2019}. Third, the stem learns spatial filters at $224\times224$ on uncropped frames from only 156 clips, whereas the reviewed evidence favours shallow models and lower resolutions for this amount of data~\cite{xia2020b,li2022survey}. The stem also changes the model's capacity, and kernel shape, resolution and placement were not varied, so these explanations cannot be separated.
+Three architectural factors offer plausible explanations for the weak and sometimes negative effect of the stem. First, the stem's output is reduced to a single average per channel over the whole frame before it reaches the transformer, which discards where in the face a movement occurs. The replacement operation instead keeps a coarse $4\times4$ grid of the motion field. Because micro-expressions are local movements~\cite{ben2021}, their location may be more informative than the learned features that the stem provides; this is consistent with the largest loss occurring when the stem is added to configuration 2. Second, the input already consists of optical flow and strain, which make motion and deformation explicit~\cite{liong2019b}, so a shallow spatial extractor may have little to add. Third, the stem learns spatial filters at $224\times224$ on uncropped frames from only 156 clips, whereas the reviewed evidence favours shallow models and lower resolutions for this amount of data~\cite{xia2020b,li2022survey}. The stem also changes the model's capacity, and kernel shape, resolution and placement were not varied, so these explanations cannot be separated.
 
 \subsection{Effect of Magnification}
 \label{sec:evm-interpretation-result}
@@ -471,7 +471,7 @@ The negligible mean effect of SimAM follows largely from its formulation. Becaus
 \subsection{Limitations}
 \label{sec:ch5-limitations}
 
-The limitations of Section~\ref{sec:gaps-limitations} apply to all results in this chapter. The following are most important for their interpretation:
+The limitations of the study apply to all results in this chapter. The following are most important for their interpretation:
 
 \begin{itemize}
 	\item \textbf{Single seed.} Each configuration is evaluated once, so no confidence intervals are available for the differences between configurations.
