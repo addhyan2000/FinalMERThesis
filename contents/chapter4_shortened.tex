@@ -70,7 +70,7 @@ Every configuration is trained once, under a single fixed random seed (42). No c
 \label{sec:corpus-used}
 \label{sec:255-to-156}
 
-All experiments use CASME~II~\cite{yan2014} (Section~\ref{sec:corpus}); no other dataset contributes to training or evaluation, so every result is a within-dataset result. The label table contains 255 clips coded as micro-expressions, which satisfy the first two selection conditions of Section~\ref{sec:clip-selection}. The \texttt{Others} category (99 clips) is excluded before training. It is a residual category for clips that do not fit the other labels, and a class defined by exclusion rather than content cannot provide a meaningful training signal. Figure~\ref{fig:class-distribution} shows the composition of the 255 clips and the resulting working set of 156 clips.
+All experiments use CASME~II~\cite{yan2014} (Section~\ref{sec:corpus}); no other dataset contributes to training or evaluation, so every result is a within-dataset result. The released coding contains 255 clips coded as micro-expressions with extractable frames (Section~\ref{sec:clip-selection}). The \texttt{Others} category (99 clips) is excluded before training. It is a residual category for clips that do not fit the other labels, and a class defined by exclusion rather than content cannot provide a meaningful training signal. Figure~\ref{fig:class-distribution} shows the composition of the 255 clips and the resulting working set of 156 clips.
 
 \begin{figure}[htbp]
 	\centering
@@ -127,7 +127,7 @@ Each clip is converted into a motion tensor of shape $(3, 32, 224, 224)$, whose 
 \label{sec:excluded-cells}
 \label{sec:naming}
 
-The four binary components define $2^4 = 16$ combinations (\autoref{fig:ablation-grid}). Four of them enable SimAM without the convolutional stem. Because SimAM re-weights the activations of a convolutional feature map, it has nothing to act on without the stem; these combinations are therefore not weaker models but ill-formed ones, and they are not trained. The remaining twelve configurations are listed in \autoref{tab:twelve-configs}. Configurations 1 to 8 keep the names of an earlier eight-configuration design, and configurations 9, 12, 13 and 16 were added when the design was completed, so the numbering omits the four excluded combinations (10, 11, 14 and 15).
+The four binary components define $2^4 = 16$ combinations (\autoref{fig:ablation-grid}). Four of them enable SimAM without the convolutional stem. Because SimAM re-weights the activations of a convolutional feature map, it has nothing to act on without the stem; these combinations are therefore not weaker models but ill-formed ones, and they are not trained. The remaining twelve configurations are listed in \autoref{tab:twelve-configs}. Configurations 1 to 8 were defined first and configurations 9, 12, 13 and 16 were added to complete the design, so the numbering omits the four excluded combinations (10, 11, 14 and 15). Configuration $n$ is denoted C$n$ in tables and figures.
 
 \begin{figure}[htbp]
 	\centering
@@ -138,34 +138,33 @@ The four binary components define $2^4 = 16$ combinations (\autoref{fig:ablation
 
 \begin{table}[htbp]
 	\centering
-	\footnotesize
-	\setlength{\tabcolsep}{4pt}
-	\begin{tabular}{@{}p{0.33\linewidth} c c c c p{0.36\linewidth}@{}}
+	\small
+	\begin{tabular}{@{}l c c c c@{}}
 		\hline
-		\textbf{Configuration} & \textbf{EVM} & \textbf{SimAM} & \textbf{CNN} & \textbf{TF} & \textbf{Description} \\
+		\textbf{Configuration} & \textbf{EVM} & \textbf{SimAM} & \textbf{CNN} & \textbf{TF} \\
 		\hline
-		\texttt{config\_1\_pure\_base}          &            &            &            &            & no component; motion tensor pooled and classified directly \\
-		\texttt{config\_2\_temporal\_only}      &            &            &            & \checkmark & transformer only \\
-		\texttt{config\_3\_spatial\_only}       &            &            & \checkmark &            & convolutional stem only \\
-		\texttt{config\_4\_motion\_amp\_base}   & \checkmark &            &            &            & magnification only \\
-		\texttt{config\_5\_attention\_base}     &            & \checkmark & \checkmark &            & stem with SimAM \\
-		\texttt{config\_6\_full\_stage2\_noevm} &            & \checkmark & \checkmark & \checkmark & all learned components, no magnification \\
-		\texttt{config\_7\_full\_no\_attention} & \checkmark &            & \checkmark & \checkmark & all components except SimAM \\
-		\texttt{config\_8\_proposed\_unified}   & \checkmark & \checkmark & \checkmark & \checkmark & all four components \\
-		\texttt{config\_9\_permutation}         &            &            & \checkmark & \checkmark & stem and transformer \\
-		\texttt{config\_12\_permutation}        & \checkmark &            &            & \checkmark & magnification and transformer \\
-		\texttt{config\_13\_permutation}        & \checkmark &            & \checkmark &            & magnification and stem \\
-		\texttt{config\_16\_permutation}        & \checkmark & \checkmark & \checkmark &            & magnification, stem and SimAM \\
+		C1   & --         & --         & --         & -- \\
+		C2   & --         & --         & --         & \checkmark \\
+		C3   & --         & --         & \checkmark & -- \\
+		C4   & \checkmark & --         & --         & -- \\
+		C5   & --         & \checkmark & \checkmark & -- \\
+		C6   & --         & \checkmark & \checkmark & \checkmark \\
+		C7   & \checkmark & --         & \checkmark & \checkmark \\
+		C8   & \checkmark & \checkmark & \checkmark & \checkmark \\
+		C9   & --         & --         & \checkmark & \checkmark \\
+		C12  & \checkmark & --         & --         & \checkmark \\
+		C13  & \checkmark & --         & \checkmark & -- \\
+		C16  & \checkmark & \checkmark & \checkmark & -- \\
 		\hline
 	\end{tabular}
-	\caption[The twelve valid ablation configurations]{The twelve valid ablation configurations. CNN: convolutional stem; TF: temporal transformer.}
+	\caption[The twelve valid ablation configurations]{The twelve valid ablation configurations. EVM: Eulerian video magnification; CNN: convolutional stem; TF: temporal transformer.}
 	\label{tab:twelve-configs}
 \end{table}
 
 \subsection{Baseline and Control}
 \label{sec:baseline-control}
 
-Two configurations serve different purposes and should not be confused. \texttt{config\_4\_motion\_amp\_base} is the baseline of the study: it applies magnification and no learned component, and the contributions of the learned components are ultimately read against it. \texttt{config\_1\_pure\_base} is not a second baseline but the control for magnification: it is identical to \texttt{config\_4} except that magnification is disabled. \texttt{config\_8\_proposed\_unified} enables all four components but is otherwise one of twelve configurations and is not privileged in the analysis.
+Two configurations serve different purposes and should not be confused. C4 is the baseline of the study: it applies magnification and no learned component, and the contributions of the learned components are ultimately read against it. C1 is not a second baseline but the control for magnification: it is identical to C4 except that magnification is disabled. C8 enables all four components but is otherwise one of twelve configurations and is not privileged in the analysis.
 
 \subsection{Matched Pairs}
 \label{sec:matched-pairs}
@@ -196,7 +195,7 @@ A matched pair consists of two configurations that differ in exactly one compone
 \label{sec:architecture}
 % =============================================================================
 
-All twelve configurations are branches of a single model in which each component is executed or skipped according to switches fixed at construction; magnification is applied during preprocessing and is not part of the network. Because every configuration shares the same code path, initialisation and layer order, two configurations that differ in one switch differ in nothing else.
+All twelve configurations are branches of a single model in which each component is executed or skipped according to switches fixed at construction; magnification is applied during preprocessing and is not part of the network. Because every configuration shares the same implementation, initialisation and layer order, two configurations that differ in one switch differ in nothing else.
 
 \subsection{Pipeline Overview}
 \label{sec:pipeline-overview}
@@ -400,9 +399,9 @@ All twelve configurations are trained with the same procedure, summarised in \au
 \label{sec:class-weighting-rule}
 \label{sec:sampler-config}
 
-The loss can apply per-class weights ($\alpha_t$ in \eqref{eq:focal-loss}), but they are enabled only when the class-balanced sampler is inactive. Because the sampler is active in every reported run, the loss carries \textbf{no class weights}, and the frequency correction comes entirely from the sampler, which gives each training example a weight inversely proportional to the size of its class in the training split of the current fold \eqref{eq:sampler-weight}. The loss weights and the sampler correct the same imbalance at different points, so applying both would correct it twice (Section~\ref{sec:combining-both}). The focal term $(1-p_t)^\gamma$ and label smoothing remain active; neither depends on class frequency.
+The loss can apply per-class weights ($\alpha_t$ in \eqref{eq:focal-loss}), but they are enabled only when the class-balanced sampler is inactive. Because the sampler is active in every reported run, the loss carries \textbf{no class weights} (Section~\ref{sec:combining-both}), and the frequency correction comes entirely from the sampler, which gives each training example a weight inversely proportional to the size of its class in the training split of the current fold \eqref{eq:sampler-weight}. The focal term $(1-p_t)^\gamma$ and label smoothing remain active; neither depends on class frequency.
 
-The rule was introduced after two failures in opposite directions, both recorded in the run history of this project. In an earlier version, the loss carried inverse-frequency class weights and no sampler was used; under this single correction, the proposed configuration stopped predicting the \textbf{Positive} class altogether. A later version added the sampler while keeping the loss weights, so both corrections operated together; the failure then reversed, and configurations stopped predicting the \textbf{Negative} majority class, one of them predicting a single class for every clip. With the rule in place, no configuration in the reported study abandons any class. The only reviewed study that combines two corrections reports that the balanced loss adds only a slight improvement, not that the combination reverses its effect~\cite{xia2020a}. The two failures, however, occurred in code versions that differ from the reported run in more than the correction rule, so \textbf{the causal effect of the rule is not isolated}.
+The rule was introduced after two failures in opposite directions, both observed during the development of this study. In an earlier version, the loss carried inverse-frequency class weights and no sampler was used; under this single correction, the proposed configuration stopped predicting the \textbf{Positive} class altogether. A later version added the sampler while keeping the loss weights, so both corrections operated together; the failure then reversed, and configurations stopped predicting the \textbf{Negative} majority class, one of them predicting a single class for every clip. With the rule in place, no configuration in the reported study abandons any class. The only reviewed study that combines two corrections reports that the balanced loss adds only a slight improvement, not that the combination reverses its effect~\cite{xia2020a}. The two failures, however, occurred in implementation versions that differ from the reported run in more than the correction rule, so \textbf{the causal effect of the rule is not isolated}.
 
 \subsection{Optimisation}
 \label{sec:optimiser-config}
@@ -471,7 +470,7 @@ This section combines, for each component, the research gap left by the reviewed
 
 \textbf{Research gap.} Magnification improves recognition in the reviewed studies, but every evaluation places it in front of an appearance-based representation such as LBP, HOG or pre-trained face features~\cite{liX2018,bai2021,liY2018,liY2021}. No study measures its contribution when the classifier receives an explicit motion field. The magnification factor has an interior optimum that can be found only by search~\cite{liX2018}, and magnification also amplifies unwanted motion such as head movement~\cite{liX2018}.
 
-\textbf{Limitation.} The factor is fixed at $\alpha = 10$, inside the reported optimum, but is not varied. The full 5--25 Hz band is used rather than the narrower band of Bai et al.~\cite{bai2021}, and the band-pass filter is a Fourier mask rather than a Butterworth filter (Section~\ref{sec:evm-departures}). Because magnification is applied after the clip is sampled to 33 frames, the realised pass-band depends on the clip length and is approximately 2.5--12.5 Hz at the median length (Section~\ref{sec:three-channel-tensor}). No face alignment precedes magnification, so head motion within the band is amplified together with facial movement.
+\textbf{Limitation.} The factor is fixed at $\alpha = 10$, inside the reported optimum, but is not varied. The pass-band, the filter and the order of magnification and sampling depart from the reference formulation (\autoref{tab:ch2-evm-departures}); in particular, the realised pass-band depends on the clip length and is approximately 2.5--12.5~Hz at the median length. No face alignment precedes magnification, so head motion within the band is amplified together with facial movement.
 
 \subsubsection{Optical Flow}
 
