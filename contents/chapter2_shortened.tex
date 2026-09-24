@@ -28,7 +28,7 @@ This chapter presents the concepts on which the remainder of the thesis builds. 
 \section{Micro-Expressions}
 \label{sec:phenomenon}
 
-Facial expressions are commonly divided into macro-expressions and micro-expressions. Macro-expressions are the ordinary expressions of everyday interaction; they typically last between 0.5 and 4 seconds and involve a large area of the face~\cite{ben2021,xie2022,adegun2020}. Micro-expressions are brief, involuntary and local facial movements that tend to occur when a person attempts to conceal or suppress an emotion, particularly in high-stakes situations~\cite{yan2014,ben2021,xie2022,li2022survey}. Ekman and Friesen described such movements as a form of nonverbal leakage~\cite{ekman1969}, and they have since been studied empirically in concealed and falsified emotional expressions~\cite{porter2008}. Their involuntary character distinguishes them from expressions deliberately posed for a camera~\cite{qu2016}. Comprehensive reviews of automatic micro-expression analysis are provided by Oh et al.~\cite{oh2018}, Ben et al.~\cite{ben2021}, Li et al.~\cite{li2022survey} and Xie et al.~\cite{xie2022}.
+Facial expressions are commonly divided into macro-expressions and micro-expressions. Macro-expressions are the ordinary expressions of everyday interaction; they typically last between 0.5 and 4 seconds and involve a large area of the face~\cite{ben2021,xie2022,adegun2020}. Micro-expressions are brief, involuntary and local facial movements that tend to arise when an individual tries to conceal or suppress an emotion, particularly in high-stakes situations~\cite{yan2014,ben2021,xie2022,li2022survey}. Ekman and Friesen described such movements as a form of nonverbal leakage~\cite{ekman1969}, and they have since been studied empirically in concealed and falsified emotional expressions~\cite{porter2008}. Their involuntary character distinguishes them from expressions deliberately posed for a camera~\cite{qu2016}. Comprehensive reviews of automatic micro-expression analysis are provided by Oh et al.~\cite{oh2018}, Ben et al.~\cite{ben2021}, Li et al.~\cite{li2022survey} and Xie et al.~\cite{xie2022}.
 
 Figure~\ref{fig:casme2-sequence} shows an example from CASME~II: a lowering of the inner brow (AU~4, together with AU~9) labelled as disgust, whose apex occurs approximately 110~ms after onset~\cite{yan2014}. The change between frames is barely visible at full-face scale, which illustrates why the phenomenon is difficult to perceive. An observed movement is nevertheless neither proof of deception nor an unambiguous indicator of emotion; the recognition task depends on the annotations of the dataset.
 
@@ -57,7 +57,7 @@ The \textbf{onset} marks the beginning of the movement, the \textbf{apex} its po
 \subsection{Action Units and the Prediction Target}
 \label{sec:action-units}
 
-The Facial Action Coding System (FACS)~\cite{ekman1978} describes facial movements through Action Units (AUs), each corresponding to an individual component of muscle movement~\cite{li2022survey}, rather than through emotion categories. CASME~II assigns emotion labels using coded movements together with other annotation evidence~\cite{yan2014}, and the mapping is not one-to-one. This thesis predicts the resulting emotion category only. AU metadata is retained in the coding table but is neither an input nor a training target, and the system does not perform AU recognition.
+The Facial Action Coding System (FACS)~\cite{ekman1978} describes facial movements through Action Units (AUs), each corresponding to an individual component of muscle movement~\cite{li2022survey}, rather than through emotion categories. CASME~II assigns emotion labels using coded movements together with other annotation evidence~\cite{yan2014}, and the mapping is not one-to-one. This thesis predicts the resulting emotion category only. Action-unit annotations are neither an input nor a training target, and the system does not perform AU recognition.
 
 
 \section{Micro-Expression Datasets}
@@ -68,7 +68,7 @@ Because micro-expressions are involuntary, recognition research depends on datas
 \subsection{Spontaneous and Posed Data}
 \label{sec:why-spontaneous}
 
-General facial expression recognition developed on large datasets of \textit{posed} expressions and reported accuracies above 90\,\% on the six basic emotions by the early 2010s~\cite{yan2014}. Micro-expression research could not follow this route, because the phenomenon cannot be performed on instruction. Yan et al.~\cite{yan2014} and Li et al.~\cite{liX2013} both observe that deliberately produced ``micro-expressions'' differ systematically from spontaneous ones, so a model trained on posed data may learn to recognise fast deliberate movements rather than micro-expressions. Recording quality is a second requirement: Yan et al.~\cite{yan2014} argue that the 60~fps of the original CASME dataset samples a sub-second movement only coarsely, although they leave the benefit of higher rates unresolved, and that flicker from the mains supply affects high-speed recordings such as those of SMIC. Elicitation is a third: earlier high-speed recordings were posed, with participants asked to perform the expressions, whereas spontaneous micro-expressions are elicited by showing emotionally strong video clips to participants who are motivated to conceal their feelings~\cite{liX2013}.
+General facial expression recognition developed on large datasets of \textit{posed} expressions and reported accuracies above 90\,\% on the six basic emotions by the early 2010s~\cite{yan2014}. Micro-expression research could not follow this route, because the phenomenon cannot be performed on instruction. Yan et al.~\cite{yan2014} and Li et al.~\cite{liX2013} both observe that deliberately produced ``micro-expressions'' differ systematically from spontaneous ones, so a model trained on posed data may learn to recognise fast deliberate movements rather than micro-expressions. Recording quality is a second requirement: Yan et al.~\cite{yan2014} argue that the 60~fps of the original CASME dataset samples a sub-second movement only coarsely, although they leave the benefit of higher rates unresolved, and that flickering illumination from alternating-current lighting commonly affects high-speed recordings, citing SMIC as an example. Elicitation is a third: earlier high-speed recordings were posed, with participants asked to perform the expressions, whereas spontaneous micro-expressions are elicited by showing emotionally strong video clips to participants who are motivated to conceal their feelings~\cite{liX2013}.
 
 \subsection{Widely Used Datasets}
 \label{sec:sibling-corpora}
@@ -107,7 +107,7 @@ Table~\ref{tab:spontaneous-corpora} summarises the spontaneous micro-expression 
 	\label{tab:spontaneous-corpora}
 \end{table}
 
-This thesis uses CASME~II alone, for three reasons. It has the highest temporal resolution of the spontaneous datasets of comparable size, which is a precondition for magnification within a defined frequency band and for dense frame-to-frame optical flow. Its onset, apex and offset annotation makes temporal normalisation well defined. And it remains the most widely reported single-dataset benchmark. The cost of this choice is that no result in this thesis extends to other populations, recording conditions or datasets.
+This thesis uses CASME~II alone, for three reasons. It has the highest temporal resolution of the spontaneous datasets of comparable size, which is a precondition for magnification within a defined frequency band and for dense frame-to-frame optical flow. Its onset, apex and offset annotation makes temporal normalisation well defined. And it remains the most widely reported single-dataset benchmark. The limitation of this choice is that no result in this thesis extends to other populations, recording conditions or datasets.
 
 \subsection{CASME II}
 \label{sec:casme2-construction}
@@ -155,7 +155,7 @@ CASME~II remains the best available resource for this task, but any study based 
 
 \textbf{Scale and imbalance.} With 156 clips distributed 99 : 32 : 25, the parameter count of a model is itself a risk factor, which motivates parameter-free or low-parameter components. Accuracy alone is also uninformative: a classifier that always predicts Negative attains an accuracy of \textbf{0.6346} but a macro F1 of only \textbf{0.2588}.
 
-\textbf{Unequal subject contributions.} Subject 17 alone contributes 33 clips (21\,\% of the working set), while three subjects contribute one clip each, so fold sizes vary by a factor of 33. Ten of the 25 folds contain a single class, eight contain two and only seven contain all three. This is why the pooled metric is primary and why a single held-out split is unreliable: the choice of test subjects can change the result by more than any architectural change under study. Subject 18 contributes only ``others'' clips and is removed by the three-class filter, leaving \textbf{25 folds rather than 26}.
+\textbf{Unequal subject contributions.} Subject 17 alone contributes 33 clips (21\,\% of the working set), while three subjects contribute one clip each, so fold sizes vary by a factor of 33, and fewer than a third of the folds contain all three classes (\autoref{fig:fold-composition}). A single held-out split is therefore unreliable: the choice of test subjects can change the result by more than any architectural change under study.
 
 \textbf{Demographic and recording homogeneity.} All participants are Chinese, with a mean age of 22.03 years, which Davison et al.~\cite{davison2018} cite as a principal motivation for SAMM. The MEGC organisers observed the effect directly: adaptation from the CK+ dataset helped on SMIC and SAMM but ``not so for CASME II, which contain predominantly Chinese subjects''~\cite{see2019}. Recording is frontal, under fixed lighting, with participants instructed not to move or speak, so the head motion, illumination variation, occlusion and speech found in real applications are almost absent.
 
@@ -180,7 +180,7 @@ where $n$ is the number of frame intervals, $D$ is the duration of the movement 
 \subsection{Source Frames}
 \label{sec:corpus-supplies}
 
-CASME~II provides both the original recorded frames and a registered, cropped release. The study manifest identifies folders of the original $640\times480$ frames rather than the normalised release. The preprocessing performs no face detection, landmark localisation, registration, alignment or cropping of its own. The input therefore includes the full recorded field of view, and neither facial position nor scale is geometrically standardised. The registration described by Yan et al.~\cite{yan2014} must not be attributed to this pipeline.
+CASME~II provides both the original recorded frames and a registered, cropped release. This thesis uses the original $640\times480$ frames rather than the normalised release. The preprocessing performs no face detection, landmark localisation, registration, alignment or cropping of its own. The input therefore includes the full recorded field of view, and neither facial position nor scale is geometrically standardised. The registration described by Yan et al.~\cite{yan2014} is therefore not part of this pipeline.
 
 \subsection{Frame Preparation}
 \label{sec:frame-preparation}
@@ -190,7 +190,7 @@ Frames are loaded in greyscale and resized by bilinear interpolation to $224\tim
 \subsection{Clip Selection}
 \label{sec:clip-selection}
 
-Preprocessing selects CASME~II entries that are coded as micro-expressions, marked as having frames, and have an inclusive onset-to-offset length greater than two frames. The loader must still find readable frames, since the metadata flag alone does not guarantee successful extraction. The recognition dataset additionally requires a matching saved tensor and a label in the selected three-class mapping; the residual \texttt{Others} category is excluded. Preprocessing eligibility and final classification membership are therefore separate filters.
+Preprocessing selects the CASME~II entries that are coded as micro-expressions, have extractable frames and span more than two frames from onset to offset inclusive. The recognition dataset then retains only the clips whose label belongs to the three-class mapping, which excludes the residual \texttt{Others} category. Preprocessing eligibility and membership of the classification dataset are therefore separate filters.
 
 
 \section{Eulerian Video Magnification}
@@ -251,7 +251,7 @@ Table~\ref{tab:ch2-evm-departures} summarises the implementation choices that af
     \label{tab:ch2-evm-departures}
 \end{table}
 
-The Laplacian pyramid itself is retained. After reconstruction, values are clipped to $[0,255]$ and converted to 8-bit greyscale before motion extraction. Because subsampling changes the frame spacing, the nominal band does not correspond to the same physical-frequency interval for every clip.
+The Laplacian pyramid itself is retained. After reconstruction, values are clipped to $[0,255]$ and converted to 8-bit greyscale before motion extraction.
 
 
 \section{Motion Representation: Optical Flow and Optical Strain}
@@ -309,11 +309,11 @@ where $\varepsilon_{\mathrm{mag}}$ is the strain magnitude at a pixel and the re
 \subsection{Construction of the Three-Channel Input Tensor}
 \label{sec:three-channel-tensor}
 
-Uniform index sampling selects 33 existing frames from the onset-to-offset sequence. No Temporal Interpolation Model (TIM)~\cite{pfister2011} or other frame synthesis is performed, and repeated indices can occur for short clips. After optional magnification, Farneb\"ack optical flow~\cite{farneback2003} is computed for the 32 adjacent frame pairs, following the estimator choice reported by Zhao et al.~\cite{zhaoS2021}. The OpenCV settings are pyramid scale 0.5, three levels, window size 15, three iterations, polynomial neighbourhood 5, polynomial smoothing 1.2 and flags 0.
+Uniform index sampling selects 33 existing frames from the onset-to-offset sequence. No Temporal Interpolation Model (TIM)~\cite{pfister2011} or other frame synthesis is performed, and repeated indices can occur for short clips. After optional magnification, Farneb\"ack optical flow~\cite{farneback2003} is computed for the 32 adjacent frame pairs, following the estimator choice reported by Zhao et al.~\cite{zhaoS2021}. The estimator settings are pyramid scale 0.5, three levels, window size 15, three iterations, polynomial neighbourhood 5, polynomial smoothing 1.2 and flags 0.
 
 Sampling 33 frames from a clip of $N$ frames recorded at 200~fps gives an effective frame rate of $6600/N$~fps: 100~fps at the median length of $N = 66$ and approximately 52~fps for the longest clip, so 81 of the 156 clips are downsampled by a factor of two or more. Because magnification is applied to the sampled frames at the nominal 200~fps, the realised pass-band depends on the clip length; at the median length, the nominal 5--25~Hz band corresponds to approximately 2.5--12.5~Hz. Three clips contain only 31 frames, so sampling repeats indices and produces near-zero flow at those positions.
 
-The spatial derivatives required for strain are computed with NumPy's \texttt{gradient} function, using unit pixel spacing, central differences in the interior and first-order one-sided differences at the boundaries. Temporal derivatives are not used, and no dedicated strain post-filter is applied. Stacking $[u,v,\varepsilon_{\mathrm{mag}}]$ gives a tensor of shape $(3,32,224,224)$ over the resized full frame. The network receives this tensor rather than the original intensity sequence.
+The spatial derivatives required for strain are computed by finite differences with unit pixel spacing, using central differences in the interior and first-order one-sided differences at the boundaries. Temporal derivatives are not used, and no dedicated strain post-filter is applied. Stacking $[u,v,\varepsilon_{\mathrm{mag}}]$ gives a tensor of shape $(3,32,224,224)$ over the resized full frame. The network receives this tensor rather than the original intensity sequence.
 
 Two normalisations are applied. During extraction, each channel is mapped independently to $[0,1]$ using its extrema across the clip. During loading, each channel is standardised over its $T\times H\times W$ values, after any training augmentation. Small constants in the denominators protect nearly constant channels, which therefore need not have unit variance. Both normalisations operate per sample and use no statistics pooled across training and held-out subjects.
 
@@ -386,7 +386,7 @@ The model combines a spatial stem, optional activation re-weighting, an optional
 
 A three-dimensional convolution~\cite{ji2013,tran2015} operates on tensors of shape $(B,C,T,H,W)$, denoting batch size, channels, time, height and width. A kernel of shape $(k_T,k_H,k_W)$ mixes information across time only when $k_T>1$. The implemented streams use $(1,3,3)$ kernels with $(0,1,1)$ padding, followed by $(1,2,2)$ max-pooling. The convolutions therefore preserve the temporal length and learn spatial filters, while pooling halves the height and width.
 
-The use of \texttt{Conv3d} does not establish that temporal convolution was tested. The complete stream can nevertheless depend on multiple frames, because batch normalisation during training and SimAM, whenever enabled, use statistics that span time. This distinction separates temporal convolution from other forms of whole-clip dependence.
+The use of three-dimensional convolution layers therefore does not imply that temporal convolution was tested. The complete stream can nevertheless depend on multiple frames, because batch normalisation during training and SimAM, whenever enabled, use statistics that span time. This distinction separates temporal convolution from other forms of whole-clip dependence.
 
 \subsection{Normalisation and Regularisation}
 \label{sec:normalisation}
@@ -397,9 +397,9 @@ Batch normalisation~\cite{ioffe2015} rescales each channel using a mean and vari
 	\qquad y=\gamma_c\widehat x+\beta_c,
 	\label{eq:batchnorm}
 \end{equation}
-where $x$ is an activation in channel $c$, $\mu_c$ and $\sigma_c^2$ are the mean and variance of that channel, $\epsilon$ is a small constant for numerical stability, $\widehat x$ is the normalised activation, $\gamma_c$ and $\beta_c$ are the learned scale and shift of the channel, and $y$ is the output. \texttt{BatchNorm3d} computes the training statistics over the $(B,T,H,W)$ dimensions of each channel, and evaluation uses running estimates accumulated during training. These activation statistics differ from the per-sample input standardisation performed by the data loader.
+where $x$ is an activation in channel $c$, $\mu_c$ and $\sigma_c^2$ are the mean and variance of that channel, $\epsilon$ is a small constant for numerical stability, $\widehat x$ is the normalised activation, $\gamma_c$ and $\beta_c$ are the learned scale and shift of the channel, and $y$ is the output. In the three-dimensional streams, batch normalisation computes the training statistics over the $(B,T,H,W)$ dimensions of each channel, and evaluation uses running estimates accumulated during training. These activation statistics differ from the per-sample input standardisation performed by the data loader.
 
-Dropout~\cite{srivastava2014} randomly deactivates units during training to reduce overfitting. \texttt{Dropout3d} removes entire feature channels for a sample~\cite{tompson2015} rather than masking individual spatial values. The retained channels are rescaled, and evaluation disables the random mask. Layer normalisation~\cite{ba2016} instead standardises the feature dimension of each token independently of other samples. It appears inside the transformer and in the classification head, where it is followed by dropout and a linear projection to class logits.
+Dropout~\cite{srivastava2014} randomly deactivates units during training to reduce overfitting. Channel-wise dropout removes entire feature channels for a sample~\cite{tompson2015} rather than masking individual spatial values. The retained channels are rescaled, and evaluation disables the random mask. Layer normalisation~\cite{ba2016} instead standardises the feature dimension of each token independently of other samples. It appears inside the transformer and in the classification head, where it is followed by dropout and a linear projection to class logits.
 
 \subsection{Parameter-Free Attention: SimAM}
 \label{sec:simam}
