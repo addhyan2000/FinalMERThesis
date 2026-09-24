@@ -211,8 +211,10 @@ All twelve configurations are branches of a single model in which each component
 
 The pipeline consists of two stages that are executed a different number of times (\autoref{fig:pipeline-overview}). \textbf{Stage~1 (preprocessing)} converts each clip into one motion tensor and runs once per clip. \textbf{Stage~2 (training and evaluation)} loads these tensors and fits a model; it runs once for every configuration and every held-out subject. Because Stage~1 is completed before any model is trained, all configurations are compared on identical inputs.
 
+In Stage~1, each selected clip is loaded in greyscale, resized to $224\times224$ pixels and sampled at 33 evenly spaced frames between onset and offset. Magnification is applied at this point if enabled. Optical flow is then computed for the 32 adjacent frame pairs, optical strain is derived from its spatial gradients, and the three fields are stacked and normalised into one tensor. The network therefore never receives pixel intensities, only displacement and deformation fields. In Stage~2, each tensor is standardised per channel, optionally flipped for augmentation, and passed through the convolutional stem, the SimAM gate, a pooling step that removes the spatial dimensions, the temporal encoder and the classification head. Table~\ref{tab:pipeline-shapes} lists the representation of the data after each step.
+
 % -----------------------------------------------------------------------------
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 	\centering
 	\begin{tikzpicture}[
 		font=\scriptsize,
@@ -288,9 +290,7 @@ The pipeline consists of two stages that are executed a different number of time
 \end{figure}
 % -----------------------------------------------------------------------------
 
-In Stage~1, each selected clip is loaded in greyscale, resized to $224\times224$ pixels and sampled at 33 evenly spaced frames between onset and offset. Magnification is applied at this point if enabled. Optical flow is then computed for the 32 adjacent frame pairs, optical strain is derived from its spatial gradients, and the three fields are stacked and normalised into one tensor. The network therefore never receives pixel intensities, only displacement and deformation fields. In Stage~2, each tensor is standardised per channel, optionally flipped for augmentation, and passed through the convolutional stem, the SimAM gate, a pooling step that removes the spatial dimensions, the temporal encoder and the classification head. Table~\ref{tab:pipeline-shapes} lists the representation of the data after each step.
-
-\begin{table}[htbp]
+\begin{table}[tbp]
 	\centering
 	\small
 	\begin{tabular}{@{}lll@{}}
