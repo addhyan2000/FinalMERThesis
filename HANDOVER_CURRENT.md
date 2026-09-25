@@ -328,6 +328,21 @@ Ch 4 twelve-config "Description" (duplicated the checkmarks), Ch 5 ranking
 "Correct" (= accuracy × 156), Ch 5 component-effects "Pairs" (contained in
 "Positive pairs").
 
+Later the same day: old §2.2.6 "The MEGC 2019 Composite Protocol" dissolved
+(mostly duplicated §2.9.3, §4.6.3, §5.7.3, Ch 3). Its essentials are one
+paragraph at the end of §2.2.5, retitled "Benchmark Protocols" (labels
+`sec:original-baseline` + `sec:megc-metrics`); the mid-position-apex fact moved
+to §2.1.3. Fold-composition figure (`fig:fold-composition`) moved from Ch 2 to
+Ch 4 §4.2.3 with `[tbp]`, so it is now Fig 4.x, not Fig 2.2.
+
+**25 September (supervisor feedback):** (3) figure sources are now given only
+as a citation at the end of the caption, with no "Reproduced from … licence"
+wording: Fig 2.1 ends `~\cite{yan2014}`, the literature-comparison figure in
+Ch 5 ends `~\cite{see2019}`; all other figures are the author's own. (4) All
+three Ch 3 figures removed (`fig:mer-pipeline`, `fig:flow-strain`, `fig:tsnn`)
+with the sentences that introduced them; `fig3_1/3_2/3_3_*.png` are no longer
+used. Tables with "after X et al. (Table n)" captions were left unchanged.
+
 ## 9. Still open
 
 0. **Figure text:** Figs 5.1, 5.6, 5.9 carry informal in-image labels

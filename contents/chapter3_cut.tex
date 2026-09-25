@@ -17,10 +17,8 @@
 %     the band and filter divergences to sec:evm-departures (Chapter 2 table),
 %     the data-routing defect to Chapter 4 (later removed with that subsection).
 %   * A closing Summary section (sec:ch3-conclusion) was added.
-%   * Three figures reproduced from Xie et al. (2022), IEEE TAC 14(3), which is
-%     licensed CC BY 4.0: fig3_1_mer_pipeline.png (their Fig. 2),
-%     fig3_2_flow_strain.png (their Fig. 5, cropped to panels g-h; panels
-%     originally from Liong et al. 2018) and fig3_3_tsnn_streams.png (Fig. 6).
+%   * 25 September 2026: all figures removed from this chapter at the
+%     supervisor's request (formerly fig:mer-pipeline, fig:flow-strain, fig:tsnn).
 %
 % The ledger's first column uses \ref{}, so it maintains itself. All direct
 % quotations are verbatim; verify with tools/check_quotes.py after any edit.
@@ -30,17 +28,6 @@
 \label{ch:literature}
 
 This chapter reviews the published evidence for each component of the recognition pipeline evaluated in this thesis. Section~\ref{sec:evm-review} reviews Eulerian video magnification, \autoref{sec:flow-review} optical flow, \autoref{sec:strain-review} optical strain and \autoref{sec:tim-review} temporal normalisation. Section~\ref{sec:cnn-review}, \autoref{sec:simam-review} and \autoref{sec:transformer-review} review the learned components: the convolutional backbone, parameter-free attention and the temporal transformer. Section~\ref{sec:imbalance-review} reviews training under class imbalance. For each component, the review states what the published studies found and what their evidence does not establish. Section~\ref{sec:synthesis-and-gap} combines these findings into the research gap and lists every point at which the implemented system departs from the reviewed methods.
-
-Figure~\ref{fig:mer-pipeline} shows the general micro-expression recognition pipeline as organised in the survey of Xie et al.~\cite{xie2022}. The components reviewed in this chapter belong to its preprocessing, feature extraction and recognition stages.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig3_1_mer_pipeline.png}
-	\caption[The general micro-expression recognition pipeline]{The general micro-expression recognition pipeline: datasets, preprocessing with onset, apex and offset frames, feature extraction, spotting, recognition methods and classification. Section numbers refer to the survey of Xie et al. Reproduced from Xie et al.~\cite{xie2022} (Fig.~2) under the Creative Commons Attribution 4.0 (CC~BY~4.0) licence.}
-	\label{fig:mer-pipeline}
-\end{figure}
-
-
 
 % =============================================================================
 \section{Motion Magnification: Eulerian Video Magnification}
@@ -101,16 +88,6 @@ Dense optical flow~\cite{horn1981} supplies the horizontal and vertical displace
 
 Xu et al.~\cite{xu2017} motivate motion descriptors by the difficulty of interpreting micro-expressions through texture alone: flow describes apparent movement directly, whereas image intensity also records appearance and illumination. This does not make flow independent of identity or recording conditions, since facial geometry, alignment and brightness changes still affect the estimate. The benchmark evidence supports the choice: the three highest-ranked MEGC 2019 submissions used optical flow~\cite{see2019}, OFF-ApexNet~\cite{liong2019a} uses horizontal and vertical flow as network inputs, STSTNet~\cite{liong2019b} adds strain, and Zhao et al.~\cite{zhaoS2021} use a sequence of flow fields. This convergence is, however, not a controlled demonstration that motion always outperforms appearance.
 
-Figure~\ref{fig:flow-strain} illustrates both representations on a CASME~II sequence: optical flow and optical strain computed from onset to offset~\cite{liong2018,xie2022}, together with a histogram of oriented optical flow derived from them.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig3_2_flow_strain.png}
-	\caption[Optical flow and optical strain on a CASME II sequence]{Motion features of a CASME~II micro-expression. (g) Sampled frames from onset to offset (top row), with the corresponding optical flow (middle row) and optical strain (bottom row). (h) A locally weighted histogram of oriented optical flow computed from flow orientation and magnitude. Originally from Liong et al.~\cite{liong2018}; adapted (cropped to panels g and h) from Xie et al.~\cite{xie2022} (Fig.~5) under the CC~BY~4.0 licence.}
-	\label{fig:flow-strain}
-\end{figure}
-
-
 \textbf{The choice of estimator is not settled.} Zhao et al.~\cite{zhaoS2021} use the Farneb\"ack method~\cite{farneback2003} through OpenCV, citing its availability; OFF-ApexNet~\cite{liong2019a} uses TV-L1, citing its preservation of motion discontinuities; and Xu et al.~\cite{xu2017} use the method of Sun, Roth and Black. STSTNet~\cite{liong2019b} computes onset-to-apex flow without naming its estimator, so TV-L1 cannot be attributed to it on the basis of its similarity to OFF-ApexNet. The advantages claimed for TV-L1 have not been measured as a recognition gain over Farneb\"ack on CASME~II, since no controlled comparison of estimators exists. This thesis uses Farneb\"ack and leaves the comparison open.
 
 \textbf{The choice between onset-to-apex flow and a flow sequence is consequential.} OFF-ApexNet~\cite{liong2019a} and STSTNet~\cite{liong2019b} represent each clip by the flow from onset to apex, resized to $28\times28$. This is an economical summary of the displacement from the neutral to the peak expression, suited to a small training set, but it omits the intermediate trajectory and the relaxation after the apex. Zhao et al.~\cite{zhaoS2021} instead select eleven key frames and compute ten flow fields between adjacent frames, retaining the change of motion across the expression. The distinction is between a single displacement summary and a sequence whose order a temporal model can exploit. This thesis follows the sequence approach but samples existing frames uniformly rather than selecting key frames, which provides a temporal input for the transformer ablation. It does not measure the effect of replacing the sequence with a single onset-to-apex pair.
@@ -127,7 +104,7 @@ Flow is also used for alignment. Xu et al.~\cite{xu2017} align faces coarsely by
 
 Optical strain supplies the third input channel. Its definition is given in \autoref{sec:optical-strain}; this section reviews the published evidence and one consequential divergence.
 
-Flow describes displacement, whereas strain describes its local spatial variation~\cite{shreve2011,liong2016} (\autoref{fig:flow-strain}, bottom row). A spatially uniform translation has zero displacement gradient, whereas neighbouring regions of skin moving differently produce deformation~\cite{shreve2011}. Shreve et al.~\cite{shreve2011} use this distinction to detect facial activity and describe robustness to moderate head translation, which does not imply robustness to arbitrary head movement or registration error. Their statements about robustness to illumination and make-up~\cite{shreve2011} are attributed to earlier studies rather than measured, and are treated here as motivation rather than evidence.
+Flow describes displacement, whereas strain describes its local spatial variation~\cite{shreve2011,liong2016}. A spatially uniform translation has zero displacement gradient, whereas neighbouring regions of skin moving differently produce deformation~\cite{shreve2011}. Shreve et al.~\cite{shreve2011} use this distinction to detect facial activity and describe robustness to moderate head translation, which does not imply robustness to arbitrary head movement or registration error. Their statements about robustness to illumination and make-up~\cite{shreve2011} are attributed to earlier studies rather than measured, and are treated here as motivation rather than evidence.
 
 \subsection{The Implemented Magnitude and its Divergence}
 \label{sec:strain-divergence}
@@ -185,16 +162,6 @@ Two caveats limit what these results imply for this thesis. The experiment of Be
 By 2019 the highest-ranked challenge submissions all used optical flow as their input~\cite{see2019}; the open question was which model should process it. A learned backbone offers what hand-crafted descriptors cannot~\cite{liong2019b}, but it is constrained by the small size of the available datasets~\cite{li2022survey} (\autoref{sec:corpus-threats}).
 
 \textbf{The term ``3D CNN''~\cite{ji2013,tran2015} denotes three different architectures in this literature.} STSTNet~\cite{liong2019b}, the reference shallow model, describes itself as a ``Shallow Triple Stream Three-dimensional CNN'', but its input is a single $28 \times 28 \times 3$ tensor whose third dimension holds horizontal flow, vertical flow and strain, \textbf{not time}. Its three parallel single-layer streams~\cite{liong2019b}, with 3, 5 and 8 kernels, compensate for ``the small scale input data \ldots to avoid the problem of underfitting''; the clip has already been reduced to one frame pair. STRCN~\cite{xia2020a}, by contrast, extends convolutional connectivity ``across temporal domain'' with recurrent convolutional layers, and Zhao et al.~\cite{zhaoS2021} apply a C3D-style network~\cite{tran2015} to a ten-frame flow sequence, in which the temporal axis is present but short. Results reported under the same label are therefore not directly comparable.
-
-Figure~\ref{fig:tsnn} shows a further variant surveyed by Xie et al.~\cite{xie2022}: TSNN-LF, a three-stream network in which 3D convolutional kernels share the same spatial size but differ in temporal length, followed by 2D convolutional blocks.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=\textwidth]{fig3_3_tsnn_streams.png}
-	\caption[A three-stream network combining 3D and 2D convolution]{Structure of TSNN-LF, a three-stream network combining 3D and 2D convolution for micro-expression recognition. The three 3D convolutional streams use kernels with the same spatial size and different temporal lengths. Reproduced from Xie et al.~\cite{xie2022} (Fig.~6) under the CC~BY~4.0 licence.}
-	\label{fig:tsnn}
-\end{figure}
-
 
 \textbf{The central controlled finding is that reducing both model depth and input size helps.} Xia et al.~\cite{xia2020b} treat depth and input resolution as controlled variables, building four models ranging from a single convolutional layer to one convolutional layer followed by three recurrent convolutional layers, and evaluating each at input resolutions from 20 to 300 pixels on optical flow. Deeper models perform worse: models 3 and 4 ``have worse recognition performances compared to shallower \ldots models'', although all four are far shallower than ResNet-101~\cite{he2016}. Higher resolution also performs worse beyond a threshold~\cite{xia2020b}: performance ``will be degraded with larger input resolutions'' and, for the deeper models, ``begins to decrease dramatically when the resolution is bigger than \textbf{100 $\times$ 100}'', whereas shallow models are ``basically robust to the change of input resolution''. Both this study and STSTNet were developed for the MEGC composite setting~\cite{xia2020b,liong2019b,see2019}, which provides considerably more training data per fold than a single dataset (\autoref{sec:megc-metrics}), so their conclusions about affordable model capacity understate the constraint here. Xia et al.~\cite{xia2020b} also control capacity in a third way, which this thesis follows, by developing ``three parameter-free modules \ldots integrate with RCN without increasing any learnable parameters'', so that representational power grows without increasing the risk of overfitting.
 
